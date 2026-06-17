@@ -1,0 +1,47 @@
+---
+title: "Aula 03 — Agrupamento: cluster hierárquico, k-means e IndVal"
+order: 3
+description: "Métodos hierárquicos (UPGMA, single-linkage, complete-linkage, Ward) versus não-hierárquicos (k-means). Análise de espécies indicadoras (IndVal). Estabilidade de cluster via bootstrap (pvclust)."
+---
+
+::: {.aula-meta}
+**Aula 3**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Métodos hierárquicos (UPGMA, single-linkage, complete-linkage, Ward) versus não-hierárquicos (k-means). Análise de espécies indicadoras (IndVal). Estabilidade de cluster via bootstrap (pvclust).
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-03.pdf){.btn .btn-outline-primary}
+
+## Código R (aula prática)
+
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-aula-1-cluster-kmeans-indval-sem-resposta.html)**  
+  *Roteiro principal — cluster hierárquico, k-means, IndVal (versão sem respostas, para o aluno completar).*  
+  [{{< fa solid file-code >}} baixar `aula-1-cluster-kmeans-indval-sem-resposta.R`](aula-1-cluster-kmeans-indval-sem-resposta.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-exemplo-com-pvclust.html)**  
+  *Demonstração de bootstrap de cluster com o pacote `pvclust`.*  
+  [{{< fa solid file-code >}} baixar `exemplo-com-pvclust.R`](exemplo-com-pvclust.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-exercicio-indval-sem-resposta.html)**  
+  *Exercício adicional sobre IndVal.*  
+  [{{< fa solid file-code >}} baixar `exercicio-indval-sem-resposta.R`](exercicio-indval-sem-resposta.R)
+
+## Dados utilizados
+
+- [`DoubsEnv.csv`](DoubsEnv.csv)
+- [`DoubsSpe.csv`](DoubsSpe.csv)
+- [`ambiente.txt`](ambiente.txt)
+- [`bocaina.txt`](bocaina.txt)
+
+## Leituras recomendadas
+
+*Bibliografia listada nos slides.*
+
+## Recursos externos
+
+- [Entendendo o algoritmo do k-means (vídeo)](https://www.youtube.com/watch?v=4b5d3muPQmA)
+- [Clustering and Classification (curso online)](https://www.statlearning.com/)
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*

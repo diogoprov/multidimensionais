@@ -1,0 +1,39 @@
+---
+title: "Aula 05 — Ordenações restritas: CCA, RDA, pRDA, db-RDA, LDA"
+order: 5
+description: "Ordenação canônica: explica composição em função de variáveis ambientais. CCA, RDA, RDA parcial, db-RDA (RDA baseada em distância), e Análise Discriminante Linear (LDA)."
+---
+
+::: {.aula-meta}
+**Aula 5**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Ordenação canônica: explica composição em função de variáveis ambientais. CCA, RDA, RDA parcial, db-RDA (RDA baseada em distância), e Análise Discriminante Linear (LDA).
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-05.pdf){.btn .btn-outline-primary}
+
+## Código R (aula prática)
+
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-quinta.html)**  
+  *Walkthrough — CCA, RDA, pRDA, db-RDA, LDA com vegan.*  
+  [{{< fa solid file-code >}} baixar `quinta.R`](quinta.R)
+
+## Dados utilizados
+
+*Sem datasets associados.*
+
+## Leituras recomendadas
+
+*Bibliografia listada nos slides.*
+
+## Recursos externos
+
+- [Legendre explicando CCA e RDA (vídeo)](https://www.youtube.com/results?search_query=legendre+cca+rda)
+- [História da CCA — Cajo ter Braak](https://www.cajotbraak.nl/)
+- [RDA passo a passo no R](https://www.davidzeleny.net/anadat-r/doku.php/en:rda_examples)
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*

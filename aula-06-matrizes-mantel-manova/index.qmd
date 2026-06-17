@@ -1,0 +1,44 @@
+---
+title: "Aula 06 — Regressão de matrizes, Mantel, PROCRUSTES e (PER)MANOVA"
+order: 6
+description: "Comparação entre matrizes de distância: teste de Mantel e Mantel parcial. Comparação de configurações multivariadas: Procrustes/PROTEST. Inferência multivariada robusta: PERMANOVA."
+---
+
+::: {.aula-meta}
+**Aula 6**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Comparação entre matrizes de distância: teste de Mantel e Mantel parcial. Comparação de configurações multivariadas: Procrustes/PROTEST. Inferência multivariada robusta: PERMANOVA.
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-06.pdf){.btn .btn-outline-primary}
+
+## Código R (aula prática)
+
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-sexta.html)**  
+  *Walkthrough — Mantel, Procrustes/PROTEST, PERMANOVA com vegan.*  
+  [{{< fa solid file-code >}} baixar `sexta.R`](sexta.R)
+
+## Dados utilizados
+
+- [`amb.txt`](amb.txt)
+- [`anuros_permanova.csv`](anuros_permanova.csv)
+- [`clad.txt`](clad.txt)
+- [`cope.txt`](cope.txt)
+- [`dist.txt`](dist.txt)
+- [`gen.txt`](gen.txt)
+- [`repteis_permanova.csv`](repteis_permanova.csv)
+- [`teste.txt`](teste.txt)
+
+## Leituras recomendadas
+
+*Bibliografia listada nos slides.*
+
+## Recursos externos
+
+*Sem recursos externos para esta aula.*
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*

@@ -1,0 +1,46 @@
+---
+title: "Aula 02 — Coeficientes de associação"
+order: 2
+description: "Distância e similaridade entre objetos. Quando usar distância euclideana, Bray-Curtis, Jaccard, Mahalanobis. Propriedades métricas das matrizes de dissimilaridade."
+---
+
+::: {.aula-meta}
+**Aula 2**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Distância e similaridade entre objetos. Quando usar distância euclideana, Bray-Curtis, Jaccard, Mahalanobis. Propriedades métricas das matrizes de dissimilaridade.
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-02.pdf){.btn .btn-outline-primary}
+
+## Código R (aula prática)
+
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-chap2.html)**  
+  *Capítulo 2 de Borcard, Gillet & Legendre (2018) — exploração de dados ambientais com o pacote `vegan`.*  
+  [{{< fa solid file-code >}} baixar `chap2.R`](chap2.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-chap3.html)**  
+  *Capítulo 3 — coeficientes de associação e distâncias entre objetos.*  
+  [{{< fa solid file-code >}} baixar `chap3.R`](chap3.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-coldiss.html)**  
+  *Função auxiliar: visualização de matrizes de dissimilaridade.*  
+  [{{< fa solid file-code >}} baixar `coldiss.R`](coldiss.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-panelutils.html)**  
+  *Função auxiliar: utilitários para painéis de gráficos.*  
+  [{{< fa solid file-code >}} baixar `panelutils.R`](panelutils.R)
+
+## Dados utilizados
+
+- [`Doubs.RData`](Doubs.RData)
+
+## Leituras recomendadas
+
+*Bibliografia listada nos slides.*
+
+## Recursos externos
+
+- [Distância de Mahalanobis (vídeo)](https://www.youtube.com/watch?v=spNpfmWZBmg)
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*

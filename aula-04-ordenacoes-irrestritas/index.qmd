@@ -1,0 +1,41 @@
+---
+title: "Aula 04 — Ordenações irrestritas: PCA, PCoA, nMDS e CA"
+order: 4
+description: "Reduzir a dimensionalidade preservando estrutura. PCA (variáveis contínuas), PCoA (qualquer distância), nMDS (não-paramétrica, robusta), CA (dados de frequência)."
+---
+
+::: {.aula-meta}
+**Aula 4**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Reduzir a dimensionalidade preservando estrutura. PCA (variáveis contínuas), PCoA (qualquer distância), nMDS (não-paramétrica, robusta), CA (dados de frequência).
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-04.pdf){.btn .btn-outline-primary}
+
+## Código R (aula prática)
+
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-quarta.html)**  
+  *Walkthrough da aula prática — PCA, PCoA, nMDS, CA com vegan e ade4.*  
+  [{{< fa solid file-code >}} baixar `quarta.R`](quarta.R)
+
+## Dados utilizados
+
+*Sem datasets associados.*
+
+## Leituras recomendadas
+
+- Prado, P.I. et al. 2002. *Ordenação multivariada na ecologia e seus usos em ciências ambientais.* Ambiente & Sociedade 5:69–83.
+
+## Recursos externos
+
+- [PCA passo-a-passo (vídeo)](https://www.youtube.com/watch?v=FgakZw6K1QQ)
+- [Lógica da PCA (vídeo em PT)](https://www.youtube.com/watch?v=eAdkBJW-7v0)
+- [Como funciona um nMDS (em PT)](https://www.youtube.com/watch?v=Kyo8tRq0eW0)
+- [Diferença entre PCoA e nMDS](https://stats.stackexchange.com/questions/14002/whats-the-difference-between-principal-coordinates-analysis-and-nonmetric-multid)
+- [Página do pacote `labdsv` (Dave Roberts)](http://ecology.msu.montana.edu/labdsv/R/)
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*

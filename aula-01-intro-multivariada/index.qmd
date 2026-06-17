@@ -1,0 +1,40 @@
+---
+title: "Aula 01 — Introdução à estatística multivariada"
+order: 1
+description: "Por que dados multivariados exigem ferramentas diferentes. Álgebra de matrizes essencial para o resto do curso: combinações lineares, autovalores e autovetores."
+---
+
+::: {.aula-meta}
+**Aula 1**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Por que dados multivariados exigem ferramentas diferentes. Álgebra de matrizes essencial para o resto do curso: combinações lineares, autovalores e autovetores.
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-01.pdf){.btn .btn-outline-primary}
+
+## Código R (aula prática)
+
+*Aula sem código R associado (parte teórica).*
+
+## Dados utilizados
+
+*Sem datasets associados.*
+
+## Leituras recomendadas
+
+- Legendre, P. *Matrix Algebra Primer for Ecologists.* Disponível no apêndice de Legendre & Legendre 2012.
+- Introdução à álgebra de matrizes (em português) — material complementar.
+
+## Recursos externos
+
+- [Playlist completa com as aulas no YouTube](https://www.youtube.com/playlist?list=PLy2rjqiD2VP6p7RNCZ7lGU4j3CqjJD)
+- [Eigenvectors and Eigenvalues — explicação visual (3Blue1Brown)](https://www.youtube.com/watch?v=PFDu9oVAE-g)
+- [Combinação linear de variáveis (com legendas PT)](https://www.youtube.com/watch?v=k7RM-ot2NWY)
+- [Plano euclideano e álgebra de matrizes](https://www.youtube.com/watch?v=kjBOesZCoqc)
+- [Setosa.io — autovetores visualmente](http://setosa.io/ev/eigenvectors-and-eigenvalues/)
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*

@@ -1,0 +1,37 @@
+---
+title: "Demonstração de bootstrap de cluster com o pacote `pvclust`."
+subtitle: "Walkthrough do código — Aula 3: Agrupamento: cluster hierárquico, k-means e IndVal"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Walkthrough do código usado em sala. Os comandos **não são executados**
+pelo renderizador — copie e cole no seu R local. Você pode baixar o
+script `.R` original e os dados em [Aula 3](./).
+:::
+
+```{r}
+#Exemplo da análise com o pvclust
+library(vegan)
+library(pvclust)
+
+exemplo <- read.table("bocaina.txt", h=TRUE)#Importem o conjunto de dados Bocaina.txt
+
+bocaina <- t(exemplo)#Se quisermos agrupar as espécies, temos de transpôr a matriz
+boc.norm <- decostand(bocaina, "normalize")
+
+analise <- pvclust(boc.norm, method.hclust="average", method.dist="euc") 
+plot(analise, hang=-1)
+pvrect(analise)
+distBocaina <- vegdist(bocaina, method="horn")#produz uma matriz de similaridade com o coeficiente de Morisita-Horn
+dendro <- hclust(distBocaina, method="average")#produz um agrupamento com a função hclust e o método UPGMA
+cophenetic(analise)->cofresult
+cor(cofresult, distBocaina)
+```

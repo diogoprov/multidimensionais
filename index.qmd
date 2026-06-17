@@ -1,0 +1,127 @@
+---
+title: "Análises Multidimensionais"
+subtitle: "Disciplina de pós-graduação — Mestrado em Biologia Animal, UFMS (45 h)"
+toc: true
+listing:
+  - id: cronograma
+    contents: "aula-*/index.qmd"
+    type: table
+    sort: "order asc"
+    fields: [order, title, description]
+    field-display-names:
+      order: "Aula"
+      title: "Tópico"
+      description: "Conteúdo"
+    sort-ui: false
+    filter-ui: false
+    page-size: 20
+---
+
+::: {.callout-tip appearance="minimal"}
+Disciplina **ANÁLISES MULTIDIMENSIONAIS** (201521415, 45 h) do
+[Mestrado em Biologia Animal](https://ppgba.ufms.br/) da UFMS. Esta
+página reúne os **materiais públicos** das edições anteriores —
+slides, scripts R com walkthroughs HTML, datasets e bibliografia.
+Para informações sobre a próxima oferta,
+[entre em contato](mailto:diogo.provete@ufms.br).
+:::
+
+## Ementa
+
+Análises multidimensionais: técnicas de agrupamento, ordenação restrita
+e irrestrita, e análise de relações entre dois conjuntos de dados
+multidimensionais.
+
+## Conteúdo programático
+
+1. **Técnicas de classificação:** parecença; análises hierárquicas e
+   não-hierárquicas.
+2. **Técnicas de ordenação irrestrita:** análise de componentes
+   principais (PCA), análise de coordenadas principais (PCoA),
+   escalonamento multidimensional não-métrico (nMDS), análise de
+   correspondência (CA) e variações.
+3. **Análise de relações entre dois conjuntos de dados
+   multidimensionais:** análise de correspondência canônica (CCA),
+   análise de redundância (RDA) e suas parciais, db-RDA, RDA de
+   consenso, análise discriminante (LDA).
+4. **Análises canônicas simétricas:** análise de co-inércia, teste de
+   Mantel, Mantel parcial, Procrustes, PROTEST.
+5. **Análises de variância multidimensionais:** PERMANOVA.
+6. **Outras:** análise de espécies indicadoras (IndVal), análise de
+   dispersão multidimensional entre grupos.
+
+## Objetivos
+
+Ao final do curso, espera-se que o(a) aluno(a) seja capaz de
+**identificar e aplicar métodos multidimensionais adequados** para
+analisar dados multivariados comumente encontrados em estudos
+avançados de ecologia e evolução, bem como interpretar criticamente
+os resultados em linguagem ecológica.
+
+## Cronograma
+
+::: {#cronograma}
+:::
+
+## Pré-requisitos
+
+- Familiaridade básica com R (leitura de dados, funções, objetos).
+  Recomendo [Wickham et al. *R para Ciência de Dados*](https://pt.r4ds.hadley.nz/)
+  como ponto de partida;
+- Bioestatística aplicada à ecologia (modelos lineares, teste de
+  hipóteses).
+
+## Avaliação
+
+- **Prova teórica** ao final da disciplina;
+- **Trabalho de análise** — relatório com análise de um conjunto de
+  dados multivariado escolhido pelo(a) aluno(a), incluindo
+  interpretação ecológica dos resultados (entrega posterior à prova).
+
+## Bibliografia
+
+### Livros principais
+
+- Borcard, D.; Gillet, F. & Legendre, P. 2018. *Numerical Ecology with
+  R.* 2ª ed. Cham: Springer. — **livro-texto principal**.
+- Legendre, P. & Legendre, L.F.J. 2012. *Numerical Ecology.* 3ª ed.
+  Amsterdam: Elsevier. — referência teórica de fundo.
+- McCune, B. & Grace, J.B. 2002. *Analysis of Ecological Communities.*
+  Gleneden Beach: MjM Software Design.
+
+### Complementares
+
+- Gotelli, N.J. & Ellison, A.M. 2011. *Princípios de estatística em
+  ecologia.* Porto Alegre: Artmed.
+- Jongman, R.H.G.; ter Braak, C.J.F. & van Tongeren, O.F.R. 1995.
+  *Data analysis in community and landscape ecology.* Cambridge
+  University Press.
+- Manly, B.J.F. 2008. *Métodos estatísticos multivariados.* 3ª ed.
+  Porto Alegre: Artmed.
+- Šmilauer, P. & Lepš, J. 2014. *Multivariate Analysis of Ecological
+  Data using CANOCO 5.* 2ª ed. Cambridge University Press.
+  [doi:10.1017/CBO9781139627061](https://doi.org/10.1017/CBO9781139627061)
+- Thioulouse, J.; Dray, S.; Dufour, A.B.; Siberchicot, A.; Jombart, T.
+  & Pavoine, S. 2018. *Multivariate Analysis of Ecological Data with
+  ade4.* New York: Springer.
+
+### Recursos online
+
+- [Análises ecológicas no R — da Silva, Gonçalves-Souza, Paterno,
+  Provete, Vancine](https://analises-ecologicas.com)
+- [Página do pacote `labdsv` (Dave Roberts) com várias aulas](http://ecology.msu.montana.edu/labdsv/R/)
+- [Numerical Ecology with R — código do livro](https://github.com/JoeyBernhardt/NumericalEcology)
+
+## Edições anteriores
+
+Esta mesma disciplina foi oferecida em cinco edições nos dois programas
+de pós-graduação da UFMS — sempre com o mesmo conteúdo, mas com nomes
+e códigos administrativos distintos:
+
+- **2025/2** — Mestrado em Biologia Animal. *Análises
+  Multidimensionais* (201521415, 45 h).
+- **2023/1** — *Ecologia Quantitativa* (código antigo 20011043).
+  **Materiais desta edição estão arquivados abaixo.**
+- **2021/1** — modalidade remota durante a pandemia.
+- **2020/1** — UFMS.
+- **2019/1** — primeira oferta.
