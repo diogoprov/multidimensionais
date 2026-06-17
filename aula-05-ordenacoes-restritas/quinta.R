@@ -1,0 +1,288 @@
+# Wed May  8 22:12:42 2019 ------------------------------
+
+#--Aula quinta : ordenações restritas
+library(vegan)
+library(ade4)
+
+#### Aula 13 - CANONICAL CORRESPONDENCE ANALYSIS (CCA)
+
+#13.1 - Preparation of data
+#Import the data from CSV files
+spe <- read.csv("DoubsSpe.csv", row.names=1)
+env <- read.csv("DoubsEnv.csv", row.names=1)
+
+data(doubs)
+spa <- doubs$xy
+
+head(spa)
+#Remove empty site 8
+spe <- spe[-8, ]
+env <- env[-8, ]
+spa <- spa[-8, ]
+
+#Remove the 'das' variable from the env dataset
+env <- env[, -1]
+#Recode the slope variable (pen) into a factor (qualitative) 
+#variable (to show how these are handled in the ordinations)
+pen2 <- rep("very_steep", nrow(env))
+pen2[env$pen <= quantile(env$pen)[4]] = "steep"
+pen2[env$pen <= quantile(env$pen)[3]] = "moderate"
+pen2[env$pen <= quantile(env$pen)[2]] = "low"
+pen2 <- factor(pen2, levels=c("low", "moderate", "steep", "very_steep"))
+table(pen2)
+#Create an env2 data frame with slope as a qualitative variable
+env$pen <- pen2
+head(env)
+
+#13.2 - CCA
+head(spe)  #Utilizar dados n?o transformados
+spe.cca <- cca(spe ~ ., env)
+spe.cca
+summary(spe.cca) #Scaling 2 (default)
+summary(spe.cca)$species
+summary(spe.cca)$sites
+summary(spe.cca)$constraints
+summary(spe.cca)$biplot
+
+summary(spe.cca, scaling=1) #Scaling 1
+summary(spe.cca, scaling=1)$species
+summary(spe.cca, scaling=1)$sites
+summary(spe.cca, scaling=1)$constraints
+summary(spe.cca, scaling=1)$biplot
+
+#13.3 - CCA triplots (using lc site scores)
+#Scaling 1: A proje??o de um objeto em ?ngulo reto em uma vari?vel aproxima a posi??o do objeto ao longo da vari?vel.
+plot(spe.cca, scaling=1, display=c("sp","lc","cn"), main="Triplot CCA spe ~ env2 - scaling 1")
+plot(spe.cca, scaling=1, display=c("lc", "cn"), main="Biplot CCA spe ~ env2 - scaling 1") #without species
+
+#Default scaling 2: O ?timo e uma esp?cie ao longo das vari?veis ambientais pode ser obtido projetando-a em ?ngulo reto em uma vari?vel.
+plot(spe.cca, display=c("sp","lc","cn"), main="Triplot CCA spe ~ env2 - scaling 2")
+plot(spe.cca, scaling=2, display=c("sp", "cn"), main="Biplot CCA spe ~ env2 - scaling 2") #without sites
+
+#13.4 - Permutation tests of CCA results
+anova(spe.cca, step=1000) #Permutation test of the overall analysis
+set.seed(1001)
+anova(spe.cca, by="axis", step=1000) #Permutation test of each axis
+
+anova(spe.cca, by="margin", step=1000) #Permutation test of variables
+
+#14.3 - Recuperando os R^2 ajustados
+RsquareAdj(spe.cca) #Adjusted R^2
+
+#13.5 - Three-dimensional interactive ordination plots
+library(vegan3d)
+spe.hel <- decostand(spe, "hell")
+#Scaling=1
+#Plot of the sites only (wa scores)
+ordirgl(spe.cca, type="t", scaling=1)
+#Plot the sites (wa scores) with a clustering result. Colour sites according to cluster membership
+gr <- cutree(hclust(vegdist(spe.hel, "euc"), "ward.D"), 4)
+ordirgl(spe.cca, type="t", scaling=1, ax.col="black", col=gr+1)
+# Connect sites to cluster centroids
+orglspider(spe.cca, gr, scaling=1)
+
+#Scaling=2
+ordirgl(spe.cca, type="t", scaling=2)
+orgltext(spe.cca.pars, display="species", type="t", scaling=2, col="cyan")
+#Plot species groups (Jaccard similarity, useable in R mode)
+gs <- cutree(hclust(vegdist(t(spe), method="jaccard"), "ward"), 4)
+ordirgl(spe.cca.pars, display="species", type="t", col=gs+1)
+
+#-------------------------------------------------------------------------------
+
+#### Aula 14 - RDA
+
+#Hellinger-transform the species dataset
+spe.hel <- decostand(spe, "hellinger")
+
+#14.2 - RDA using Vegan
+#RDA of the Hellinger-transformed fish species data, constrained by all the environmental variables contained in env2
+spe.rda <- rda(spe.hel~., env) # Observe the shortcut formula
+summary(spe.rda) # Scaling 2 (default) #Here the default choices are used, i.e. scale=FALSE (RDA on a covariance matrix) and scaling=2.
+
+#How to obtain canonical coefficients from an rda() object. Canonical coefficients are the equivalent of regression coefficients 
+#for each explanatory variable on each canonical axis.
+coef(spe.rda)
+
+#14.3 - Recuperando os R^2 ajustados
+RsquareAdj(spe.rda) #Adjusted R^2
+
+#The numerical output shows that the first two canonical axes explain together 56.1% of the total variance of
+#the data, the first axis alone explaining 45.4%. These are unadjusted values, however. Since adj R2 = 0.5224,
+#the percentages of accumulated constrained eigenvalues show that the first axis alone explains
+#0.5224 ? 0.6242 = 0.326 or 32.6% variance, and the two first 0.5224 ? 0.7712 = 0.4029 or 40.3% variance
+
+#14.4 - Triplots of the rda results. #Site scores as linear combinations of the environmental variables (lc)
+#Scaling 1
+plot(spe.rda, scaling=1, display=c("sp", "lc", "cn"),	main="Triplot RDA spe.hel ~ env2 - scaling 1 - lc scores")
+arrows(0, 0, spe.sc[, 1], spe.sc[, 2], length=0, lty=1, col="red")
+
+#Scaling 2
+plot(spe.rda, display=c("sp", "lc", "cn"), main="Triplot RDA spe.hel ~ env2 - scaling 2 - lc scores")
+arrows(0, 0, spe2.sc[,1], spe2.sc[,2], length=0, lty=1, col="red")
+
+#OBS: Em ambas, a proje??o dos objetos (ua) em ?ngulo reto sobre uma vari?vel resposta (sp) ou explanat?ria (env)
+#aproxima a posi??o do objeto ao longo daquela vari?vel.
+
+#14.5 - Global test of the RDA result
+anova.cca(spe.rda, step=1000)
+#Tests of all canonical axes
+anova.cca(spe.rda, by="axis", step=1000)
+anova.cca(spe.rda, by="margin", step=1000)
+#Apply Kaiser-Guttman criterion to residual axes
+spe.rda$CA$eig[spe.rda$CA$eig > mean(spe.rda$CA$eig)]  
+#Of course, given that these tests are available, it is useless to apply other criteria
+#like the broken-stick or Kaiser?Guttman?s criterion to canonical axes. These could
+#be applied to the residual, unconstrained axes, however.
+
+#-------------------------------------------------------------------------------
+
+#### Aula 15 - Partial RDA
+#15.1 - Preparation of data
+
+#Create two subsets of explanatory variables
+#Physiography (upstream-downstream gradient)
+envtopo <- env[, c(1:3)]
+names(envtopo)
+#Water quality
+envchem <- env[, c(4:9)]
+names(envchem)
+
+#Hellinger-transform the species dataset
+spe.hel <- decostand(doubs$fish[-8,], "hellinger")
+
+#15.2 - Explanation of fraction labels
+windows(title="Symbols of variation partitioning fractions",12,4)
+par(mfrow=c(1,3))
+showvarparts(2) # Two explanatory matrices
+showvarparts(3) # Three explanatory matrices
+showvarparts(4) # Four explanatory matrices
+
+#15.3 - Variation partitioning with all explanatory variables
+spe.part.all <- varpart(spe.hel, envchem, envtopo)
+spe.part.all
+windows(title="Variation partitioning - all variables")
+plot(spe.part.all, digits=2)  # Plot of the partitioning results
+
+#Tests of all testable fractions
+#Test of fractions [a+b]
+anova.cca(rda(spe.hel, envchem), step=1000)
+#Test of fractions [b+c]
+anova.cca(rda(spe.hel, envtopo), step=1000)
+#Test of fractions [a+b+c]
+env<- cbind(envchem, envtopo)
+anova.cca(rda(spe.hel, env), step=1000)
+#Test of fraction [a]
+anova.cca(rda(spe.hel, envchem, envtopo), step=1000)
+#Test of fraction [c]
+anova.cca(rda(spe.hel, envtopo, envchem), step=1000)
+
+#MEMs
+library(adespatial)
+mems_doubs <- dbmem(spa, MEM.autocor = "positive")
+mems.doubs <- data.frame(mems_doubs$MEM1, mems_doubs$MEM2, mems_doubs$MEM3, mems_doubs$MEM4, mems_doubs$MEM5, mems_doubs$MEM6, mems_doubs$MEM7)
+
+vp <- varpart(spe.hel, env, mems.doubs)
+plot(vp)
+
+# Linear discriminant analysis (LDA) ==============================
+
+# Ward clustering result of Hellinger-transformed species data, 
+# cut into 4 groups
+gr <- cutree(hclust(vegdist(spe.hel, "euc"), "ward.D2"), k = 4)
+
+# Environmental matrix with only 3 variables (ele, oxy and bod)
+env.pars2 <- as.matrix(env[, c(3, 10, 11)])
+
+# Verify multivariate homogeneity of within-group covariance
+# matrices using the betadisper() function {vegan}
+env.pars2.d1 <- dist(env.pars2)
+(env.MHV <- betadisper(env.pars2.d1, gr))
+anova(env.MHV)
+permutest(env.MHV)	# Permutational test
+
+# Log transform ele and bod
+env.pars3 <- cbind(log(env$slo), env$oxy, log(env$bdo))
+colnames(env.pars3) <- c("ele.ln", "oxy", "bod.ln") 
+rownames(env.pars3) <- rownames(env)
+env.pars3.d1 <- dist(env.pars3)
+(env.MHV2 <- betadisper(env.pars3.d1, gr))
+permutest(env.MHV2)
+
+# Preliminary test :  do the means of the explanatory variable 
+# differ among groups?
+# Compute Wilk'S lambda test
+# First way: with function Wilks.test() of package rrcov, χ2 test
+library(rrcov)
+library(MASS)
+Wilks.test(env.pars3, gr)
+# Second way: with function manova() of stats, which uses
+#             an F-test approximation
+lw <-  manova(env.pars3 ~ as.factor(gr))
+summary(lw, test = "Wilks")
+
+## Computation of LDA - identification functions (on unstandardized 
+## variables)
+
+env.pars3.df <- as.data.frame(env.pars3)
+(spe.lda <- lda(gr ~ ele.ln + oxy + bod.ln, data = env.pars3.df))
+# Alternate coding without formula interface :  
+#    spe.lda <- lda(env.pars3.df, gr)
+# The result object contains the information necessary to interpret 
+# the LDA
+
+# Display the group means for the 3 variables
+spe.lda$means
+
+# Extract the unstandardized identification functions (matrix C, 
+# eq. 11.33 in Legendre and Legendre 2012)
+(C <- spe.lda$scaling)
+
+# Classification of two new objects (identification)
+# A new object is created with two sites: 
+#     (1) ln(ele) = 6.8, oxygen = 9 and ln(bod) = 0.8 
+# and (2) ln(ele) = 5.5, oxygen = 10 and ln(bod) = 1.0
+newo <- data.frame(c(6.8, 5.5), c(9, 10), c(0.8, 1))
+colnames(newo) <- colnames(env.pars3)
+newo
+(predict.new <- predict(spe.lda, newdata = newo))
+
+## Computation of LDA - discrimination functions (on standardized 
+## variables)
+
+env.pars3.sc <- as.data.frame(scale(env.pars3.df))
+spe.lda2 <- lda(gr ~ ., data = env.pars3.sc)
+
+# Display the group means for the 3 variables
+spe.lda2$means
+
+# Extract the classification functions
+(C2 <- spe.lda2$scaling)
+
+# Compute the canonical eigenvalues
+spe.lda2$svd^2
+
+# Position the objects in the space of the canonical variates
+(Fp2 <- predict(spe.lda2)$x)
+# alternative way :  Fp2 <- as.matrix(env.pars3.sc) %*% C2
+
+# Classification of the objects
+(spe.class2 <- predict(spe.lda2)$class)
+
+# Posterior probabilities of the objects to belong to the groups
+# (rounded for easier interpretation)
+(spe.post2 <- round(predict(spe.lda2)$posterior, 2))
+
+# Contingency table of prior versus predicted classifications
+(spe.table2 <- table(gr, spe.class2))
+
+# Proportion of correct classification (classification success)
+diag(prop.table(spe.table2, 1))
+
+# Plot the LDA results using the homemade function plot.lda()
+
+plot(spe.lda2, 
+         groups = gr, 
+         plot.sites = 2, 
+         plot.centroids = 1, 
+         mul.coef = 2.35)
