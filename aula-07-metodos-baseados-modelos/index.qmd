@@ -1,0 +1,44 @@
+---
+title: "Aula 07 — Métodos multidimensionais baseados em modelos"
+order: 7
+description: "Aula extra (avançada). Alternativa paramétrica aos métodos baseados em distância: por que modelar explicitamente a relação média-variância da abundância. Agrupamento (SAMs/ecoMix), ordenação (gllvm, boral, CQO, ecoCopula), inferência (mvabund) e modelos conjuntos de distribuição de espécies (JSDM/HMSC)."
+---
+
+::: {.aula-meta}
+**Aula extra (avançada)**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+:::
+
+Alternativa paramétrica aos métodos baseados em distância: por que modelar explicitamente a relação média-variância da abundância. Agrupamento (SAMs/ecoMix), ordenação (gllvm, boral, CQO, ecoCopula), inferência (mvabund) e modelos conjuntos de distribuição de espécies (JSDM/HMSC).
+
+::: {.callout-note appearance="minimal"}
+Aula extra de caráter teórico, voltada a métodos mais avançados. Não possui roteiro prático em R associado — os pacotes citados nos slides servem como ponto de partida para estudo individual.
+:::
+
+## Slides
+
+[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-07.pdf){.btn .btn-outline-primary}
+
+## Tópicos abordados
+
+- **Motivação:** limitações dos métodos baseados em distância (algoritmos) — relação média-variância da abundância, confusão entre posição e dispersão multivariada.
+- **O que são métodos baseados em modelos:** métodos paramétricos (GLMs e variáveis latentes) que capturam propriedades-chave de dados multivariados, com diagnose, seleção de modelos e inferência (AIC/BIC).
+- **Agrupamento:** *Species Archetype Models* (SAMs), pacote `ecoMix`.
+- **Ordenação:** `gllvm` (modelos lineares generalizados de variável latente), `boral` (ordenação Bayesiana via MCMC), *Constrained Quadratic Ordination* (CQO, pacote `reo`) e `ecoCopula`.
+- **Inferência:** `mvabund` (`manyglm`/`manyany`) com reamostragem de resíduos (PIT residuals).
+- **Modelos conjuntos de distribuição de espécies (JSDM):** `HMSC`, `s-jSDM` — partição da variância e co-distribuição derivada da covariância dos resíduos.
+
+## Pacotes em R
+
+`ecoMix` · `gllvm` · `boral` · `reo` · `ecoCopula` · `mvabund` · `Hmsc` · `sjSDM`
+
+## Leituras recomendadas
+
+*Bibliografia listada nos slides.*
+
+## Recursos externos
+
+*Sem recursos externos para esta aula.*
+
+---
+
+*Volta para o [índice do curso](../index.qmd).*
