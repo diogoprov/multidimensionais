@@ -17,16 +17,17 @@ para fazer depois. Os dados vêm dos pacotes `vegan` e `ade4`, do `ecodados`
 | 4 | Ordenações irrestritas | [ver](aula-04-ordenacoes-irrestritas/walkthrough-ordenacoes.qmd) | [`ordenacoes.R`](aula-04-ordenacoes-irrestritas/ordenacoes.R) | [na página](aula-04-ordenacoes-irrestritas/index.qmd#desafios) |
 | 5 | Ordenações restritas | [ver](aula-05-ordenacoes-restritas/walkthrough-quinta.qmd) | [`quinta.R`](aula-05-ordenacoes-restritas/quinta.R) | [na página](aula-05-ordenacoes-restritas/index.qmd#desafios) |
 | 6 | Testes entre matrizes e grupos | [ver](aula-06-matrizes-mantel-manova/walkthrough-matrizes.qmd) | [`matrizes.R`](aula-06-matrizes-mantel-manova/matrizes.R) | [na página](aula-06-matrizes-mantel-manova/index.qmd#desafios) |
+| 7 | Métodos baseados em modelos | [ver](aula-07-metodos-baseados-modelos/walkthrough-modelos.qmd) | [`modelos.R`](aula-07-metodos-baseados-modelos/modelos.R) | [na página](aula-07-metodos-baseados-modelos/index.qmd#desafios) |
 
 : {tbl-colwidths="[8,30,16,22,24]"}
 
-A Aula 7 (métodos baseados em modelos) é teórica. Os slides mostram o código
-dos pacotes `mvabund`, `gllvm` e `ecoCopula`, que servem de ponto de partida
-para estudar por conta própria.
+Os slides da Aula 7 citam outros pacotes baseados em modelos (`ecomix`,
+`boral`, `Hmsc`, `sjSDM`) como ponto de partida para estudar por conta
+própria.
 
 ## Antes de começar
 
 ```r
-install.packages(c("vegan", "ade4", "cluster", "remotes"))
+install.packages(c("vegan", "ade4", "cluster", "mvabund", "gllvm", "ecoCopula", "remotes"))
 remotes::install_github("paternogbc/ecodados")
 ```
