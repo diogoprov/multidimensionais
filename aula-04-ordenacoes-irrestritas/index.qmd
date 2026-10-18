@@ -37,17 +37,53 @@ As figuras dos slides foram geradas em R; o código está em
 
 ## Código R (aula prática)
 
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-quarta.html)**  
-  *Walkthrough da aula prática — PCA, PCoA, nMDS, CA com vegan e ade4.*  
-  [{{< fa solid file-code >}} baixar `Quarta.R`](Quarta.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-ordenacoes.html)**  
+  *PCA, CA e DCA, PCoA e nMDS, com os peixes e as variáveis ambientais do
+  Doubs.*  
+  [{{< fa solid file-code >}} baixar `ordenacoes.R`](ordenacoes.R)
+
+Pacotes: `vegan`, `ade4` e `ape`.
 
 ## Dados utilizados
 
-- [`DoubsSpe.csv`](../aula-03-agrupamento/DoubsSpe.csv) e [`DoubsEnv.csv`](../aula-03-agrupamento/DoubsEnv.csv), os mesmos da Aula 3. Salve-os na mesma pasta do script.
+Os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`
+(`data(doubs, package = "ade4")`), os mesmos dos slides. Não é preciso
+baixar nenhum arquivo.
+
+## Desafios
+
+Entregue um script `.R` que rode do zero numa sessão limpa (com sementes
+declaradas), as figuras pedidas e até uma página de interpretação.
+Critério: o script roda (30 %); as escolhas (transformação, distância,
+*scaling*, número de eixos) estão justificadas (30 %); a interpretação está
+correta (40 %).
+
+1. **Covariância ou correlação?** Com `varechem` (`vegan`): faça a PCA
+   sem padronizar (`rda(varechem)`) e padronizando (`scale = TRUE`). Use
+   Kaiser-Guttman e *broken stick* e faça os biplots nos *scalings* 1 e 2.
+   *Avaliação:* explica por que a PCA sem padronização é dominada por uma
+   ou duas variáveis, e cada figura diz o seu *scaling*.
+2. **O efeito ferradura.** Com os peixes do `doubs`: compare a PCA das
+   abundâncias brutas, a tb-PCA com Hellinger, a CA e a DCA, com os locais
+   coloridos pela distância da nascente (`dfs`). *Avaliação:* identifica o
+   arco ou a ferradura e diz qual método recupera melhor o gradiente.
+3. **Autovalores negativos.** Com `dune` (`vegan`): faça a PCoA de
+   Bray-Curtis sem correção, com Lingoes, com Cailliez e com a raiz de
+   Bray-Curtis. Monte uma tabela com o número de autovalores negativos e a
+   % de variação dos eixos 1 e 2 em cada caso. *Avaliação:* explica de
+   onde vêm os autovalores negativos e calcula o *broken stick* só com os
+   autovalores positivos.
+
+As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 ## Leituras recomendadas
 
-- Prado, P.I. et al. 2002. *Ordenação multivariada na ecologia e seus usos em ciências ambientais.* Ambiente & Sociedade 5:69–83.
+- Borcard, D., Gillet, F. & Legendre, P. (2018) *Numerical Ecology with
+  R*, 2ª ed., [cap. 5](https://doi.org/10.1007/978-3-319-71404-2_5).
+- Legendre, P. & Legendre, L. (2012) *Numerical Ecology*, 3ª ed.,
+  [cap. 9](https://doi.org/10.1016/B978-0-444-53868-0.50009-5).
+- Prado, P.I. et al. 2002. *Ordenação multivariada na ecologia e seus usos
+  em ciências ambientais.* Ambiente & Sociedade 5:69–83.
 
 ## Recursos externos
 
@@ -55,7 +91,6 @@ As figuras dos slides foram geradas em R; o código está em
 - [Lógica da PCA (vídeo em PT)](https://www.youtube.com/watch?v=eAdkBJW-7v0)
 - [Como funciona um nMDS (em PT)](https://www.youtube.com/watch?v=Kyo8tRq0eW0)
 - [Diferença entre PCoA e nMDS](https://stats.stackexchange.com/questions/14002/whats-the-difference-between-principal-coordinates-analysis-and-nonmetric-multid)
-- [Página do pacote `labdsv` (Dave Roberts)](http://ecology.msu.montana.edu/labdsv/R/)
 
 ---
 

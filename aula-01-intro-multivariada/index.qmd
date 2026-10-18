@@ -8,8 +8,6 @@ description: "Por que dados multivariados exigem ferramentas diferentes. Álgebr
 **Aula 1**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
 :::
 
-Por que dados multivariados exigem ferramentas diferentes. Álgebra de matrizes essencial para o resto do curso: combinações lineares, autovalores e autovetores.
-
 A aula apresenta o mapa dos métodos da disciplina, a lógica de uma boa
 pergunta de pesquisa e os conceitos de álgebra de matrizes que sustentam as
 análises das aulas seguintes.
@@ -26,24 +24,61 @@ As figuras dos slides foram geradas em R; o código está em
 1. O curso: cronograma, avaliação e bibliografia
 2. Tudo começa com uma boa pergunta
 3. Estudos observacionais e experimentais
-4. Por que métodos multidimensionais
-5. Um pouco de história, da eugenia à ecologia
-6. Como os métodos funcionam: modos R e Q, espaço euclidiano
-7. Álgebra de matrizes: combinações lineares, correlação, autovetores e
+4. Dois exemplos de estudos observacionais
+5. Por que métodos multidimensionais
+6. Um pouco de história, da eugenia à ecologia
+7. Como os métodos funcionam: modos R e Q, espaço euclidiano
+8. Álgebra de matrizes: combinações lineares, correlação, autovetores e
    autovalores, SVD
 
 ## Código R (aula prática)
 
-*Aula sem código R associado (parte teórica).*
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-algebra.html)**  
+  *Opcional: a álgebra de matrizes da aula feita à mão no R (matriz de
+  correlação, autovalores e autovetores, combinações lineares e SVD), que
+  prepara a PCA da Aula 4.*  
+  [{{< fa solid file-code >}} baixar `algebra.R`](algebra.R)
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+As variáveis ambientais de 13 corpos d'água onde foram amostrados girinos
+(`bocaina.env`), do pacote `ecodados`, que acompanha o livro *Análises
+ecológicas no R* (da Silva et al. 2022). Instale-o uma vez:
+
+```r
+install.packages("remotes")
+remotes::install_github("paternogbc/ecodados")
+```
+
+## Desafios
+
+1. **Da pergunta ao delineamento** (sem código). Escolha um conjunto de
+   dados do `ecodados` (por exemplo, os girinos e as variáveis dos corpos
+   d'água, `bocaina` e `bocaina.env`, ou as aves e o clima, `com_birds` e
+   `env_birds`). Responda às cinco perguntas do guia do cap. 2 do livro:
+   a teoria, a pergunta, a hipótese e as predições, a unidade amostral e as
+   variáveis (dependente, independentes e covariáveis), e o controle. Diga
+   se o estudo é observacional ou experimental e aponte um provável fator de
+   confusão. *Avaliação:* a pergunta é respondível com esses dados, a
+   predição é verificável e o fator de confusão é justificado (por exemplo,
+   com `cor()` entre as variáveis).
+2. **Autoanálise de outro conjunto.** Repita o walkthrough com as variáveis
+   climáticas das aves (`env_birds`, sem a coluna `altitude`). *Avaliação:*
+   as três propriedades (soma dos autovalores, U'U = I, reconstrução de
+   **R**) dão certo, e o texto explica por que os dois primeiros
+   autovalores concentram quase toda a variação (dica: olhe as correlações
+   entre as temperaturas e entre as chuvas).
+
+As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 ## Leituras recomendadas
 
-- Legendre, P. *Matrix Algebra Primer for Ecologists.* Disponível no apêndice de Legendre & Legendre 2012.
-- Introdução à álgebra de matrizes (em português) — material complementar.
+- da Silva, F.R., Gonçalves-Souza, T., Paterno, G.B., Provete, D.B. &
+  Vancine, M.H. (2022) *Análises ecológicas no R*. Nupeea, Recife; Canal 6,
+  São Paulo. Cap. 2 (como fazer perguntas cientificamente relevantes) e
+  cap. 3 (pré-requisitos: instalar o R, os pacotes e os dados).
+- Legendre, P. & Legendre, L. (2012) *Numerical Ecology*, 3ª ed.,
+  [cap. 2, álgebra de matrizes](https://doi.org/10.1016/B978-0-444-53868-0.50002-2).
 
 ## Recursos externos
 
@@ -51,7 +86,7 @@ As figuras dos slides foram geradas em R; o código está em
 - [Eigenvectors and Eigenvalues — explicação visual (3Blue1Brown)](https://www.youtube.com/watch?v=PFDu9oVAE-g)
 - [Combinação linear de variáveis (com legendas PT)](https://www.youtube.com/watch?v=k7RM-ot2NWY)
 - [Plano euclideano e álgebra de matrizes](https://www.youtube.com/watch?v=kjBOesZCoqc)
-- [Setosa.io — autovetores visualmente](http://setosa.io/ev/eigenvectors-and-eigenvalues/)
+- [Setosa.io — autovetores visualmente](https://setosa.io/ev/eigenvectors-and-eigenvalues/)
 
 ---
 

@@ -8,8 +8,6 @@ description: "Comparação entre matrizes de distância: teste de Mantel e Mante
 **Aula 6**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
 :::
 
-Comparação entre matrizes de distância: teste de Mantel e Mantel parcial. Comparação de configurações multivariadas: Procrustes/PROTEST. Inferência multivariada robusta: PERMANOVA.
-
 No mapa dos métodos da disciplina, esta aula cobre os **testes entre
 matrizes e entre grupos**: relacionar matrizes de distâncias (Mantel, MRM,
 GDM), comparar configurações (Procrustes) e testar diferenças entre grupos
@@ -33,28 +31,65 @@ As figuras dos slides foram geradas em R; o código está em
 
 ## Código R (aula prática)
 
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-sexta.html)**  
-  *Walkthrough — Mantel, Procrustes/PROTEST, PERMANOVA com vegan.*  
-  [{{< fa solid file-code >}} baixar `sexta.R`](sexta.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-matrizes.html)**  
+  *Mantel, Mantel parcial, MRM, Procrustes e PROTEST, PERMANOVA e
+  betadisper.*  
+  [{{< fa solid file-code >}} baixar `matrizes.R`](matrizes.R)
+
+Pacotes: `vegan`, `ecodados`, `adespatial` e `spdep`. O GDM aparece só
+nos slides.
 
 ## Dados utilizados
 
-- [`amb.txt`](amb.txt)
-- [`anuros_permanova.csv`](anuros_permanova.csv)
-- [`clad.txt`](clad.txt)
-- [`cope.txt`](cope.txt)
-- [`dist.txt`](dist.txt)
-- [`gen.txt`](gen.txt)
-- [`repteis_permanova.csv`](repteis_permanova.csv)
-- [`teste.txt`](teste.txt)
+Os exemplos e os dados vêm do capítulo 9 de *Análises ecológicas no R*
+(da Silva et al. 2022), com algumas correções. Os dados estão no pacote
+`ecodados`, que se instala uma vez a partir do GitHub:
+
+```r
+install.packages("remotes")
+remotes::install_github("paternogbc/ecodados")
+```
+
+- `bocaina`, `bocaina.env` e `bocaina.xy`: girinos, ambiente e
+  coordenadas de 13 corpos d'água (Mantel). **Atenção:** as três tabelas
+  estão em ordens diferentes no pacote; o walkthrough mostra como
+  alinhá-las.
+- `fish_comm` e `macroinv`: peixes e macroinvertebrados em 12 riachos
+  (dados simulados; PROTEST).
+- `anuros_permanova`, `com_birds` e `env_birds`: anuros em campo e em
+  coleções, e aves em 23 localidades (PERMANOVA).
+- Para o desafio 3: [`repteis_permanova.csv`](repteis_permanova.csv).
+
+## Desafios
+
+Entregue um script `.R` que rode do zero numa sessão limpa (com sementes e
+número de permutações declarados), as figuras pedidas e até uma página de
+interpretação. Critério: o script roda (30 %); as escolhas (distância,
+transformação, teste) estão justificadas (30 %); a interpretação está
+correta e separa significância de tamanho de efeito (40 %).
+
+1. **Posição ou dispersão?** Com `dune` e `dune.env` (`vegan`): faça a
+   PERMANOVA da composição em função do manejo (`Management`) e teste a
+   dispersão com `betadisper()` e `permutest(..., pairwise = TRUE)`.
+   *Avaliação:* só conclui que os grupos diferem em posição se a dispersão
+   for homogênea; senão, discute a ambiguidade.
+2. **Mantel ou partição?** Com `mite`, `mite.env` e `mite.xy` (`vegan`):
+   faça o Mantel entre a composição e o ambiente, o Mantel parcial
+   controlando a geografia e o `mantel.correlog()`. Compare com a partição
+   de variância da Aula 5. *Avaliação:* explica por que o *r* de Mantel é
+   muito menor que o R² da partição e o que cada um mede.
+3. **Quantas permutações existem?** Com `repteis_permanova.csv`: repita a
+   PERMANOVA e o `betadisper` do walkthrough. Calcule o número de
+   rearranjos distintos dos rótulos e o menor *p* possível. *Avaliação:*
+   reconhece o limite inferior do *p* e o efeito dos grupos de tamanhos
+   diferentes.
+
+As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 ## Leituras recomendadas
 
-*Bibliografia listada nos slides.*
-
-## Recursos externos
-
-*Sem recursos externos para esta aula.*
+- Legendre, P. & Legendre, L. (2012) *Numerical Ecology*, 3ª ed.,
+  [cap. 10](https://doi.org/10.1016/B978-0-444-53868-0.50010-1).
 
 ---
 
