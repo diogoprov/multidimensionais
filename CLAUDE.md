@@ -22,7 +22,7 @@ prática e os walkthroughs continuam nas pastas das aulas.
 
 | Aula | Pasta | Slides hoje | Original (.pptx) | Lote |
 |-----:|-------|-------------|------------------|-----:|
-| 1 | `aula-01-intro-multivariada` | **`slides/a01.qmd` ✔** (64 slides; revisada em 18/out: conteúdo cortado restaurado, início igual à Aula 2 da Bioestatística) | `Aula 1.pptx` (104 slides) | 6 |
+| 1 | `aula-01-intro-multivariada` | **`slides/a01.qmd` ✔** (81 slides; revisada duas vezes em 18/out: conteúdo do original restaurado slide a slide, início igual à Aula 2 da Bioestatística) | `Aula 1.pptx` (104 slides) | 6 |
 | 2 | `aula-02-coeficientes-associacao` | **`slides/a02.qmd` ✔** (62 slides; revisada pelo Diogo em 18/out) | `Aula 2.pptx` (84) | 2 |
 | 3 | `aula-03-agrupamento` | **`slides/a03.qmd` ✔** (44 slides; aguarda revisão do Diogo) | `Aula 3.pptx` (60) | 3 |
 | 4 | `aula-04-ordenacoes-irrestritas` | **`slides/a04.qmd` ✔** (73 slides) | `Aula 4.pptx` (97) | **1 (modelo)** |
@@ -129,8 +129,10 @@ Quase 60 slides citam Legendre. Tratamento:
   *O Pesadelo* (4), *O Grito*, Caravaggio e Wright of Derby (2), Inocêncio X
   (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3), *Sísifo*
   (Ticiano), *A lição de anatomia* (Rembrandt), *A cartomante* (La Tour) e
-  *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6), *A parábola dos cegos* (Bruegel) e
-  *O comedor de feijão* (Carracci) (1).
+  *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6), *A parábola dos cegos* (Bruegel),
+  *O comedor de feijão* (Carracci), *Washington cruzando o Delaware* (Leutze),
+  *A infância de Raleigh* (Millais), *Tédio* (Sickert), *Filósofo em meditação*
+  (Rembrandt), *A escola da aldeia* (Steen) e *O almoço dos barqueiros* (Renoir) (1).
 - `R/mapa.R`: `mapa_plot(destaque = NULL, perguntas = TRUE)`.
 - `R/ordena.R`: `escores(ord, ref, eixos = 1:2, scaling = 2)` devolve os
   escores do vegan como tibbles, **com o sinal dos eixos travado**: o

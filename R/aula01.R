@@ -468,3 +468,98 @@ fig_espaco_3d <- function() {
     coord_equal(clip = "off") + theme_void(base_size = 15) +
     theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
 }
+
+#' A ilustração da poça de Provete et al. (2011) com as variáveis do estudo
+#' acrescentadas uma a uma (como no slide original): 1 densidade da vegetação;
+#' 2 tipos de vegetação; 3 superfície exposta; 4 as espécies que vocalizam
+fig_poca_camadas <- function(passo = 1) {
+  img <- jpeg::readJPEG(here::here("assets/terceiros/provete2011-poca.jpg"))
+  W <- dim(img)[2]; H <- dim(img)[1]
+  Y <- function(r) H - r
+  az <- "#1f5fa8"; la <- "#d9822b"; vm <- "#c0392b"; ne <- "black"
+  rot <- function(x, y, txt, cor) annotate("label", x = x, y = y, label = txt, colour = cor,
+                                          fontface = "bold", size = 6, fill = "white",
+                                          linewidth = .8, label.r = unit(0, "pt"),
+                                          label.padding = unit(5, "pt"), lineheight = .9)
+  seta <- function(x, y, xend, yend, cor) annotate("segment", x = x, y = y, xend = xend, yend = yend,
+                                                  colour = cor, linewidth = 1.6,
+                                                  arrow = arrow(length = unit(.3, "cm"), type = "closed"))
+  g <- ggplot() + annotation_raster(img, 0, W, 0, H) +
+    coord_equal(xlim = c(0, W), ylim = c(0, H + 90), expand = FALSE, clip = "off") +
+    theme_void() + theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+  if (passo >= 1) g <- g + seta(560, Y(-20), 880, Y(250), ne) + rot(520, Y(-45), "Densidade de vegetação", ne)
+  if (passo >= 2) g <- g + seta(1150, Y(-20), 1180, Y(250), az) + seta(1120, Y(-20), 820, Y(690), az) +
+    seta(1080, Y(-20), 590, Y(840), az) + rot(1170, Y(-45), "Tipos de vegetação", az)
+  if (passo >= 3) g <- g + annotate("segment", x = 300, xend = 1050, y = Y(470), yend = Y(470),
+                                    colour = la, linewidth = 2.2) +
+    rot(1160, Y(470), "Porcentagem da superfície\nda poça exposta", la)
+  if (passo >= 4) {
+    cc <- tibble(x = c(355, 470, 635, 670), y = Y(c(380, 360, 335, 570)), r = c(65, 60, 75, 80))
+    t <- seq(0, 2 * pi, length.out = 60)
+    circ <- bind_rows(lapply(seq_len(nrow(cc)), \(i) tibble(x = cc$x[i] + cc$r[i] * cos(t),
+                                                            y = cc$y[i] + cc$r[i] * sin(t), id = i)))
+    g <- g + geom_path(data = circ, aes(x, y, group = id), colour = vm, linewidth = 1.8)
+  }
+  g
+}
+
+# ---- o curso: cartões --------------------------------------------------------
+
+#' Cartões coloridos com título e lista de itens (cronograma, avisos)
+#' @param cartoes tibble com titulo, texto (itens separados por "\n") e cor
+fig_cartoes <- function(cartoes, ncol = nrow(cartoes), larg = 4, alt = 3.2, tam = 5) {
+  n <- nrow(cartoes)
+  cartoes <- cartoes |> mutate(i = seq_len(n), col = (i - 1) %% ncol, lin = (i - 1) %/% ncol,
+                               x = col * (larg + .3), y = -lin * (alt + .3))
+  ggplot(cartoes) +
+    geom_rect(aes(xmin = x, xmax = x + larg, ymin = y - alt, ymax = y), fill = alpha(cartoes$cor, .15),
+              colour = cartoes$cor, linewidth = .8) +
+    geom_rect(aes(xmin = x, xmax = x + larg, ymin = y - .65, ymax = y), fill = cartoes$cor) +
+    geom_text(aes(x + larg / 2, y - .33, label = titulo), colour = "white", fontface = "bold",
+              size = tam * 1.15) +
+    geom_text(aes(x + .2, y - .9, label = texto), hjust = 0, vjust = 1, size = tam,
+              lineheight = 1, colour = cores[["texto"]]) +
+    coord_equal(clip = "off") + theme_void() +
+    theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+}
+
+# ---- SVD -----------------------------------------------------------------------
+
+#' Esquema da decomposição em valores singulares: Y = V W U', com os valores
+#' singulares na diagonal de W
+fig_svd <- function(destaca_posto = FALSE) {
+  ne <- cores[["accent_dark"]]; vm <- "#c0392b"
+  caixa <- function(x0, w, h, rot, sub) list(
+    annotate("rect", xmin = x0, xmax = x0 + w, ymin = -h / 2, ymax = h / 2, fill = "white",
+             colour = ne, linewidth = 1),
+    annotate("text", x = x0 + w / 2, y = 0, label = rot, size = 9, fontface = "bold", colour = ne),
+    annotate("text", x = x0 + w / 2, y = -h / 2 - .35, label = sub, size = 5, colour = ne))
+  k <- 5; s <- .5; x0w <- 7.3
+  diag_pts <- tibble(i = seq_len(k), x = x0w + (i - .5) * s, y = (k / 2 - i + .5) * s,
+                     lab = c(paste0("w", 1:4), "0"))
+  zeros <- tidyr::expand_grid(i = seq_len(k), j = seq_len(k)) |> filter(i != j) |>
+    mutate(x = x0w + (j - .5) * s, y = (k / 2 - i + .5) * s)
+  g <- ggplot() +
+    caixa(0, 1.8, 3.6, "Y", "n × p") +
+    annotate("text", x = 2.3, y = 0, label = "=", size = 10, colour = ne) +
+    caixa(2.8, 1.8, 3.6, "V", "n × k") +
+    annotate("rect", xmin = x0w, xmax = x0w + k * s, ymin = -k * s / 2, ymax = k * s / 2, fill = "white",
+             colour = ne, linewidth = 1) +
+    geom_text(data = zeros, aes(x, y, label = "0"), size = 3.8, colour = cores[["neutro"]]) +
+    geom_text(data = diag_pts, aes(x, y, label = lab), size = 4.4, fontface = "bold",
+              colour = ifelse(diag_pts$lab == "0", cores[["neutro"]], vm)) +
+    annotate("text", x = x0w + k * s / 2, y = -k * s / 2 - .35, label = "W (diagonal, k × k)", size = 5,
+             colour = ne) +
+    caixa(10.4, 2.5, 2.5, "U'", "k × p") +
+    annotate("segment", x = x0w + 1.2, xend = x0w + .9, y = 2.6, yend = 1.4, colour = vm, linewidth = 1,
+             arrow = arrow(length = unit(.2, "cm"), type = "closed")) +
+    annotate("text", x = x0w + 1.25, y = 2.85, label = "valores singulares de Y", size = 5.2,
+             colour = vm, fontface = "bold")
+  if (destaca_posto)
+    g <- g + annotate("segment", x = x0w + .1, y = k * s / 2 - .1, xend = x0w + 4 * s - .1,
+                      yend = k * s / 2 - 4 * s + .1, colour = vm, linewidth = 6, alpha = .25) +
+      annotate("text", x = x0w + k * s / 2, y = -k * s / 2 - .95, size = 4.8, colour = vm,
+               label = "posto (rank) = número de valores singulares > 0 = 4")
+  g + coord_equal(clip = "off", ylim = c(-3.2, 3.2)) + theme_void() +
+    theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+}

@@ -82,37 +82,61 @@ mapa_plot()
 
 # 1. O curso {.secao}
 
-## Cronograma {.medio}
+## Cronograma: segunda-feira
 
-::: {.tabela-grande}
-| Dia | Manhã (teoria) | Tarde |
-|---|---|---|
-| Segunda | Introdução; correlação e covariância; espaço euclidiano; álgebra de matrizes (Aula 1) | Coeficientes de distância; transformações e padronizações; introdução ao R (Aula 2) |
-| Terça | Agrupamento hierárquico e não hierárquico (k-means); espécies indicadoras (Aula 3) | Prática |
-| Quarta | Ordenações irrestritas: PCA, PCoA, nMDS, CA (Aula 4) | Prática |
-| Quinta | Ordenações restritas: CCA, RDA, pRDA, db-RDA, LDA (Aula 5) | Prática |
-| Sexta | Mantel, MRM, Procrustes/PROTEST, PERMANOVA, betadisper (Aula 6) | Prática |
-:::
+```{r}
+#| fig-alt: "Dois cartões. Segunda de manhã: introdução às análises multidimensionais, correlação e covariância, espaço euclidiano e álgebra de matrizes. Segunda à tarde: coeficientes de distância, transformações e padronização, e prática de introdução ao R e cálculo de matrizes de distância."
+#| fig-width: 11
+#| fig-height: 4.6
+#| out-height: 480px
+fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
+  "Manhã (Aula 1)", "• Introdução às análises\n  multidimensionais: objetivos\n  e principais usos\n• Correlação e covariância\n• Espaço euclidiano\n• Álgebra de matrizes: autovetores,\n  autovalores, autoanálise", "#b5473f",
+  "Tarde (Aula 2)", "• Coeficientes de distância\n  métricos, semimétricos e\n  não métricos\n• Transformações e padronização\n• Prática: introdução ao R,\n  importação de dados e\n  matrizes de distância", "#6b8e23"),
+  larg = 5.2, alt = 4.6, tam = 7)
+```
 
-## Ao final do curso e avisos
+## Cronograma: o resto da semana
 
-:::: {.columns}
-::: {.column width="50%"}
-**Ao final do curso**
+```{r}
+#| fig-alt: "Quatro cartões, um por dia. Terça: agrupamento hierárquico e não hierárquico (k-means) e espécies indicadoras. Quarta: ordenações irrestritas, PCA, PCoA, nMDS e CA. Quinta: ordenações restritas, CCA, RDA, RDA parcial, db-RDA e LDA. Sexta: Mantel, Mantel parcial, MRM, Procrustes e PROTEST, PERMANOVA e betadisper. Prática à tarde em todos os dias."
+#| fig-width: 11
+#| fig-height: 5.4
+#| out-height: 540px
+fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
+  "Terça (Aula 3)", "• Agrupamento hierárquico e\n  não hierárquico (k-means)\n• Espécies indicadoras (IndVal)\n• Prática à tarde", "#b5473f",
+  "Quarta (Aula 4)", "• Ordenações irrestritas:\n  PCA, PCoA, nMDS, CA\n• Prática à tarde", "#c0843d",
+  "Quinta (Aula 5)", "• Ordenação restrita (canônica):\n  CCA, RDA, pRDA, db-RDA, LDA\n• Prática à tarde", "#9a9a3a",
+  "Sexta (Aula 6)", "• Mantel, Mantel parcial, MRM,\n  Procrustes/PROTEST,\n  PERMANOVA, betadisper\n• Prática à tarde", "#6b8e23"),
+  ncol = 2, larg = 5.4, alt = 2.5, tam = 6.6)
+```
 
-1. **Avaliação**: duas questões para o aluno resolver, por escrito, numa
-   semana, com análise de dados multivariados e interpretação.
-2. Resumos e mapas mentais fornecidos ao fim da disciplina.
-3. *Feedback* sobre a disciplina.
-:::
-::: {.column width="50%"}
-**Avisos**
+## Ao final do curso
 
-- O curso está inteiramente no Moodle: não precisa copiar os slides, melhor
-  acompanhar a aula e **perguntar**!
-- Os scripts do R já serão fornecidos; acompanhe junto.
-:::
-::::
+```{r}
+#| fig-alt: "Três cartões numerados. 1, avaliação: duas questões para resolver por escrito em uma semana, com análise de dados multivariados e interpretação. 2, resumos e mapas mentais fornecidos ao fim da disciplina no Moodle. 3, feedback sobre a disciplina."
+#| fig-width: 11
+#| fig-height: 4.4
+#| out-height: 440px
+fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
+  "1. Avaliação", "Duas questões para\nresolver por escrito,\nem uma semana:\nanálise de dados\nmultivariados e\ninterpretação", "#b5473f",
+  "2. Resumos", "Resumos e mapas\nmentais fornecidos\nao fim da disciplina,\nno Moodle", "#c0843d",
+  "3. Feedback", "Sua avaliação\nda disciplina", "#6b8e23"),
+  larg = 3.5, alt = 4.2, tam = 7)
+```
+
+## Avisos
+
+```{r}
+#| fig-alt: "Três cartões de aviso. O curso está inteiramente no Moodle. Logo, não precisa copiar o slide: melhor acompanhar a aula e perguntar. Os scripts do R já serão fornecidos, e os alunos devem acompanhar junto."
+#| fig-width: 11
+#| fig-height: 4
+#| out-height: 400px
+fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
+  "Moodle", "O curso está\ninteiramente\nno Moodle", "#b5473f",
+  "Pergunte!", "Não precisa copiar\no slide: melhor\nacompanhar a aula\ne PERGUNTAR", "#6b8e23",
+  "Scripts", "Os scripts do R\njá serão fornecidos:\nacompanhe junto", "#6a4c93"),
+  larg = 3.5, alt = 3.6, tam = 7.6)
+```
 
 ## Bibliografia
 
@@ -134,6 +158,18 @@ mapa_plot()
   cap. 7 (desenhos amostrais) e cap. 12 (multivariada).
 :::
 ::::
+
+## Todos prontos?
+
+::: {.meme}
+![](../assets/memes/delaware.jpg){fig-alt="Pintura Washington cruzando o Delaware, de Emanuel Leutze: George Washington em pé num barco cheio de soldados que remam entre blocos de gelo. Legenda: todos prontos? Então vamos lá." height="520px"}
+
+[Todos prontos?]{.meme-topo} [Então vamos lá]{.meme-base}
+:::
+
+::: {.ref}
+Emanuel Leutze, *Washington cruzando o Delaware* (1851), The Metropolitan Museum of Art, CC0, via Wikimedia Commons.
+:::
 
 # 2. Tudo começa com uma boa pergunta {.secao}
 
@@ -403,18 +439,19 @@ Bioestatística.
 
 # 4. Dois exemplos de estudos observacionais {.secao}
 
-## Comunidades: girinos e poças {.medio}
+## Resposta de comunidades biológicas {.medio}
 
 :::: {.columns}
 ::: {.column width="40%"}
-- **Pergunta**: as variáveis ambientais influenciam a composição de espécies?
-- **Teoria**: nicho ecológico; *species sorting* e metacomunidades.
-- **Unidade amostral**: poças.
-- Em cada poça: densidade e tipos de vegetação, porcentagem da superfície
-  exposta; e as espécies que vocalizam.
+**Principal questão**: as variáveis ambientais influenciam a composição de
+espécies?
+
+**Principal teoria**: nicho ecológico; *species sorting* e metacomunidades.
+
+**Unidade amostral**: poças.
 :::
 ::: {.column width="60%"}
-![](../assets/terceiros/provete2011-poca.jpg){fig-align="center" height="520px" fig-alt="Ilustração de uma poça com 18 espécies de anuros numeradas, cada uma num micro-hábitat: árvores, arbustos, capim na margem, plantas emergentes, folhas flutuantes e água aberta."}
+![](../assets/terceiros/provete2011-poca.jpg){fig-align="center" height="500px" fig-alt="Ilustração de uma poça com 18 espécies de anuros numeradas, cada uma num micro-hábitat: árvores, arbustos, capim na margem, plantas emergentes, folhas flutuantes e água aberta."}
 :::
 ::::
 
@@ -422,6 +459,46 @@ Bioestatística.
 Ilustração de [Provete et al. (2011)](https://doi.org/10.1590/S1676-06032011000200036)
 *Biota Neotrop.* 11(2): 377–391.
 :::
+
+## O que medir em cada poça
+
+```{r}
+#| fig-alt: "A ilustração da poça com o rótulo densidade de vegetação, com uma seta para o taboal."
+#| fig-width: 10
+#| fig-height: 7.6
+#| out-height: 590px
+fig_poca_camadas(1)
+```
+
+## O que medir em cada poça
+
+```{r}
+#| fig-alt: "A ilustração da poça com os rótulos densidade e tipos de vegetação, com setas para o taboal, os arbustos e as folhas flutuantes."
+#| fig-width: 10
+#| fig-height: 7.6
+#| out-height: 590px
+fig_poca_camadas(2)
+```
+
+## O que medir em cada poça
+
+```{r}
+#| fig-alt: "A ilustração da poça com os rótulos de vegetação e uma linha laranja sobre a água: porcentagem da superfície da poça exposta."
+#| fig-width: 10
+#| fig-height: 7.6
+#| out-height: 590px
+fig_poca_camadas(3)
+```
+
+## O que medir em cada poça
+
+```{r}
+#| fig-alt: "A ilustração da poça com as três variáveis ambientais e círculos vermelhos em quatro espécies de anuros: as espécies que ocorrem na poça."
+#| fig-width: 10
+#| fig-height: 7.6
+#| out-height: 590px
+fig_poca_camadas(4)
+```
 
 ## Das poças às duas matrizes
 
@@ -555,19 +632,22 @@ Adaptado de McCune & Grace (2002), Tabela 2.1.
 
 ## Problemas e soluções multivariadas {.medio}
 
-::: {.tabela-grande}
-| Problema | Solução adequada a dados de comunidades | Solução de modelo linear (em geral inadequada) |
+::: {.tabela-grande style="font-size: 0.8em"}
+| Problema | Adequada a dados de comunidades | Modelo linear (em geral inadequada) |
 |---|---|---|
 | Medir distâncias no espaço multidimensional | distância de Sørensen (Bray-Curtis) | euclidiana ou baseada em correlação |
 | Diferença entre dois ou mais grupos (um fator) | MRPP ou Mantel, com Sørensen | MANOVA de um fator |
-| Delineamento com dois ou mais fatores e interações | PERMANOVA (NPMANOVA) | MANOVA |
+| Medidas repetidas, blocos ou pares | MRPP em blocos | ANOVA em blocos, MANOVA de medidas repetidas |
+| Partição entre níveis de amostragem aninhada | PERMANOVA (NPMANOVA) | ANOVA aninhada univariada |
+| Dois ou mais fatores, com interações | PERMANOVA (NPMANOVA) | MANOVA |
 | Espécies que discriminam os grupos | espécies indicadoras (IndVal) | análise discriminante |
 | Extrair um gradiente sintético (ordenação) | nMDS com Sørensen | PCA |
+| Escores de novas amostras num gradiente | escores do nMDS | equações lineares da PCA |
 :::
 
 ::: {.ref}
 Adaptado da Tabela 5.1 de McCune & Grace (2002) *Analysis of Ecological
-Communities*, MjM Software Design (linhas selecionadas).
+Communities*, MjM Software Design.
 :::
 
 ## Que análise para cada estrutura de dados?
@@ -584,6 +664,18 @@ Inspirado num slide de Adriano S. Melo.
 :::
 
 # 6. Um pouco de história {.secao}
+
+## Um pouco de história
+
+::: {.meme}
+![](../assets/memes/raleigh.jpg){fig-alt="Pintura A infância de Raleigh, de John Everett Millais: um velho marinheiro sentado na praia aponta para o mar enquanto conta histórias a dois meninos atentos. Legenda: senta que lá vem a história." height="520px"}
+
+[Senta, que lá vem]{.meme-topo} [a história!]{.meme-base}
+:::
+
+::: {.ref}
+John Everett Millais, *A infância de Raleigh* (1870), Tate, domínio público, via Wikimedia Commons.
+:::
 
 ## Introdução
 
@@ -673,24 +765,41 @@ sobre Morton, Gould (*A falsa medida do homem*) e [Lewis et al. (2011)](https://
 domínio público.
 :::
 
-## Karl Pearson e a PCA (1901)
+## Karl Pearson e o coeficiente de regressão
 
 :::: {.columns}
-::: {.column width="25%"}
-![](../assets/historia/karl-pearson.jpg){height="330px" fig-alt="Retrato de Karl Pearson."}
-:::
-::: {.column width="45%"}
-![](../assets/historia/pearson-1901-figura.png){height="470px" fig-alt="Figura do artigo de Pearson de 1901: uma nuvem de pontos com uma elipse, as duas retas de regressão (y em x e x em y) e a reta de melhor ajuste, que passa pelo eixo maior da elipse, além da reta de pior ajuste, perpendicular a ela."}
-:::
 ::: {.column width="30%"}
-- Karl Pearson (1857–1936) definiu o coeficiente de regressão (1896) e, em
-  1901, a reta de **melhor ajuste**: o eixo maior da elipse, origem da PCA.
+![](../assets/historia/karl-pearson.jpg){height="400px" fig-alt="Retrato de Karl Pearson."}
+:::
+::: {.column width="70%"}
+- Karl Pearson (1857–1936), discípulo de Galton e também eugenista, definiu o
+  **coeficiente de regressão** e o de **correlação** como os usamos hoje
+  (1896).
+- Fundou o primeiro departamento universitário de estatística, no University
+  College London.
 :::
 ::::
 
 ::: {.ref}
-[Pearson (1896)](https://doi.org/10.1098/rspl.1895.0058); [Pearson (1901)](https://doi.org/10.1080/14786440109462720)
-*Phil. Mag.* 2: 559–572. Imagens em domínio público.
+[Pearson (1896)](https://doi.org/10.1098/rspl.1895.0058) *Proc. R. Soc. Lond.* 59: 69–71. Imagem em domínio público.
+:::
+
+## Pearson (1901): retas e planos de melhor ajuste
+
+:::: {.columns}
+::: {.column width="55%"}
+![](../assets/historia/pearson-1901-titulo.png){height="260px" fig-alt="Primeira página do artigo de Pearson de 1901, On lines and planes of closest fit to systems of points in space, que fala em representar um sistema de pontos em espaço de duas, três ou mais dimensões pela reta ou plano de melhor ajuste."}
+
+A reta de **melhor ajuste** a uma nuvem de pontos é o eixo maior da elipse: a
+origem da **PCA** (Aula 4).
+:::
+::: {.column width="45%"}
+![](../assets/historia/pearson-1901-figura.png){height="470px" fig-alt="Figura do artigo de Pearson de 1901: uma nuvem de pontos com uma elipse, as duas retas de regressão (y em x e x em y) e a reta de melhor ajuste, que passa pelo eixo maior da elipse, além da reta de pior ajuste, perpendicular a ela."}
+:::
+::::
+
+::: {.ref}
+[Pearson (1901)](https://doi.org/10.1080/14786440109462720) *Phil. Mag.* 2: 559–572. Domínio público.
 :::
 
 ## Na ecologia: classificação da vegetação
@@ -722,7 +831,8 @@ fig_ordenacao_polar()
 
 ::: {.ref}
 [Bray & Curtis (1957)](https://doi.org/10.2307/1942268) *Ecol. Monogr.* 27: 325–349.
-Aqui, com os prados de dunas de `vegan::dune`.
+Aqui, com os prados de dunas de `vegan::dune`. Para brincar: [roteiro de ordenação do
+EcoVirtual](http://ecovirtual.ib.usp.br/doku.php?id=ecovirt:roteiro:comuni:comuni_order).
 :::
 
 ## Whittaker: a análise de gradientes {.medio}
@@ -943,9 +1053,7 @@ $$r_{y_1y_2} = \frac{\overbrace{\color{#1c6e8c}{\textstyle\sum_{i=1}^{n} (y_{i1}
 Um teste *t* para a hipótese nula $\rho = 0$:
 $\;t = r / s_r$, com $s_r = \sqrt{(1 - r^2)/(n - 2)}$.
 
-::: {.definicao}
-Correlação não implica causalidade (veja a tirinha [xkcd 552](https://xkcd.com/552/)).
-:::
+![](../assets/terceiros/xkcd-552-correlation.png){fig-align="center" height="190px" fig-alt="Tirinha xkcd 552 em três quadros: alguém diz que achava que correlação implicava causalidade, até fazer uma aula de estatística; agora não acha mais. O outro responde que parece que a aula ajudou, e ele diz: bem, talvez."}
 
 ```{r}
 #| fig-alt: "Quatro diagramas de dispersão simulados: correlação positiva (r = 0,82), negativa (r = −0,76), nenhuma (r = 0,08) e uma relação não linear em forma de arco, com r = 0,06 apesar da relação forte."
@@ -956,7 +1064,8 @@ fig_correlacoes()
 ```
 
 ::: {.ref}
-Dados simulados, inspirados na Fig. 5.2 de Quinn & Keough (2002).
+Dados simulados, inspirados na Fig. 5.2 de Quinn & Keough (2002). Tirinha:
+[xkcd 552](https://xkcd.com/552/), de Randall Munroe (CC BY-NC 2.5).
 :::
 
 
@@ -1024,6 +1133,51 @@ fig_comprimento_vetor()
 [Legendre & Legendre (2012), cap. 2](`r LL2`).
 :::
 
+## Autovetores e autovalores
+
+O autovetor de uma matriz é o vetor que, multiplicado pela matriz, dá ele
+mesmo multiplicado por um escalar $\lambda$: esse escalar é o seu autovalor.
+
+$$\Large \mathbf{A}\,\mathbf{u}_i = \lambda_i\,\mathbf{u}_i$$
+
+::: {.ref}
+[Legendre & Legendre (2012), cap. 2](`r LL2`).
+:::
+
+## Interessante?
+
+::: {.meme}
+![](../assets/memes/ennui.jpg){fig-alt="Pintura Tédio, de Walter Sickert: um homem fuma sentado à mesa de um bar, olhando para o nada, enquanto uma mulher, de costas para ele, se apoia na cômoda, entediada. Legenda: podia ser legal e interessante... mas não foi." height="520px"}
+
+[Podia ser legal e interessante...]{.meme-topo} [...mas não foi]{.meme-base}
+:::
+
+::: {.ref}
+Walter Sickert, *Tédio* (c. 1914), domínio público, via Wikimedia Commons.
+:::
+
+## Autovetores ortogonais
+
+- A derivação de $\mathbf{A}\mathbf{u} = \lambda\mathbf{u}$ para uma matriz **simétrica**
+  (como as de correlação ou covariância) garante que os autovetores são
+  **ortogonais** entre si.
+- Ortogonais (90°) = variam em **direções independentes**: por isso os eixos
+  de uma PCA não são correlacionados.
+- Para mais detalhes, veja [Legendre & Legendre (2012), p. 92–4](`r LL2`), e a
+  [visualização interativa do Setosa](http://setosa.io/ev/eigenvectors-and-eigenvalues/).
+
+## Entendeu?
+
+::: {.meme}
+![](../assets/memes/filosofo.jpg){fig-alt="Pintura Filósofo em meditação, de Rembrandt: um velho sentado junto à janela, numa sala escura com uma escada em caracol, de olhar perdido. Legenda: autovetores ortogonais? Num intendi nada que você disse aí, fera." height="520px"}
+
+[Autovetores ortogonais?]{.meme-topo} [Num intendi nada que você disse aí, fera]{.meme-base}
+:::
+
+::: {.ref}
+Rembrandt, *Filósofo em meditação* (1632), domínio público, via Wikimedia Commons.
+:::
+
 ## Multiplicação de matrizes {.medio}
 
 Cada elemento do produto é a soma dos produtos de uma **linha** da primeira
@@ -1039,17 +1193,6 @@ $$\mathbf{A}\mathbf{b} = \begin{bmatrix} \color{#1c6e8c}{1 \times 7 + 2 \times 8
 ::: {.fragment}
 $$= \begin{bmatrix} 7 + 16 + 27\\ 28 + 40 + 54 \end{bmatrix} = \begin{pmatrix} 50\\ 122 \end{pmatrix}$$
 :::
-
-## Autovetores e autovalores
-
-Os autovetores $\mathbf{u}_i$ e os autovalores $\lambda_i$ da matriz **A** satisfazem
-
-$$\mathbf{A}\,\mathbf{u}_i = \lambda_i\,\mathbf{u}_i$$
-
-- Para uma matriz **simétrica** (como as de correlação ou covariância), os
-  autovetores são **ortogonais** entre si: variam em direções independentes.
-- Para mais detalhes, veja [Legendre & Legendre (2012), p. 92–4](`r LL2`), e a
-  [visualização interativa do Setosa](http://setosa.io/ev/eigenvectors-and-eigenvalues/).
 
 ## Um exemplo ajuda? {.medio}
 
@@ -1073,20 +1216,73 @@ fig_autovetor()
 O vetor (2; 2) é um **autovetor** de **A**, e 5 é o seu **autovalor**.
 :::
 
-## Autoanálise e SVD
+## Autoanálise
 
 - Calcular os autovetores e autovalores de uma matriz é fazer a sua
   **autoanálise** (*eigen-decomposition*).
-- Outra forma de decompor uma matriz retangular é a **decomposição em valores
-  singulares** (SVD):
+- É o que a PCA faz com a matriz de covariância ou de correlação (Aula 4).
 
-$$\mathbf{Y}_{(n \times p)} = \mathbf{V}_{(n \times k)}\;\mathbf{W}_{(\text{diagonal},\,k \times k)}\;\mathbf{U}'_{(k \times p)}$$
+::: {.ref}
+[Legendre & Legendre (2012), seção 2.9](`r LL2`).
+:::
 
-- Na diagonal de **W** estão os **valores singulares** de **Y**; o posto (*rank*)
-  da matriz é o número de valores singulares maiores que zero.
-- Vários métodos de ordenação usam a SVD, como a análise de correspondência; a
-  PCA também pode ser calculada assim (no R, `prcomp()` usa a SVD).
+## Outra forma de decompor uma matriz: a SVD
+
+```{r}
+#| fig-alt: "Esquema da decomposição em valores singulares: a matriz Y, de n linhas por p colunas, é igual ao produto de V, de n por k, de W, uma matriz diagonal de k por k com os valores singulares w1 a w4 na diagonal e zeros fora dela, e de U transposta, de k por p."
+#| fig-width: 11
+#| fig-height: 4.6
+#| out-height: 430px
+fig_svd()
+```
+
+A **decomposição em valores singulares** (*singular value decomposition*, SVD)
+vale para qualquer matriz retangular.
+
+## Valores singulares e o posto da matriz
+
+```{r}
+#| fig-alt: "O mesmo esquema da SVD, com a diagonal de W destacada: os quatro valores singulares maiores que zero. O posto da matriz é o número de valores singulares maiores que zero, aqui 4."
+#| fig-width: 11
+#| fig-height: 4.6
+#| out-height: 430px
+fig_svd(destaca_posto = TRUE)
+```
+
+O **posto** (*rank*) de **Y** é o número de valores singulares maiores que zero.
 
 ::: {.ref}
 [Legendre & Legendre (2012), seção 2.11](`r LL2`).
 :::
+
+## SVD
+
+::: {.meme}
+![](../assets/memes/escola.jpg){fig-alt="Pintura A escola da aldeia, de Jan Steen: um mestre-escola severo e alunos indisciplinados numa sala de aula, um deles chorando. Legenda: a professora está ensinando SVD. Me solta, que eu vou perguntar por que isso é importante." height="520px"}
+
+[A professora está ensinando SVD]{.meme-topo} [Me solta, que eu vou perguntar por que isso é importante!]{.meme-base}
+:::
+
+::: {.ref}
+Jan Steen, *A escola da aldeia* (c. 1665), National Gallery of Ireland, domínio público, via Wikimedia Commons.
+:::
+
+## Por que isso é importante?
+
+- Vários métodos de ordenação usam a SVD: a análise de correspondência (Aula 4)
+  e as análises canônicas (Aula 5).
+- A PCA também pode ser calculada assim: no R, `prcomp()` usa a SVD da matriz
+  de dados centrada, e `princomp()` usa a autoanálise da matriz de covariância.
+
+## Por hoje é só
+
+::: {.meme}
+![](../assets/memes/almoco.jpg){fig-alt="Pintura O almoço dos barqueiros, de Renoir: um grupo de amigos conversa e bebe à mesa, num terraço à beira do rio. Legenda: fiquem felizes: é hora do almoço!" height="520px"}
+
+[Fiquem felizes:]{.meme-topo} [é hora do almoço!]{.meme-base}
+:::
+
+::: {.ref}
+Pierre-Auguste Renoir, *O almoço dos barqueiros* (1880–1881), The Phillips Collection, domínio público, via Wikimedia Commons.
+:::
+
