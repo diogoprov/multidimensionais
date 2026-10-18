@@ -2,10 +2,12 @@
 title: "Aula 01 — Introdução à estatística multivariada"
 order: 1
 description: "Por que dados multivariados exigem ferramentas diferentes. Álgebra de matrizes essencial para o resto do curso: combinações lineares, autovalores e autovetores."
+gancho: "Por que não basta analisar uma variável de cada vez?"
+familias: [fundamentos]
 ---
 
 ::: {.aula-meta}
-**Aula 1**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+**Aula 1** · [Fundamentos]{.familia .fundamentos} · Análises Multidimensionais (PPGBA/UFMS)
 :::
 
 A aula apresenta o mapa dos métodos da disciplina, a lógica de uma boa
@@ -18,6 +20,16 @@ análises das aulas seguintes.
 
 As figuras dos slides foram geradas em R; o código está em
 [`R/aula01.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Em 3 minutos
+
+::: {.callout-note .em-3-minutos appearance="simple" icon="false"}
+1. Dados multivariados são muitas variáveis medidas nos mesmos objetos; analisá-las uma a uma ignora as correlações entre elas e multiplica os testes.
+2. Toda análise começa com uma pergunta e uma hipótese; o delineamento (observacional ou experimental) define o que se pode concluir.
+3. As ordenações procuram **combinações lineares** das variáveis: os autovetores dão os pesos, e os autovalores, quanta variação cada combinação resume.
+
+**Erro comum:** escolher a análise antes de ter a pergunta.
+:::
 
 ## Conteúdo
 

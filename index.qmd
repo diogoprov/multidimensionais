@@ -5,121 +5,163 @@ toc: true
 listing:
   - id: cronograma
     contents: "aula-*/index.qmd"
-    type: table
+    template: _cronograma.ejs
     sort: "order asc"
-    fields: [order, title, description]
-    field-display-names:
-      order: "Aula"
-      title: "Tópico"
-      description: "Conteúdo"
+    fields: [order, title, description, gancho, familias]
     sort-ui: false
     filter-ui: false
     page-size: 20
 ---
 
 ::: {.callout-tip appearance="minimal"}
-Disciplina **ANÁLISES MULTIDIMENSIONAIS** (201521415, 45 h) do
-[Mestrado em Biologia Animal](https://ppgba.ufms.br/) da UFMS. Esta
-página reúne os **materiais públicos** das edições anteriores —
-slides, scripts R com walkthroughs HTML, datasets e bibliografia.
-Para informações sobre a próxima oferta,
-[entre em contato](mailto:diogo.provete@ufms.br).
+Disciplina **Análises Multidimensionais** (201521415, 45 h) do
+[Mestrado em Biologia Animal](https://ppgba.ufms.br/) da UFMS. Esta página
+reúne os **materiais públicos** do curso (slides, roteiros práticos em R,
+desafios e leituras), abertos a qualquer pessoa. Ementa, avaliação e
+bibliografia estão no **[programa](programa.qmd)**. Para informações sobre
+a próxima oferta, [entre em contato](mailto:diogo.provete@ufms.br).
 :::
 
-## Ementa
+## O curso em uma frase
 
-Análises multidimensionais: técnicas de agrupamento, ordenação restrita
-e irrestrita, e análise de relações entre dois conjuntos de dados
-multidimensionais.
+Comunidades ecológicas são descritas por muitas variáveis ao mesmo tempo:
+dezenas de espécies, várias condições ambientais, as coordenadas dos
+locais. O curso mostra como medir a semelhança entre amostras, encontrar
+grupos e gradientes, explicar a composição das comunidades pelo ambiente e
+pelo espaço e testar hipóteses com essas matrizes, e termina com os métodos
+que modelam a abundância das espécies diretamente. O foco é escolher o
+método certo para a pergunta e interpretar o resultado em linguagem
+ecológica.
 
-## Conteúdo programático
+## Como pensamos aqui: o mapa dos métodos
 
-1. **Técnicas de classificação:** parecença; análises hierárquicas e
-   não-hierárquicas.
-2. **Técnicas de ordenação irrestrita:** análise de componentes
-   principais (PCA), análise de coordenadas principais (PCoA),
-   escalonamento multidimensional não-métrico (nMDS), análise de
-   correspondência (CA) e variações.
-3. **Análise de relações entre dois conjuntos de dados
-   multidimensionais:** análise de correspondência canônica (CCA),
-   análise de redundância (RDA) e suas parciais, db-RDA, RDA de
-   consenso, análise discriminante (LDA).
-4. **Análises canônicas simétricas:** análise de co-inércia, teste de
-   Mantel, Mantel parcial, Procrustes, PROTEST.
-5. **Análises de variância multidimensionais:** PERMANOVA.
-6. **Outras:** análise de espécies indicadoras (IndVal), análise de
-   dispersão multidimensional entre grupos.
+```{r}
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5.6
+#| out-width: "100%"
+#| fig-align: center
+#| fig-alt: "Mapa dos métodos multidimensionais. Da matriz de dados sai a associação (quão parecidos são dois objetos?, Aula 2), que leva à classificação (os objetos formam grupos discretos?, Aula 3), à ordenação irrestrita (quais são os principais gradientes?, Aula 4), à ordenação restrita (quanto da variação de Y é explicada por X?, Aula 5) e aos testes (duas matrizes covariam? os grupos diferem?, Aula 6). Da matriz de dados também saem, sem passar por distâncias, os métodos baseados em modelos (como modelar a abundância diretamente?, Aula 7). Cada família tem a sua cor."
+source(here::here("R/mapa.R"))
+mapa_plot()
+```
 
-## Objetivos
+Da matriz de dados saem dois caminhos: medir a semelhança entre os objetos
+e, a partir dela, classificar, ordenar ou testar; ou modelar a abundância
+das espécies diretamente. Cada aula indica, com um selo colorido, a família
+de métodos de que trata:
+[Fundamentos]{.familia .fundamentos}
+[Associação]{.familia .associacao}
+[Classificação]{.familia .classificacao}
+[Ordenação irrestrita]{.familia .irrestrita}
+[Ordenação restrita]{.familia .restrita}
+[Testes]{.familia .testes}
+[Modelos]{.familia .modelos}. As cores são as mesmas nos slides.
 
-Ao final do curso, espera-se que o(a) aluno(a) seja capaz de
-**identificar e aplicar métodos multidimensionais adequados** para
-analisar dados multivariados comumente encontrados em estudos
-avançados de ecologia e evolução, bem como interpretar criticamente
-os resultados em linguagem ecológica.
+### A trilha das aulas pelo mapa
+
+Clique numa aula para ir direto a ela.
+
+::: {.trilha-familias}
+::: {.trilha-etapa .fundamentos}
+[Fundamentos]{.familia .fundamentos}
+
+*por que várias variáveis ao mesmo tempo?*
+
+- [1 · Introdução](aula-01-intro-multivariada/index.qmd)
+:::
+
+::: {.trilha-etapa .associacao}
+[Associação]{.familia .associacao}
+
+*quão parecidos são dois objetos?*
+
+- [2 · Coeficientes de associação](aula-02-coeficientes-associacao/index.qmd)
+:::
+
+::: {.trilha-etapa .classificacao}
+[Classificação]{.familia .classificacao}
+
+*os objetos formam grupos discretos?*
+
+- [3 · Agrupamento](aula-03-agrupamento/index.qmd)
+:::
+
+::: {.trilha-etapa .irrestrita}
+[Ordenação irrestrita]{.familia .irrestrita}
+
+*quais são os principais gradientes?*
+
+- [4 · PCA, CA, PCoA e nMDS](aula-04-ordenacoes-irrestritas/index.qmd)
+:::
+
+::: {.trilha-etapa .restrita}
+[Ordenação restrita]{.familia .restrita}
+
+*quanto da variação de Y é explicada por X?*
+
+- [5 · RDA, CCA e LDA](aula-05-ordenacoes-restritas/index.qmd)
+:::
+
+::: {.trilha-etapa .testes}
+[Testes]{.familia .testes}
+
+*duas matrizes covariam? os grupos diferem?*
+
+- [6 · Mantel, Procrustes e PERMANOVA](aula-06-matrizes-mantel-manova/index.qmd)
+:::
+
+::: {.trilha-etapa .modelos}
+[Modelos]{.familia .modelos}
+
+*como modelar a abundância diretamente?*
+
+- [7 · Métodos baseados em modelos](aula-07-metodos-baseados-modelos/index.qmd)
+:::
+:::
 
 ## Cronograma
+
+Cada cartão abre a página da aula, com os slides, o roteiro prático em R,
+os desafios e as leituras. A pergunta em destaque é o problema que a aula
+ajuda a responder.
 
 ::: {#cronograma}
 :::
 
-## Pré-requisitos
+## Como este material está organizado
 
-- Familiaridade básica com R (leitura de dados, funções, objetos).
-  Recomendo [Wickham et al. *R para Ciência de Dados*](https://pt.r4ds.hadley.nz/)
-  como ponto de partida;
-- Bioestatística aplicada à ecologia (modelos lineares, teste de
-  hipóteses).
+Cada aula tem uma página própria com os slides, um resumo **em 3 minutos**,
+o conteúdo, o roteiro da aula prática (um *walkthrough* comentado e o
+script `.R` correspondente), os **desafios** e as leituras. Os slides abrem
+no navegador; tecle **F** para tela cheia e **Esc** para ver todos os
+slides de uma vez.
 
-## Avaliação
+Todas as figuras dos slides foram geradas em R, com os conjuntos de dados
+dos pacotes `vegan`, `ade4` e `ecodados` ou com dados simulados. O código
+está na pasta [`R/`](https://github.com/diogoprov/multidimensionais/tree/main/R)
+do repositório. Correções e sugestões são bem-vindas via *issue* ou *pull
+request* em <https://github.com/diogoprov/multidimensionais>.
 
-- **Prova teórica** ao final da disciplina;
-- **Trabalho de análise** — relatório com análise de um conjunto de
-  dados multivariado escolhido pelo(a) aluno(a), incluindo
-  interpretação ecológica dos resultados (entrega posterior à prova).
+## Como são as aulas práticas
 
-## Bibliografia
+Os roteiros usam dados reais: os peixes do rio Doubs (`ade4`), conjuntos
+clássicos do `vegan` (`dune`, `varespec`, `mite`) e os dados brasileiros do
+livro [*Análises ecológicas no R*](https://analises-ecologicas.com) (da
+Silva et al. 2022), no pacote `ecodados`. Cada roteiro roda do começo ao
+fim numa sessão limpa do R, com sementes fixas, para que todos obtenham os
+mesmos resultados. Os **desafios** de cada aula pedem um script
+reprodutível, as figuras e uma interpretação curta; as respostas
+comentadas são publicadas depois do prazo de entrega.
 
-### Livros principais
+Para instalar o `ecodados`, uma vez:
 
-- Borcard, D.; Gillet, F. & Legendre, P. 2018. *Numerical Ecology with
-  R.* 2ª ed. Cham: Springer. — **livro-texto principal**.
-- Legendre, P. & Legendre, L.F.J. 2012. *Numerical Ecology.* 3ª ed.
-  Amsterdam: Elsevier. — referência teórica de fundo.
-- McCune, B. & Grace, J.B. 2002. *Analysis of Ecological Communities.*
-  Gleneden Beach: MjM Software Design.
+```r
+install.packages("remotes")
+remotes::install_github("paternogbc/ecodados")
+```
 
-### Complementares
+## Contato
 
-- Gotelli, N.J. & Ellison, A.M. 2011. *Princípios de estatística em
-  ecologia.* Porto Alegre: Artmed.
-- Jongman, R.H.G.; ter Braak, C.J.F. & van Tongeren, O.F.R. 1995.
-  *Data analysis in community and landscape ecology.* Cambridge
-  University Press.
-- Manly, B.J.F. 2008. *Métodos estatísticos multivariados.* 3ª ed.
-  Porto Alegre: Artmed.
-- Šmilauer, P. & Lepš, J. 2014. *Multivariate Analysis of Ecological
-  Data using CANOCO 5.* 2ª ed. Cambridge University Press.
-  [doi:10.1017/CBO9781139627061](https://doi.org/10.1017/CBO9781139627061)
-- Thioulouse, J.; Dray, S.; Dufour, A.B.; Siberchicot, A.; Jombart, T.
-  & Pavoine, S. 2018. *Multivariate Analysis of Ecological Data with
-  ade4.* New York: Springer.
-
-### Recursos online
-
-- [Análises ecológicas no R — da Silva, Gonçalves-Souza, Paterno,
-  Provete, Vancine](https://analises-ecologicas.com)
-- [Numerical Ecology with R — código do livro](https://github.com/JoeyBernhardt/NumericalEcology)
-
-## Edições anteriores
-
-Esta mesma disciplina foi oferecida em cinco edições nos dois programas
-de pós-graduação da UFMS — sempre com o mesmo conteúdo, mas com nomes
-e códigos administrativos distintos:
-
-- **2025/2** — Mestrado em Biologia Animal. *Análises
-  Multidimensionais* (201521415, 45 h).
-- **2023/1** — *Ecologia Quantitativa* (código antigo 20011043).
-- **2021/1** — modalidade remota durante a pandemia.
-- **2020/1** — UFMS.
-- **2019/1** — primeira oferta.
+Prof. Diogo B. Provete — [diogo.provete@ufms.br](mailto:diogo.provete@ufms.br)
+· [Biodiversity Synthesis Lab](https://provetelab.org)

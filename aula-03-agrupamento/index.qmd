@@ -2,13 +2,13 @@
 title: "Aula 03 — Agrupamento: cluster hierárquico, k-means e IndVal"
 order: 3
 description: "Métodos hierárquicos (UPGMA, single-linkage, complete-linkage, Ward) versus não-hierárquicos (k-means). Análise de espécies indicadoras (IndVal). Estabilidade de cluster via bootstrap (pvclust)."
+gancho: "Os locais formam grupos naturais, ou é tudo um gradiente?"
+familias: [classificacao]
 ---
 
 ::: {.aula-meta}
-**Aula 3**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+**Aula 3** · [Classificação]{.familia .classificacao} · Análises Multidimensionais (PPGBA/UFMS)
 :::
-
-Métodos hierárquicos (UPGMA, single-linkage, complete-linkage, Ward) versus não-hierárquicos (k-means). Análise de espécies indicadoras (IndVal). Estabilidade de cluster via bootstrap (pvclust).
 
 No mapa dos métodos da disciplina, esta aula cobre a **classificação**:
 procurar descontinuidades nos dados e formar grupos de objetos a partir de
@@ -20,6 +20,16 @@ uma matriz de dissimilaridades.
 
 As figuras dos slides foram geradas em R; o código está em
 [`R/aula03_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Em 3 minutos
+
+::: {.callout-note .em-3-minutos appearance="simple" icon="false"}
+1. Agrupar só faz sentido se você espera descontinuidades; num gradiente contínuo, prefira ordenar (Aula 4).
+2. O método de ligação muda os grupos: a simples encadeia, a completa compacta, a UPGMA fica no meio e a de Ward minimiza a variação dentro dos grupos.
+3. A correlação cofenética diz o quanto o dendrograma preserva as distâncias; o `pvclust` e os critérios do k-means ajudam a decidir quantos grupos há.
+
+**Erro comum:** tratar os grupos de um dendrograma como reais sem avaliar a sua estabilidade.
+:::
 
 ## Conteúdo
 

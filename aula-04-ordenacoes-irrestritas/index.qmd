@@ -2,13 +2,13 @@
 title: "Aula 04 — Ordenações irrestritas: PCA, PCoA, nMDS e CA"
 order: 4
 description: "Reduzir a dimensionalidade preservando estrutura. PCA (variáveis contínuas), PCoA (qualquer distância), nMDS (não-paramétrica, robusta), CA (dados de frequência)."
+gancho: "Como ver, num gráfico de duas dimensões, dados com dezenas de variáveis?"
+familias: [irrestrita]
 ---
 
 ::: {.aula-meta}
-**Aula 4**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+**Aula 4** · [Ordenação irrestrita]{.familia .irrestrita} · Análises Multidimensionais (PPGBA/UFMS)
 :::
-
-Reduzir a dimensionalidade preservando estrutura. PCA (variáveis contínuas), PCoA (qualquer distância), nMDS (não-paramétrica, robusta), CA (dados de frequência).
 
 No mapa dos métodos da disciplina, esta aula cobre a **ordenação
 irrestrita**: encontrar os principais gradientes de uma matriz de dados sem
@@ -21,6 +21,16 @@ usar variáveis explicativas. Os exemplos usam os dados do rio Doubs
 
 As figuras dos slides foram geradas em R; o código está em
 [`R/aula04_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Em 3 minutos
+
+::: {.callout-note .em-3-minutos appearance="simple" icon="false"}
+1. A ordenação resume muitas variáveis em poucos eixos; os autovalores dizem quanta variação cada eixo representa.
+2. PCA para variáveis contínuas (ou espécies transformadas), CA para contagens, PCoA para qualquer distância e nMDS para preservar só a ordem das distâncias.
+3. No biplot, diga sempre o *scaling*: o 1 preserva as distâncias entre objetos; o 2, as correlações entre descritores.
+
+**Erro comum:** fazer uma PCA com abundâncias brutas de espécies.
+:::
 
 ## Conteúdo
 
