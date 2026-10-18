@@ -9,3 +9,9 @@ maior. Licença conferida no campo `LicenseShortName` da API do Commons.
 |---|---|---|---|---|
 | `melencolia.jpg` | [File:Albrecht Dürer - Melencolia I - Google Art Project ( AGDdr3EHmNGyA).jpg](https://commons.wikimedia.org/wiki/File:Albrecht_D%C3%BCrer_-_Melencolia_I_-_Google_Art_Project_(_AGDdr3EHmNGyA).jpg) | Albrecht Dürer (1514) | Public domain | 4 |
 | `pesadelo.jpg` | [File:John Henry Fuseli - The Nightmare.JPG](https://commons.wikimedia.org/wiki/File:John_Henry_Fuseli_-_The_Nightmare.JPG) | Henry Fuseli (1781) | Public domain | 4 |
+| `grito.jpg` | [File:Edvard Munch, 1893, The Scream, oil, tempera and pastel on cardboard, 91 x 73 cm, National Gallery of Norway.jpg](https://commons.wikimedia.org/wiki/File:Edvard_Munch,_1893,_The_Scream,_oil,_tempera_and_pastel_on_cardboard,_91_x_73_cm,_National_Gallery_of_Norway.jpg) | Edvard Munch (1893) | Public domain | 2 |
+| `caravaggio-lagarto.jpg` | [File:Boy Bitten by a Lizard-Caravaggio (National Gallery London).jpg](https://commons.wikimedia.org/wiki/File:Boy_Bitten_by_a_Lizard-Caravaggio_(National_Gallery_London).jpg) | Caravaggio (c. 1593–1594) | Public domain | 2 |
+| `orrery.jpg` | [File:Joseph Wright of Derby - Philosopher giving a lecture on the orrery - Google Art Project.jpg](https://commons.wikimedia.org/wiki/File:Joseph_Wright_of_Derby_-_Philosopher_giving_a_lecture_on_the_orrery_-_Google_Art_Project.jpg) | Joseph Wright of Derby (c. 1766) | Public domain | 2 |
+
+As três últimas vieram de `~/GitHub/bioestatistica/assets/memes/`, onde a
+licença já tinha sido conferida em 2026-10-15.

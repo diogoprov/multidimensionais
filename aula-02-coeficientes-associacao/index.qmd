@@ -10,9 +10,30 @@ description: "Distância e similaridade entre objetos. Quando usar distância eu
 
 Distância e similaridade entre objetos. Quando usar distância euclideana, Bray-Curtis, Jaccard, Mahalanobis. Propriedades métricas das matrizes de dissimilaridade.
 
+No mapa dos métodos da disciplina, esta aula cobre a **associação**: como
+medir o quanto dois objetos (ou dois descritores) se parecem, que é o
+ponto de partida da classificação, das ordenações e dos testes das aulas
+seguintes.
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-02.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a02.html){.btn .btn-outline-primary}
+
+As figuras dos slides foram geradas em R; o código está em
+[`R/aula02_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Conteúdo
+
+1. Modos Q e R; similaridade e distância; as quatro propriedades métricas
+2. Coeficientes métricos para dados quantitativos: euclidiana, Manhattan,
+   chord e Mahalanobis
+3. O problema do duplo zero
+4. Coeficientes binários: Jaccard, Sørensen e Sokal & Michener
+5. Coeficientes quantitativos assimétricos: Bray-Curtis (diferença
+   percentual), Hellinger, qui-quadrado e Gower
+6. Padronizações e transformações (escore *z*, Hellinger, chord e
+   Box-Cox-chord)
+7. Como escolher o coeficiente
 
 ## Código R (aula prática)
 

@@ -160,13 +160,21 @@ fig_raras_inercia <- function(kmax = 10) {
            eixo = paste("Autovalor", 1:4), lambda = unname(ca$CA$eig[1:4]))
   }) |> bind_rows()
   t <- tema_aula(base = 14)
+  # quebra na curva da inércia: até k = 4 ela cai rápido; depois, devagar
+  quebra <- 4
+  n_raras <- sum(occ <= quebra)
+  linha <- geom_vline(xintercept = quebra + .5, colour = "#c0392b", linewidth = 1)
   p1 <- d |> distinct(k, inercia) |>
-    ggplot(aes(k, inercia)) +
+    ggplot(aes(k, inercia)) + linha +
+    annotate("text", x = quebra + .7, y = max(d$inercia), hjust = 0, vjust = 1, size = 4.2,
+             colour = "#c0392b", lineheight = .95,
+             label = paste0("quebra: as ", n_raras, " espécies\ncom até ", quebra,
+                            " ocorrências\nseriam as raras")) +
     geom_line(colour = az, linewidth = 1) + geom_point(colour = az, size = 2.4) +
     scale_x_continuous(breaks = 0:kmax) +
     labs(title = "Inércia total da CA",
          x = "Espécies removidas: ocorrências ≤ k", y = "Inércia") + t
-  p2 <- ggplot(d, aes(k, lambda, colour = eixo)) +
+  p2 <- ggplot(d, aes(k, lambda, colour = eixo)) + linha +
     geom_line(linewidth = 1) + geom_point(size = 2.2) +
     scale_x_continuous(breaks = 0:kmax) +
     scale_colour_manual(values = unname(c(az, cores[["ferrugem"]], cores[["ocre"]],

@@ -921,13 +921,15 @@ Dados simulados. Inspirado em Legendre & Legendre (2012), p. 484.
 ## Remover espécies raras: um exemplo
 
 ```{r}
-#| fig-alt: "Dois gráficos para as árvores do BCI. À esquerda, a inércia total da CA cai de 1,33 para cerca de 1,02 à medida que se removem as espécies com até 10 ocorrências. À direita, os quatro primeiros autovalores quase não mudam; o primeiro fica constante em torno de 0,20."
+#| fig-alt: "Dois gráficos para as árvores do BCI. À esquerda, a inércia total da CA cai de 1,33 para cerca de 1,02 à medida que se removem as espécies com até 10 ocorrências; uma linha vertical vermelha depois de 4 marca a quebra da curva. À direita, os quatro primeiros autovalores quase não mudam; o primeiro fica constante em torno de 0,20."
 #| fig-height: 4.4
 fig_raras_inercia()
 ```
 
-As espécies raras inflam a inércia total, mas quase não afetam os
-primeiros eixos: removê-las não muda a estrutura principal da ordenação.
+A inércia total cai rápido até a remoção das espécies com até 4
+ocorrências e depois se estabiliza: essas são as raras. Elas inflam a
+inércia, mas quase não afetam os primeiros eixos, e removê-las não muda a
+estrutura principal da ordenação.
 
 ::: {.ref}
 Árvores de 50 parcelas de 1 ha da ilha de Barro Colorado (Condit et al.

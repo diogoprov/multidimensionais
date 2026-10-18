@@ -107,7 +107,7 @@ fig_exemplo_ll <- function() {
     geom_hline(yintercept = m[2], linetype = "22", colour = cores[["neutro"]]) +
     geom_vline(xintercept = m[1], linetype = "22", colour = cores[["neutro"]]) +
     geom_point(size = 3.5, colour = az) +
-    geom_text(aes(label = obj), nudge_x = .45, colour = cores[["texto"]]) +
+    geom_text(aes(label = obj), hjust = -.45, size = 5, colour = cores[["texto"]]) +
     annotate("text", x = m[1] + .2, y = 6.7, hjust = 0, size = 4.4,
              label = paste0("médias: ", format(m[1], decimal.mark = ","),
                             " e ", format(m[2], decimal.mark = ","))) +
@@ -117,7 +117,7 @@ fig_exemplo_ll <- function() {
     geom_hline(yintercept = 0, colour = cores[["texto"]]) +
     geom_vline(xintercept = 0, colour = cores[["texto"]]) +
     geom_point(size = 3.5, colour = az) +
-    geom_text(aes(label = obj), nudge_x = .45, colour = cores[["texto"]]) +
+    geom_text(aes(label = obj), hjust = -.45, size = 5, colour = cores[["texto"]]) +
     coord_equal(xlim = c(-5, 5), ylim = c(-3, 4)) +
     labs(title = "(b) Centrados",
          x = expression(y[1] - bar(y)[1]), y = expression(y[2] - bar(y)[2])) + t
@@ -131,7 +131,7 @@ fig_exemplo_eixos <- function() {
   dc <- as_tibble(p$yc, rownames = "obj")
   f  <- as_tibble(p$f, rownames = "obj")
   u  <- p$u
-  ex <- tibble(eixo = c("PC1", "PC2"), x = u[1, ] * 5.5, y = u[2, ] * 5.5)
+  ex <- tibble(eixo = c("PC1", "PC2"), x = u[1, ] * 4.8, y = u[2, ] * 4.8)
   t  <- tema_aula(base = 15) + theme(panel.grid.major = element_line(colour = "#ebe5d8"))
   pa <- ggplot(dc, aes(y1, y2)) +
     geom_hline(yintercept = 0, colour = cores[["neutro"]]) +
@@ -141,7 +141,7 @@ fig_exemplo_eixos <- function() {
     geom_text(data = ex, aes(x * 1.1, y * 1.1, label = eixo),
               colour = cores[["ferrugem"]], fontface = "bold") +
     geom_point(size = 3.5, colour = az) +
-    geom_text(aes(label = obj), nudge_x = .45, colour = cores[["texto"]]) +
+    geom_text(aes(label = obj), hjust = -.45, size = 5, colour = cores[["texto"]]) +
     coord_equal(xlim = c(-5.5, 5.5), ylim = c(-4, 4.5)) +
     labs(title = "(c) Eixos principais",
          x = expression(y[1] - bar(y)[1]), y = expression(y[2] - bar(y)[2])) + t
@@ -149,7 +149,7 @@ fig_exemplo_eixos <- function() {
     geom_hline(yintercept = 0, colour = cores[["ferrugem"]]) +
     geom_vline(xintercept = 0, colour = cores[["ferrugem"]]) +
     geom_point(size = 3.5, colour = az) +
-    geom_text(aes(label = obj), nudge_x = .45, colour = cores[["texto"]]) +
+    geom_text(aes(label = obj), hjust = -.45, size = 5, colour = cores[["texto"]]) +
     coord_equal(xlim = c(-5.5, 5.5), ylim = c(-4, 4.5)) +
     labs(title = "(d) Escores: F = Yc U", x = "PC1", y = "PC2") + t
   pa + pb
