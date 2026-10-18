@@ -22,7 +22,7 @@ prática e os walkthroughs continuam nas pastas das aulas.
 
 | Aula | Pasta | Slides hoje | Original (.pptx) | Lote |
 |-----:|-------|-------------|------------------|-----:|
-| 1 | `aula-01-intro-multivariada` | **`slides/a01.qmd` ✔** (45 slides; aguarda revisão do Diogo) | `Aula 1.pptx` (104 slides) | 6 |
+| 1 | `aula-01-intro-multivariada` | **`slides/a01.qmd` ✔** (64 slides; revisada em 18/out: conteúdo cortado restaurado, início igual à Aula 2 da Bioestatística) | `Aula 1.pptx` (104 slides) | 6 |
 | 2 | `aula-02-coeficientes-associacao` | **`slides/a02.qmd` ✔** (62 slides; revisada pelo Diogo em 18/out) | `Aula 2.pptx` (84) | 2 |
 | 3 | `aula-03-agrupamento` | **`slides/a03.qmd` ✔** (44 slides; aguarda revisão do Diogo) | `Aula 3.pptx` (60) | 3 |
 | 4 | `aula-04-ordenacoes-irrestritas` | **`slides/a04.qmd` ✔** (73 slides) | `Aula 4.pptx` (97) | **1 (modelo)** |
@@ -68,7 +68,9 @@ incluindo desafios para os alunos. Mostrar a proposta antes de mexer.
   `$familia-*` (`slides/theme.scss`): mude nos dois lugares.
 - **Pacotes**: `vegan`, `ade4`, `cluster` e `pvclust` (este a pedido do Diogo, na Aula 3), além de `ggplot2`, `dplyr`,
   `tidyr`, `purrr`, `tibble`, `patchwork`, `ape`, `here` e `knitr`.
-  Pergunte antes de adicionar outro.
+  Também em uso: `ggrepel` (rótulos do triplot com variável categórica, Aula
+  5) e `spdep` (redes dos MEMs, Aula 5); `rphylopic` só para baixar as
+  silhuetas, fora do render. Pergunte antes de adicionar outro.
 - **Dados**: os conjuntos dos pacotes (`doubs` do `ade4`, sem CSV; `dune`,
   `varespec`, `mite` etc. do `vegan`) ou dados simulados.
 - **Não entram**: Kahoot (não faz sentido na pós), "Brinque com o
@@ -185,6 +187,9 @@ Quase 60 slides citam Legendre. Tratamento:
   partição de variância) viram vários slides com a mesma figura crescendo.
 - **Silhuetas de organismos**: do PhyloPic (`rphylopic`), salvas em
   `assets/phylopic/` com autor e licença em `assets/phylopic/FONTES.md`.
+- **Conteúdo comum com a Bioestatística** (pergunta, hipóteses,
+  confundimento, experimento): reaproveitar os slides e as funções de
+  `~/GitHub/bioestatistica` (cópia em `R/aula01_pergunta.R`), não reescrever.
 - **Esquemas já feitos em outros cursos** (como as origens do zero, do
   curso de Análise de Dados Univariados) são reaproveitados de
   `assets/esquemas/`, com a origem em `assets/esquemas/FONTES.md`.

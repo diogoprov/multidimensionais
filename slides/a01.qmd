@@ -33,7 +33,9 @@ execute:
 #| label: setup
 source(here::here("R/mapa.R"))
 source(here::here("R/aula01.R"))
+source(here::here("R/aula01_pergunta.R"))
 source(here::here("R/aula02_distancias.R"))   # fig_modos_rq()
+source(here::here("R/aula05_rda.R"))          # fig_girinos_matrizes()
 
 num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",")
 
@@ -135,88 +137,142 @@ mapa_plot()
 
 # 2. Tudo começa com uma boa pergunta {.secao}
 
-## Da pergunta às predições
+## Da pergunta à predição
 
-:::: {.columns}
-::: {.column width="58%"}
 ```{r}
-#| fig-alt: "Fluxograma: formule uma pergunta clara; formule hipóteses que respondam à pergunta; formule predições a partir das hipóteses; as predições decorrem logicamente das hipóteses? São testáveis? Cada predição é o teste mais forte possível? Se a resposta a alguma for não, volte e reformule as predições; se todas forem sim, siga para o delineamento."
-#| fig-width: 7
-#| fig-height: 5.8
-#| out-height: 530px
-fig_pergunta_fluxo()
+#| fig-width: 12
+#| fig-height: 3.2
+#| out-height: 320px
+#| fig-alt: "Fluxograma da esquerda para a direita: pergunta clara, hipóteses, predições, as predições seguem da hipótese?, são testáveis?, planejar a coleta. Se as predições não seguem da hipótese, volta-se às hipóteses; se não são testáveis, volta-se às predições."
+fig_fluxo_pergunta()
 ```
-:::
-::: {.column width="42%"}
-- Mas o que é uma "boa pergunta"?
-- Hipótese científica × hipótese estatística.
-- Predições.
-:::
-::::
+
+O caminho tem idas e voltas. Se uma predição não sai da hipótese, ou não dá
+para testá-la, a gente volta um passo antes de ir a campo.
 
 ::: {.ref}
-Inspirado no fluxograma do cap. 2 de Ruxton & Colegrave (2016)
-*Experimental Design for the Life Sciences*, 4ª ed. Oxford University Press.
+Adaptado do [cap. 2 de Ruxton & Colegrave (2016)](https://doi.org/10.1093/hesc/9780198717355.003.0002) *Experimental Design for the
+Life Sciences*, 4ª ed. Oxford University Press. Mesmo esquema da Aula 2 de
+Bioestatística.
 :::
 
 ## Dicas para fazer uma boa pergunta
 
-- Uma pergunta científica deve ser **testável** por meio de observações e/ou
-  experimentos.
+- Uma pergunta científica tem de ser **testável** por meio de observações,
+  de experimentos ou dos dois.
 - Para algo ser testável, tem de ser **mensurável**.
-- Uma boa pergunta deve conter as variáveis **resposta** (ou dependente) e
-  **preditora(s)** (ou independente).
-- Atente para o **verbo** usado: ele vai guiar o tipo de teste.
-  - Qual a **relação** entre X e Y?
-  - Qual o **efeito** do fator X em Y?
-  - Como X **influencia** Y? Como a mudança em X **afeta** Y?
-- Evite perguntas cuja resposta é sim ou não.
+- Uma boa pergunta já nomeia a **variável resposta** (dependente) e a(s)
+  **variável(is) preditora(s)** (independentes).
+- Atente para o **verbo**: ele indica que tipo de análise vai responder à
+  pergunta.
 
-## Como podemos melhorar nossas perguntas?
+::: {.definicao}
+Evite perguntas cuja resposta é "sim" ou "não". "Existe diferença?" quase
+sempre tem resposta "sim, alguma", e isso não ensina nada. Pergunte
+**quanto**, **em que direção** e **de que forma**.
+:::
 
-1. Existe **diferença** entre as áreas?
+## O verbo guia a análise
+
+::: {.tabela-grande}
+| A pergunta | O que ela pede |
+|---|---|
+| Qual a **relação** entre X e Y? | como Y muda ao longo de X: correlação ou regressão |
+| Qual o **efeito** do fator X em Y? | comparar Y entre níveis de X: teste t, ANOVA |
+| Como X **influencia** Y? | o mecanismo e a direção do efeito |
+| Como a mudança em X **afeta** Y? | a forma da resposta: linear, saturante... |
+:::
+
+Com várias respostas (Y é uma matriz de espécies), o verbo continua guiando a
+escolha: relação → ordenação restrita (Aula 5); efeito de um fator →
+PERMANOVA (Aula 6).
+
+## Como melhorar uma pergunta
+
+1. *Existe diferença entre as áreas?* Diferença em quê? Entre quais áreas?
 
 ::: {.fragment}
-2. Qual a **influência** do tipo de solo no crescimento de *Pinus*?
+2. *Qual a influência do tipo de solo no crescimento de* Pinus? Já tem
+   resposta e preditora, mas "influência" ainda é vago.
 :::
 
 ::: {.fragment}
-3. Qual o **efeito** da quantidade de nitrogênio do solo na taxa de crescimento
-   *per capita* de árvores adultas do gênero *Pinus*?
+3. *Qual o efeito da quantidade de nitrogênio no solo na taxa de
+   crescimento per capita de árvores adultas de* Pinus? Variáveis
+   mensuráveis e população definida.
 :::
 
 ::: {.fragment}
-4. A quantidade de nitrogênio no solo **aumenta** a taxa de crescimento *per
-   capita* de *Pinus*?
+4. *A quantidade de nitrogênio no solo **aumenta** a taxa de crescimento
+   per capita de* Pinus? Agora há uma **direção** esperada, que é uma
+   predição.
 :::
 
-::: {.fragment .definicao}
-A 3 é a melhor: diz qual é a resposta, qual é a preditora e o que se mede.
-A 1 é vaga, e a 4 se responde com sim ou não.
-:::
-
-## Fluxograma com perguntas e predições {.medio}
+## Hipótese e predição
 
 ```{r}
-#| fig-alt: "Diagrama: a quantidade de nitrogênio no solo, a preditora X, tem efeito positivo sobre a taxa de crescimento per capita de Pinus, a resposta Y."
-#| fig-height: 3
-#| out-height: 230px
-fig_hipotese_pinus()
+#| fig-width: 8
+#| fig-height: 2.4
+#| out-height: 220px
+#| fig-alt: "Diagrama com duas caixas: Nitrogênio no solo aponta para Taxa de crescimento per capita, com um sinal positivo na seta."
+fig_hipotese_n()
 ```
 
 ::: {.definicao}
-**Hipótese**: o nitrogênio está presente em várias moléculas orgânicas
-envolvidas no crescimento das plantas. Logo, espero que, **quanto maior** a
-quantidade de nitrogênio disponível no solo, **maior** seja a taxa de crescimento
-*per capita* de uma população de *Pinus*.
+**Hipótese:** o nitrogênio faz parte de muitas moléculas envolvidas no
+crescimento das plantas. **Logo**, espero que, quanto maior a quantidade de
+nitrogênio disponível no solo, maior seja a taxa de crescimento per capita
+de uma população de *Pinus*.
 :::
 
-Taxa de crescimento e nitrogênio são variáveis quantitativas: qual análise?
-Uma regressão linear simples.
+A hipótese é a explicação biológica (o **porquê**). A predição é o que essa
+explicação implica sobre os dados (o **que** devemos ver).
+
+## Fluxograma com perguntas e predições
+
+![](../assets/terceiros/analises-ecologicas-cap2-fluxograma.png){fig-alt="Fluxograma de pesquisa do capítulo 2 de Análises Ecológicas no R: a pergunta sobre o impacto da invasão de Prosopis juliflora na comunidade nativa e nas propriedades do ecossistema gera predições; as variáveis preditoras, respostas e covariáveis aparecem como caixas de formatos diferentes, ligadas por setas com o sinal esperado de cada efeito." fig-align="center" height="520px"}
 
 ::: {.ref}
-Ruxton & Colegrave (2016), cap. 2.
+Figura 2.3 de [Gonçalves-Souza, Provete et al., cap. 2 de *Análises ecológicas no R*](https://analises-ecologicas.com/cap2#fluxograma-conectando-variáveis-para-melhorar-o-desenho-experimental-e-as-análises-estatísticas)
+(da Silva et al. 2022, Nupeea/Canal 6; versão online CC BY-NC 4.0).
 :::
+
+## Hipótese científica e hipótese estatística {.medio}
+
+:::: {.columns}
+::: {.column width="50%"}
+- A **hipótese científica** é uma explicação sobre o mundo, em termos
+  biológicos.
+- A **hipótese estatística** a traduz numa afirmação sobre parâmetros que
+  podemos estimar.
+- A **hipótese nula** (H~0~) diz que a variação na resposta não está
+  relacionada à da preditora.
+:::
+::: {.column width="50%"}
+```{r}
+#| fig-width: 6
+#| fig-height: 4.4
+#| out-height: 430px
+#| fig-alt: "Gráfico conceitual com nitrogênio no eixo x e crescimento no eixo y. Os pontos se espalham em torno de uma linha horizontal: o crescimento não muda com o nitrogênio."
+fig_hipotese("nula", "H0: nenhuma relação")
+```
+:::
+::::
+
+## Três hipóteses alternativas
+
+```{r}
+#| fig-width: 12
+#| fig-height: 3.5
+#| out-height: 340px
+#| fig-alt: "Três gráficos conceituais. H1: o crescimento aumenta em linha reta com o nitrogênio. H2: o crescimento aumenta e depois se estabiliza. H3: o crescimento aumenta até um máximo e depois diminui."
+fig_hipoteses_alternativas()
+```
+
+- **H1, linear:** cada miligrama a mais de N rende o mesmo ganho.
+- **H2, saturante:** o ganho diminui até algum outro recurso limitar.
+- **H3, unimodal:** N em excesso passa a ser prejudicial (como as respostas
+  unimodais das espécies a gradientes, que voltam nas Aulas 4 e 5).
 
 ## Conceitos importantes
 
@@ -228,8 +284,8 @@ Ruxton & Colegrave (2016), cap. 2.
 - **Poder do teste**: quantos *plots*? Quantas florestas?
   - "Regra dos 10": 10 unidades amostrais para cada variável preditora
     (Gotelli & Ellison, cap. 6).
-  - A variabilidade natural dos dados se estima com estudos piloto (Ruxton &
-    Colegrave, seção 2.4).
+  - A variabilidade natural dos dados se estima com estudos piloto ([Ruxton &
+    Colegrave, seção 2.4](https://doi.org/10.1093/hesc/9780198717355.003.0002)).
 
 # 3. Estudos observacionais e experimentais {.secao}
 
@@ -252,7 +308,7 @@ testadas.
 
 ::: {.definicao}
 Experimental ou correlativo? Não existe resposta única, e nem sempre é
-possível fazer um experimento (Ruxton & Colegrave 2016, cap. 3).
+possível fazer um experimento ([Ruxton & Colegrave 2016, cap. 3](https://doi.org/10.1093/hesc/9780198717355.003.0003)).
 :::
 :::
 ::::
@@ -262,70 +318,200 @@ Inspirado em [James & McCulloch (1990)](https://doi.org/10.1146/annurev.es.21.11
 *Annu. Rev. Ecol. Syst.* 21: 129–166.
 :::
 
-## Diferença entre os dois tipos de estudo {.medio}
+## Efeito de confundimento
 
-- **Estudos observacionais** não permitem inferir **causalidade**: não isolam
-  as variáveis de confusão, e as réplicas podem não ser independentes.
-  - Análise de caminhos (*path analysis*, modelos de equações estruturais).
-  - Incluir covariáveis no modelo? Análise exploratória? Partição dos dados?
-- **Estudos experimentais** permitem inferir causalidade, pois a
+```{r}
+#| fig-width: 8
+#| fig-height: 3.6
+#| out-height: 340px
+#| fig-alt: "Diagrama causal com três caixas. A água no solo aponta, com sinal positivo, para o nitrogênio no solo e para a taxa de crescimento. Do nitrogênio para a taxa de crescimento há uma seta com ponto de interrogação."
+fig_confundimento_dag()
+```
+
+::: {.definicao}
+**Variável confundidora** (ou terceira variável): afeta ao mesmo tempo a
+preditora e a resposta. Aqui, solos mais úmidos retêm mais nitrogênio
+**e** fazem as árvores crescerem mais.
+:::
+
+## Um estudo observacional, com dados simulados
+
+```{r}
+#| fig-width: 12
+#| fig-height: 4.4
+#| out-height: 420px
+#| fig-alt: "À esquerda, 60 parcelas mostram o crescimento aumentando com o nitrogênio. À direita, as mesmas parcelas coloridas por classe de umidade: dentro de cada classe a relação com o nitrogênio é bem mais fraca, e as parcelas úmidas estão todas no alto."
+fig_confundimento_dados()
+```
+
+Nesta simulação o nitrogênio **não tem efeito nenhum**: só a água afeta o
+crescimento. Separando por umidade, a relação com o nitrogênio quase some.
+
+## Observacional ou experimental? {.medio}
+
+- **Estudos observacionais** medem as variáveis como elas estão na
+  natureza. Não permitem inferir causalidade com segurança: não isolam as
+  confundidoras, e as réplicas podem não ser independentes.
+  - Dá para reduzir o problema: medir a confundidora e incluí-la no modelo
+    como covariável (a RDA parcial da Aula 5), ou usar modelos de equações
+    estruturais.
+- **Estudos experimentais** permitem inferir causalidade, porque a
   **atribuição** das unidades amostrais aos tratamentos é **aleatória**.
-  - A aleatorização é a chave: os efeitos de confusão ficam em todos os
-    tratamentos, mas de forma não enviesada.
-  - Desvantagens: escala espacial restrita (colaborações ajudam); inviável com
-    organismos grandes; custo; número limitado de tratamentos.
 
 ::: {.ref}
-Para causalidade em estudos observacionais: Shipley (2016) *Cause and
-Correlation in Biology*, 2ª ed.; Pearl (2009) *Causality*, 2ª ed.
+Shipley (2016) *Cause and Correlation in Biology*, 2ª ed. Cambridge University
+Press; Pearl (2009) *Causality*, 2ª ed. Cambridge University Press.
+:::
+
+## O sorteio distribui a confundidora
+
+```{r}
+#| fig-width: 12
+#| fig-height: 4.2
+#| out-height: 400px
+#| fig-alt: "À esquerda, 30 parcelas sobre um gradiente de umidade, cada uma marcada com C, P ou M conforme o tratamento sorteado; os três tratamentos aparecem misturados ao longo de todo o gradiente. À direita, a água no solo de cada tratamento, com distribuições que se sobrepõem bastante."
+fig_experimento_mapa()
+```
+
+A mesma pergunta como experimento: doses de nitrogênio **sorteadas** entre
+as parcelas. Os três tratamentos aparecem em todo o gradiente de umidade.
+
+## O resultado do experimento
+
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-width: 7
+#| fig-height: 4.6
+#| out-height: 470px
+#| fig-alt: "Crescimento per capita das 30 parcelas, separado em controle, pouco nitrogênio e muito nitrogênio. Cada grupo tem dez pontos e, ao lado, a média com intervalo de confiança de 95%. As médias aumentam do controle para muito nitrogênio."
+fig_experimento_resultado()
+```
+:::
+::: {.column width="42%"}
+- A preditora agora é **categórica**: um fator com três níveis.
+- **Desvantagens** dos experimentos: escala espacial restrita, inviáveis com
+  organismos grandes ou processos lentos, custo e número limitado de
+  tratamentos.
+:::
+::::
+
+::: {.ref}
+[Ruxton & Colegrave (2016), cap. 3](https://doi.org/10.1093/hesc/9780198717355.003.0003). Dados simulados, como na Aula 2 de
+Bioestatística.
 :::
 
 # 4. Dois exemplos de estudos observacionais {.secao}
 
 ## Comunidades: girinos e poças {.medio}
 
-![](../assets/terceiros/provete2011-poca.jpg){fig-align="center" height="350px" fig-alt="Ilustração de uma poça com 18 espécies de anuros numeradas, cada uma num micro-hábitat: árvores, arbustos, capim na margem, plantas emergentes, folhas flutuantes e água aberta."}
-
+:::: {.columns}
+::: {.column width="40%"}
 - **Pergunta**: as variáveis ambientais influenciam a composição de espécies?
-  **Teoria**: nicho ecológico, *species sorting*, metacomunidades.
-- **Unidade amostral**: poças. **X**: densidade e tipos de vegetação,
-  superfície da poça exposta. **Y**: as espécies.
+- **Teoria**: nicho ecológico; *species sorting* e metacomunidades.
+- **Unidade amostral**: poças.
+- Em cada poça: densidade e tipos de vegetação, porcentagem da superfície
+  exposta; e as espécies que vocalizam.
+:::
+::: {.column width="60%"}
+![](../assets/terceiros/provete2011-poca.jpg){fig-align="center" height="520px" fig-alt="Ilustração de uma poça com 18 espécies de anuros numeradas, cada uma num micro-hábitat: árvores, arbustos, capim na margem, plantas emergentes, folhas flutuantes e água aberta."}
+:::
+::::
 
 ::: {.ref}
 Ilustração de [Provete et al. (2011)](https://doi.org/10.1590/S1676-06032011000200036)
 *Biota Neotrop.* 11(2): 377–391.
 :::
 
+## Das poças às duas matrizes
+
+```{r}
+#| fig-alt: "Esquema das duas matrizes do exemplo. Em cima, três variáveis ambientais (tipos de vegetação, densidade da vegetação e porcentagem da superfície da poça exposta), unidas por uma chave, formam a matriz X, com uma linha por poça. Embaixo, silhuetas de três anuros, unidas por outra chave, formam a matriz Y, de presença e ausência das espécies nas mesmas poças."
+#| fig-width: 10
+#| fig-height: 7.4
+#| out-height: 520px
+fig_girinos_matrizes()
+```
+
+::: {.ref}
+Valores ilustrativos. Silhuetas do [PhyloPic](https://www.phylopic.org): Luca Leicht (CC BY 4.0),
+Dennis C. Murphy e plag665 (CC0 1.0). Mesmo esquema da Aula 5.
+:::
+
 ## Morfologia: cladogênese e forma {.medio}
 
 :::: {.columns}
-::: {.column width="45%"}
+::: {.column width="48%"}
 - **Pergunta**: a cladogênese promoveu divergência morfológica em grupos de
   espécies?
 - **Teoria**: evolução por seleção natural; modos de especiação.
-- **Unidade amostral**: indivíduos de uma espécie ou grupo de espécies.
-- Morfometria tradicional (distâncias lineares) ou geométrica (marcos
-  anatômicos): em ambos os casos, um conjunto de dados **multivariado**.
+- **Unidade amostral**: indivíduos de uma espécie ou de um grupo de
+  espécies.
+- **Morfometria tradicional**: distâncias lineares entre pontos do corpo,
+  como o comprimento do corpo (L.), do fêmur (F.) e da tíbia (T.).
 :::
+::: {.column width="52%"}
+![](../assets/terceiros/pysanets-medidas-anuro.png){fig-align="center" height="540px" fig-alt="Desenho em traço de uma rã em vista dorsal com as medidas lineares indicadas por setas e abreviaturas: comprimento do corpo (L.), do fêmur (F.), da tíbia (T.), do pé e de partes das mãos e dos dedos."}
+:::
+::::
+
+::: {.ref}
+Desenho de Yevhen Pysanets, do livro *Земноводні України* (Anfíbios da
+Ucrânia), via [Wikipédia em ucraniano](https://uk.wikipedia.org/wiki/Файл:Amphibian_measurements.jpg)
+(CC BY 3.0), recortado.
+:::
+
+## Morfometria geométrica {.medio}
+
+:::: {.columns}
 ::: {.column width="55%"}
+```{r}
+#| fig-alt: "A mesma silhueta dorsal de perereca com dez marcos anatômicos numerados em vermelho, do focinho à cloaca, dos dois lados do corpo."
+#| fig-width: 6.6
+#| fig-height: 5.4
+#| out-height: 520px
+fig_morfometria("geometrica")
+```
+:::
+::: {.column width="45%"}
+- Em vez de distâncias, as **coordenadas** de marcos anatômicos homólogos.
+- Depois de alinhar as configurações (a superposição de Procrustes, Aula 6),
+  cada indivíduo vira uma linha com $2k$ colunas.
+- Nos dois casos, o resultado é um **conjunto de dados multivariado**.
+:::
+::::
+
+::: {.ref}
+Baseado em slide de Marcos Severgnini. Silhueta de Carlo De Rito,
+[PhyloPic](https://www.phylopic.org) (CC0 1.0).
+:::
+
+## Um conjunto de dados multivariado {.medio}
+
+:::: {.columns}
+::: {.column width="60%"}
 ::: {.tabela-grande}
-| Medida | Machos (média ± DP) | Fêmeas (média ± DP) |
-|---|---|---|
-| Comprimento rostro-cloacal | 53,8 ± 7,5 | 54,3 ± 8,8 |
-| Largura da cabeça | 18,1 ± 2,2 | 17,9 ± 2,7 |
-| Comprimento da cabeça | 15,7 ± 1,4 | 15,4 ± 1,7 |
-| ... | | |
+```{r}
+knitr::kable(morfo_brutos(), align = "lrrrrrr")
+```
+:::
+:::
+::: {.column width="40%"}
+- Cada **linha** é um indivíduo (objeto); cada **coluna**, uma medida
+  (descritor), em mm.
+- CRC: comprimento rostro-cloacal; LC: largura da cabeça; F: fêmur;
+  T: tíbia.
+
+::: {.definicao}
+Muitas variáveis nos mesmos indivíduos: **logo, precisamos de métodos
+multidimensionais**.
 :::
 :::
 ::::
 
 ::: {.ref}
-Medidas de *Rhinella major* em [Narvaes & Rodrigues (2009)](https://doi.org/10.11606/issn.2176-7793.v40i1p1-73)
-*Arq. Zool.* 40: 1–73, Tabela 4 (valores das três primeiras linhas, conforme
-o slide original).
+Dados simulados.
 :::
-
-<!-- TODO: referência. Os valores da tabela vêm do slide original e não foram conferidos no artigo. -->
 
 # 5. Por que métodos multidimensionais? {.secao}
 
@@ -351,7 +537,7 @@ mapa_plot(perguntas = FALSE)
 :::
 ::::
 
-## Objetos e atributos em ecologia
+## Objetos e atributos em ecologia {.medio}
 
 ::: {.tabela-grande}
 | Estudo | Objetos | Atributos |
@@ -365,6 +551,23 @@ mapa_plot(perguntas = FALSE)
 
 ::: {.ref}
 Adaptado de McCune & Grace (2002), Tabela 2.1.
+:::
+
+## Problemas e soluções multivariadas {.medio}
+
+::: {.tabela-grande}
+| Problema | Solução adequada a dados de comunidades | Solução de modelo linear (em geral inadequada) |
+|---|---|---|
+| Medir distâncias no espaço multidimensional | distância de Sørensen (Bray-Curtis) | euclidiana ou baseada em correlação |
+| Diferença entre dois ou mais grupos (um fator) | MRPP ou Mantel, com Sørensen | MANOVA de um fator |
+| Delineamento com dois ou mais fatores e interações | PERMANOVA (NPMANOVA) | MANOVA |
+| Espécies que discriminam os grupos | espécies indicadoras (IndVal) | análise discriminante |
+| Extrair um gradiente sintético (ordenação) | nMDS com Sørensen | PCA |
+:::
+
+::: {.ref}
+Adaptado da Tabela 5.1 de McCune & Grace (2002) *Analysis of Ecological
+Communities*, MjM Software Design (linhas selecionadas).
 :::
 
 ## Que análise para cada estrutura de dados?
@@ -382,40 +585,79 @@ Inspirado num slide de Adriano S. Melo.
 
 # 6. Um pouco de história {.secao}
 
-## Origens: psicometria e um passado incômodo {.medio}
+## Introdução
 
-- Os métodos multivariados foram concebidos para análises **psicométricas e
+- As análises multivariadas foram concebidas para análises **psicométricas e
   sociológicas**, na virada do século XIX para o XX.
-- Parte desse desenvolvimento esteve ligada ao **movimento eugenista**, que
-  buscou uma "justificativa científica" para a dominação da África e da Ásia
-  pelos europeus, mediu crânios e corpos para hierarquizar "raças" e
-  alimentou políticas de exclusão e violência, como o genocídio dos Herero e
-  Nama na Namíbia (1904–1908) e o mito da "raça ariana" na Segunda Guerra.
+- Só depois foram introduzidas na ecologia, inicialmente na **classificação
+  de comunidades vegetais**.
 
 ::: {.definicao}
-Conhecer essa história é parte da formação: os mesmos métodos que usamos
-foram criados num contexto que hoje reconhecemos como racista.
+Conhecer essa história é parte da formação: parte dos métodos que usamos foi
+criada num contexto que hoje reconhecemos como racista.
 :::
+
+## Um passado incômodo: a eugenia {.medio}
+
+- Na partilha da África e da Ásia pelas potências europeias, o **movimento
+  eugenista** ofereceu uma "justificativa científica" para a dominação: medir
+  crânios e corpos para hierarquizar "raças".
+- A mesma lógica alimentou o genocídio dos **Herero e Nama** na Namíbia
+  (1904–1908), cujos crânios foram levados para a Alemanha e só começaram a ser
+  devolvidos neste século ([BBC, 2018](https://www.bbc.com/news/world-africa-45342586)),
+  e culminou no mito
+  da "raça ariana" e no genocídio da Segunda Guerra Mundial.
+- Francis Galton e Karl Pearson, que criaram ferramentas que usamos até hoje,
+  foram defensores da eugenia.
 
 ::: {.ref}
 [Goldstein (2012)](https://doi.org/10.1080/0969594X.2011.614220) *Assess. Educ.* 19: 147–158;
-para ler mais: S. J. Gould, *A falsa medida do homem*.
+[Understanding Race: Measuring race, 1850–1880](https://understandingrace.org/history/science/measuring-race-1850-1880/)
+(American Anthropological Association). Para ler mais: S. J. Gould, *A falsa medida do homem*; C. Zimmer, *She has her
+mother's laugh*; D. Salsburg, *Uma senhora toma chá*.
 :::
 
-## Francis Galton e a "regressão"
+## Medir o crânio: frenologia e craniometria {.medio}
+
+:::: {.columns}
+::: {.column width="50%"}
+- A **frenologia** (Gall e Spurzheim, início do século XIX) dizia que cada
+  faculdade mental aparecia como uma saliência no crânio. Logo foi
+  desacreditada.
+- A **craniometria** trocou as saliências por **medidas lineares** tomadas com
+  compasso, como o comprimento e a largura máximos do crânio.
+- O **índice cefálico** (largura / comprimento × 100) serviu para classificar
+  e hierarquizar "raças" no século XIX.
+:::
+::: {.column width="50%"}
+![](../assets/historia/eb1911-compasso.jpg){fig-align="center" height="250px" fig-alt="Gravura de um compasso de pontas curvas com escala graduada, usado em craniometria."}
+
+![](../assets/historia/eb1911-cranios-indice.jpg){fig-align="center" height="230px" fig-alt="Três crânios vistos de cima, A, B e C, com linhas pontilhadas do comprimento máximo, marcado como 100, e da largura máxima, marcada como 70, 80 e 85: três valores do índice cefálico."}
+:::
+::::
+
+::: {.ref}
+Figs. 5 e 4 do verbete *Craniometry* da *Encyclopædia Britannica* (1911),
+domínio público, via Wikimedia Commons.
+:::
+
+## Francis Galton e a "regressão" {.medio}
 
 :::: {.columns}
 ::: {.column width="25%"}
 ![](../assets/historia/galton.jpg){height="330px" fig-alt="Retrato de Francis Galton, idoso, de barba e bigode brancos."}
 :::
 ::: {.column width="35%"}
-![](../assets/historia/galton-1886-prancha.png){height="420px" fig-alt="Prancha de Galton de 1886 sobre a taxa de regressão na estatura hereditária, com as estaturas dos filhos e dos pais."}
+![](../assets/historia/galton-1886-prancha.png){height="360px" fig-alt="Prancha de Galton de 1886 sobre a taxa de regressão na estatura hereditária, com as estaturas dos filhos e dos pais."}
 :::
 ::: {.column width="40%"}
 - Francis Galton (1822–1911), antropólogo inglês, primo de Charles Darwin,
   defensor da **eugenia**.
-- Cunhou o termo "regressão" (1886), estudando a herdabilidade da estatura de
-  pais e filhos.
+- Cunhou o termo "regressão" (1886), medindo a altura de filhos e pais para
+  estudar a herdabilidade da estatura:
+
+> "the average regression of the offspring is a constant fraction of their
+> respective mid-parental deviations"
 :::
 ::::
 
@@ -444,21 +686,62 @@ domínio público.
 *Phil. Mag.* 2: 559–572. Imagens em domínio público.
 :::
 
-## Na ecologia
+## Na ecologia: classificação da vegetação
 
-Os métodos chegaram à ecologia pela **classificação de comunidades vegetais**:
-
-- Goodall (1953): métodos objetivos de classificação da vegetação.
-- Bray & Curtis (1957): a **ordenação polar**, o primeiro método de ordenação
-  para dados de contagem, nas florestas de Wisconsin.
+- Os métodos chegaram à ecologia pela **classificação de comunidades vegetais**.
+- David Goodall (1914–2018), pioneiro da ecologia quantitativa: métodos
+  objetivos de classificação da vegetação (1953). Trabalhou até os 104 anos.
 - Williams & Lambert (1959): análise de associação em comunidades vegetais.
-- Whittaker (1956, 1967): análise de gradientes da vegetação, como nas Great
-  Smoky Mountains.
 
 ::: {.ref}
-[Goodall (1953)](https://doi.org/10.1071/BT9530434); [Bray & Curtis (1957)](https://doi.org/10.2307/1942268);
-[Williams & Lambert (1959)](https://doi.org/10.2307/2257249); [Whittaker (1956)](https://doi.org/10.2307/1943577);
-[Whittaker (1967)](https://doi.org/10.1111/j.1469-185X.1967.tb01419.x).
+[Goodall (1953)](https://doi.org/10.1071/BT9530434) *Aust. J. Bot.* 1: 39–63;
+[Williams & Lambert (1959)](https://doi.org/10.2307/2257249) *J. Ecol.* 47: 83–101.
+:::
+
+## Bray & Curtis (1957): a ordenação polar {.medio}
+
+```{r}
+#| fig-alt: "Ordenação polar dos 20 locais dos prados de dunas. Os dois locais mais diferentes pela distância de Bray-Curtis, em vermelho, são os extremos de um eixo; os outros 18 locais ficam ao longo dele, conforme as suas distâncias até cada extremo."
+#| fig-width: 11
+#| fig-height: 3.6
+#| out-height: 330px
+fig_ordenacao_polar()
+```
+
+- O **primeiro método de ordenação** para dados de contagem, nas florestas de
+  terras altas de Wisconsin.
+- Escolhem-se os dois locais mais diferentes como **extremos**; cada local é
+  posicionado pelas suas distâncias até eles.
+
+::: {.ref}
+[Bray & Curtis (1957)](https://doi.org/10.2307/1942268) *Ecol. Monogr.* 27: 325–349.
+Aqui, com os prados de dunas de `vegan::dune`.
+:::
+
+## Whittaker: a análise de gradientes {.medio}
+
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Curvas de resposta unimodais de sete espécies ao longo de um gradiente de altitude, de 500 a 2000 metros, cada uma com um ótimo e uma amplitude diferentes."
+#| fig-width: 7
+#| fig-height: 4.6
+#| out-height: 470px
+fig_gradiente_whittaker()
+```
+:::
+::: {.column width="42%"}
+- Nas Great Smoky Mountains, Whittaker descreveu a vegetação ao longo de
+  gradientes de altitude e umidade.
+- As espécies se distribuem **individualmente**, cada uma com um ótimo: a
+  base das respostas unimodais que voltam nas Aulas 4 e 5.
+:::
+::::
+
+::: {.ref}
+[Whittaker (1956)](https://doi.org/10.2307/1943577) *Ecol. Monogr.* 26: 1–80;
+[Whittaker (1967)](https://doi.org/10.1111/j.1469-185X.1967.tb01419.x) *Biol. Rev.* 42: 207–264.
+Dados simulados.
 :::
 
 ## Uma linha do tempo
@@ -566,12 +849,37 @@ $$D(x_1, x_2) = \sqrt{\textstyle\sum_{j=1}^{p}(y_{1j} - y_{2j})^2}$$
 [Legendre & Legendre (2012), cap. 2](`r LL2`).
 :::
 
-## Um pequeno parêntese: o espaço pode ser curvo
+## Medidas de distância no espaço euclidiano
 
+```{r}
+#| fig-alt: "Dois painéis. À esquerda, dois pontos A e B num plano de duas espécies, ligados por um segmento vermelho D, com os catetos tracejados. À direita, os mesmos A e B num espaço de três espécies, desenhado em perspectiva, com o segmento D e os catetos tracejados."
+#| fig-width: 11
+#| fig-height: 4.6
+#| out-height: 440px
+fig_distancia_2d3d()
+```
+
+Com $p$ espécies, a mesma conta: a raiz da soma dos quadrados das diferenças.
+
+## Um pequeno parêntese: o espaço pode ser curvo {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Esquema: um semicírculo representa o espaço de formas, curvo; uma reta horizontal tangente no topo, na forma média, representa o espaço tangente, plano. Linhas tracejadas a partir do centro projetam cinco pontos do semicírculo na reta."
+#| fig-width: 7
+#| fig-height: 3.8
+#| out-height: 380px
+fig_espaco_tangente()
+```
+:::
+::: {.column width="45%"}
 - Em morfometria geométrica, as formas vivem num espaço **curvo** (o espaço de
   formas de Kendall).
-- Para usar métodos euclidianos, as formas são projetadas num **espaço
-  tangente**, plano, que aproxima o curvo perto da forma média.
+- Para usar métodos euclidianos, elas são projetadas num **espaço tangente**,
+  plano, que aproxima o curvo perto da forma média.
+:::
+::::
 
 ::: {.definicao}
 Os métodos desta disciplina supõem, em geral, um espaço euclidiano; quando os
@@ -606,22 +914,19 @@ $$a\,x + b\,y + c\,z$$
 [Legendre & Legendre (2012), cap. 2](`r LL2`).
 :::
 
-## Correlação de Pearson {.medio}
+## Correlação de Pearson
 
-:::: {.columns}
-::: {.column width="55%"}
-$$r_{y_1y_2} = \frac{\sum_{i=1}^{n} (y_{i1} - \bar{y}_1)(y_{i2} - \bar{y}_2)}{\sqrt{\sum_{i=1}^{n} (y_{i1} - \bar{y}_1)^2 \sum_{i=1}^{n} (y_{i2} - \bar{y}_2)^2}}$$
+Relação **linear** entre duas variáveis, sem supor dependência funcional entre
+elas; $-1 \leq r \leq 1$.
+
+$$r_{y_1y_2} = \frac{\overbrace{\color{#1c6e8c}{\textstyle\sum_{i=1}^{n} (y_{i1} - \bar{y}_1)(y_{i2} - \bar{y}_2)}}^{\text{soma dos produtos cruzados (covariância)}}}{\underbrace{\color{#2e6b4f}{\sqrt{\textstyle\sum_{i=1}^{n} (y_{i1} - \bar{y}_1)^2 \sum_{i=1}^{n} (y_{i2} - \bar{y}_2)^2}}}_{\text{desvios das duas variáveis}}}$$
+
+::: {.fragment}
+- O **numerador** pode ser positivo ou negativo: se for negativo, $r$ é
+  negativo, e vice-versa.
+- O **denominador** é sempre positivo: padroniza pela variação das duas
+  variáveis, porque a soma dos produtos cruzados depende da escala.
 :::
-::: {.column width="45%"}
-- Relação **linear** entre duas variáveis, sem supor dependência funcional
-  entre elas.
-- Numerador: a soma dos produtos cruzados (proporcional à covariância); pode
-  ser positiva ou negativa, e dá o sinal de $r$.
-- Denominador: sempre positivo; padroniza pela variação das duas variáveis,
-  porque a soma dos produtos cruzados depende da escala.
-- $-1 \leq r \leq 1$.
-:::
-::::
 
 ## Teste de hipótese do r de Pearson {.medio}
 
@@ -683,6 +988,46 @@ fig_vetores()
 
 ::: {.ref}
 [Legendre & Legendre (2012), cap. 2](`r LL2`).
+:::
+
+## O comprimento de um vetor {.medio}
+
+:::: {.columns}
+::: {.column width="45%"}
+$$\mathbf{b} = \begin{pmatrix} b_1\\ b_2\\ \vdots\\ b_n \end{pmatrix} \qquad \lVert \mathbf{b} \rVert = \sqrt{b_1^2 + b_2^2 + \cdots + b_n^2}$$
+
+Pelo teorema de Pitágoras: o vetor (4; 3) é a hipotenusa de um triângulo
+retângulo de catetos 4 e 3.
+:::
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Um vetor da origem até o ponto (4; 3), como hipotenusa de um triângulo retângulo de catetos 4 e 3; o comprimento do vetor é a raiz de 4 ao quadrado mais 3 ao quadrado, igual a 5."
+#| fig-width: 6.4
+#| fig-height: 4.2
+#| out-height: 400px
+fig_comprimento_vetor()
+```
+:::
+::::
+
+::: {.ref}
+[Legendre & Legendre (2012), cap. 2](`r LL2`).
+:::
+
+## Multiplicação de matrizes {.medio}
+
+Cada elemento do produto é a soma dos produtos de uma **linha** da primeira
+matriz por uma **coluna** da segunda (o número de colunas de **A** tem de ser
+igual ao de linhas de **b**):
+
+$$\mathbf{A} = \begin{bmatrix} 1 & 2 & 3\\ 4 & 5 & 6 \end{bmatrix} \qquad \mathbf{b} = \begin{pmatrix} 7\\ 8\\ 9 \end{pmatrix}$$
+
+::: {.fragment}
+$$\mathbf{A}\mathbf{b} = \begin{bmatrix} \color{#1c6e8c}{1 \times 7 + 2 \times 8 + 3 \times 9}\\ \color{#c0392b}{4 \times 7 + 5 \times 8 + 6 \times 9} \end{bmatrix}$$
+:::
+
+::: {.fragment}
+$$= \begin{bmatrix} 7 + 16 + 27\\ 28 + 40 + 54 \end{bmatrix} = \begin{pmatrix} 50\\ 122 \end{pmatrix}$$
 :::
 
 ## Autovetores e autovalores
