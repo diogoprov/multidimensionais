@@ -622,23 +622,27 @@ mother's laugh*; D. Salsburg, *Uma senhora toma chá*.
 :::: {.columns}
 ::: {.column width="50%"}
 - A **frenologia** (Gall e Spurzheim, início do século XIX) dizia que cada
-  faculdade mental aparecia como uma saliência no crânio. Logo foi
-  desacreditada.
-- A **craniometria** trocou as saliências por **medidas lineares** tomadas com
-  compasso, como o comprimento e a largura máximos do crânio.
-- O **índice cefálico** (largura / comprimento × 100) serviu para classificar
-  e hierarquizar "raças" no século XIX.
+  faculdade mental aparecia como uma saliência no crânio.
+- A **craniometria** trocou as saliências por **medidas lineares e ângulos**:
+  o ângulo facial (no alto, à direita), o comprimento e a largura do crânio, e
+  o índice cefálico (largura / comprimento × 100, embaixo).
+- Essas medidas serviram para hierarquizar "raças". Já em 1836, Tiedemann,
+  medindo cérebros, não encontrou a diferença que os craniometristas
+  afirmavam.
 :::
 ::: {.column width="50%"}
-![](../assets/historia/eb1911-compasso.jpg){fig-align="center" height="250px" fig-alt="Gravura de um compasso de pontas curvas com escala graduada, usado em craniometria."}
+![](../assets/historia/angulo-facial-sec19.png){fig-align="center" height="250px" fig-alt="Gravura do século XIX com dois perfis humanos e as linhas usadas para medir o ângulo facial: uma linha horizontal da orelha à base do nariz e outra da testa aos lábios."}
 
 ![](../assets/historia/eb1911-cranios-indice.jpg){fig-align="center" height="230px" fig-alt="Três crânios vistos de cima, A, B e C, com linhas pontilhadas do comprimento máximo, marcado como 100, e da largura máxima, marcada como 70, 80 e 85: três valores do índice cefálico."}
 :::
 ::::
 
 ::: {.ref}
-Figs. 5 e 4 do verbete *Craniometry* da *Encyclopædia Britannica* (1911),
-domínio público, via Wikimedia Commons.
+Gravura do século XIX (legenda original recortada), via [*Measuring
+Prejudice*](https://scalar.usc.edu/works/measuring-prejudice/media/profile-of-african-european-and-orang)
+(USC Scalar), fonte original não identificada; Fig. 4 do verbete *Craniometry* da
+*Encyclopædia Britannica* (1911), domínio público.
+[Tiedemann (1836)](https://doi.org/10.1098/rstl.1836.0025) *Phil. Trans. R. Soc.* 126: 497–527.
 :::
 
 ## Francis Galton e a "regressão" {.medio}
