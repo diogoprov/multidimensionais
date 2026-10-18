@@ -55,13 +55,13 @@ r2_pco <- 100 * sum(ev_pco[1:2]) / sum(ev_pco[ev_pco > 0])
 ```
 
 ::: {.meme}
-![](../assets/memes/melencolia.jpg){fig-alt="Gravura Melencolia I, de Albrecht Dürer: uma figura alada sentada, com a cabeça apoiada na mão, cercada de instrumentos de medida, um poliedro e uma ampulheta. Legenda: você já pensou em desistir da disciplina? Todos os dias quando acordo." height="560px"}
+![](../assets/memes/messalina.jpg){fig-alt="Pintura Messalina, de Henrique Bernardelli: a imperatriz romana, lânguida e exausta, largada sobre almofadas num divã de mármore, com um braço caído. Legenda: você já pensou em desistir da disciplina? Todos os dias quando acordo." height="560px"}
 
 [Você já pensou em desistir da disciplina?]{.meme-topo} [Todos os dias quando acordo]{.meme-base}
 :::
 
 ::: {.ref}
-Albrecht Dürer, *Melencolia I* (1514), domínio público, via Wikimedia Commons.
+Henrique Bernardelli, *Messalina* (1878–1886), Museu Nacional de Belas Artes, domínio público, via Wikimedia Commons.
 :::
 
 ## Hoje

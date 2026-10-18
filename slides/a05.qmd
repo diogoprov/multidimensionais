@@ -66,13 +66,13 @@ ld   <- doubs_lda()
 ```
 
 ::: {.meme}
-![](../assets/memes/sisifo.jpg){fig-alt="Pintura Sísifo, de Ticiano: um homem musculoso carrega nas costas uma enorme pedra, morro acima. Legenda: é proibido desistir; respira fundo e continua." height="560px"}
+![](../assets/memes/caipira.jpg){fig-alt="Pintura Caipira picando fumo, de Almeida Júnior: um homem descalço, sentado no degrau de uma casa de pau a pique, pica fumo com calma. Legenda: é proibido desistir! Respira fundo e continua." height="560px"}
 
 [É proibido desistir!]{.meme-topo} [Respira fundo e continua]{.meme-base}
 :::
 
 ::: {.ref}
-Ticiano, *Sísifo* (1548–1549), domínio público, via Wikimedia Commons.
+Almeida Júnior, *Caipira picando fumo* (1893), Pinacoteca de São Paulo, domínio público, via Wikimedia Commons.
 :::
 
 ## Hoje

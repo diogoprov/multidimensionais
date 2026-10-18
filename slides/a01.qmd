@@ -879,14 +879,13 @@ Datas das publicações originais. Inspirado na figura de McCune & Grace (2002).
 ## Chega de história!
 
 ::: {.meme}
-![](../assets/memes/feijao.jpg){fig-alt="Pintura O comedor de feijão, de Annibale Carracci: um homem come uma tigela de feijão à mesa, olhando assustado para quem o observa. Legenda: deu por hoje de história; agora, matrizes." height="520px"}
+![](../assets/memes/leitura.jpg){fig-alt="Pintura Leitura, de Almeida Júnior: uma mulher lê sentada numa cadeira de lona na varanda, com a paisagem de morros ao fundo. Legenda: deu por hoje de história! Agora, matrizes." height="520px"}
 
 [Deu por hoje de história!]{.meme-topo} [Agora, matrizes]{.meme-base}
 :::
 
 ::: {.ref}
-Annibale Carracci, *O comedor de feijão* (c. 1580–1590), domínio público, via
-Wikimedia Commons.
+Almeida Júnior, *Leitura* (1892), Pinacoteca de São Paulo, domínio público, via Wikimedia Commons.
 :::
 
 # 7. Como os métodos funcionam {.secao}
@@ -1150,13 +1149,13 @@ $$\Large \mathbf{A}\,\mathbf{u}_i = \lambda_i\,\mathbf{u}_i$$
 ## Interessante?
 
 ::: {.meme}
-![](../assets/memes/ennui.jpg){fig-alt="Pintura Tédio, de Walter Sickert: um homem fuma sentado à mesa de um bar, olhando para o nada, enquanto uma mulher, de costas para ele, se apoia na cômoda, entediada. Legenda: podia ser legal e interessante... mas não foi." height="520px"}
+![](../assets/memes/arrufos.jpg){fig-alt="Pintura Arrufos, de Belmiro de Almeida: numa sala burguesa, uma mulher chora debruçada no sofá enquanto o marido fuma, indiferente, sentado na poltrona. Legenda: podia ser legal e interessante... mas não foi." height="520px"}
 
 [Podia ser legal e interessante...]{.meme-topo} [...mas não foi]{.meme-base}
 :::
 
 ::: {.ref}
-Walter Sickert, *Tédio* (c. 1914), domínio público, via Wikimedia Commons.
+Belmiro de Almeida, *Arrufos* (1887), Museu Nacional de Belas Artes, domínio público, via Wikimedia Commons.
 :::
 
 ## Autovetores ortogonais
@@ -1172,13 +1171,13 @@ Walter Sickert, *Tédio* (c. 1914), domínio público, via Wikimedia Commons.
 ## Entendeu?
 
 ::: {.meme}
-![](../assets/memes/filosofo.jpg){fig-alt="Pintura Filósofo em meditação, de Rembrandt: um velho sentado junto à janela, numa sala escura com uma escada em caracol, de olhar perdido. Legenda: autovetores ortogonais? Num intendi nada que você disse aí, fera." height="520px"}
+![](../assets/memes/amolacao.jpg){fig-alt="Pintura Amolação interrompida, de Almeida Júnior: um caipira que amolava o machado na beira do rio para, curvado, com a mão em concha atrás da orelha, tentando ouvir. Legenda: autovetores ortogonais? Num intendi nada que você disse aí, fera." height="520px"}
 
 [Autovetores ortogonais?]{.meme-topo} [Num intendi nada que você disse aí, fera]{.meme-base}
 :::
 
 ::: {.ref}
-Rembrandt, *Filósofo em meditação* (1632), domínio público, via Wikimedia Commons.
+Almeida Júnior, *Amolação interrompida* (1894), Pinacoteca de São Paulo, domínio público, via Wikimedia Commons.
 :::
 
 ## Multiplicação de matrizes {.medio}

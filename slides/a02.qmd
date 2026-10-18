@@ -548,14 +548,13 @@ os coeficientes **assimétricos**.
 ## Ah, entendi...
 
 ::: {.meme}
-![](../assets/memes/orrery.jpg){fig-alt="Pintura de Joseph Wright of Derby: um filósofo explica um planetário mecânico a adultos e crianças, com os rostos iluminados por uma lâmpada no lugar do Sol. Legenda: ah, entendi, mas não compreendi." height="540px"}
+![](../assets/memes/ismael.jpg){fig-alt="Pintura Autorretrato, de Ismael Nery: duas figuras modernistas fundidas, uma de perfil e outra de frente, diante de uma cidade com prédios e a Torre Eiffel. Legenda: ah, entendi... mas não compreendi." height="480px"}
 
 [Ah, entendi...]{.meme-topo} [...mas não compreendi]{.meme-base}
 :::
 
 ::: {.ref}
-Joseph Wright of Derby, *Filósofo dando uma aula sobre o planetário* (c.
-1766), domínio público, via Wikimedia Commons.
+Ismael Nery, *Autorretrato* (1927), domínio público, via Wikimedia Commons.
 :::
 
 # 4. Coeficientes binários {.secao}

@@ -792,13 +792,13 @@ a função `indval()` em `R/aula03_kmeans.R`.
 ## Minha cara depois desta aula
 
 ::: {.meme}
-![](../assets/memes/absinto.jpg){fig-alt="Pintura de Edgar Degas, No café: uma mulher e um homem sentados lado a lado num café, com olhar vazio e cansado, diante de copos. Legenda: minha cara depois de assistir a essa aula." height="560px"}
+![](../assets/memes/saudade.jpg){fig-alt="Pintura Saudade, de Almeida Júnior: uma mulher de preto, junto à janela, chora enquanto lê uma carta, com a mão no rosto. Legenda: minha cara depois de assistir a essa aula." height="560px"}
 
 [Minha cara depois de]{.meme-topo} [assistir a essa aula]{.meme-base}
 :::
 
 ::: {.ref}
-Edgar Degas, *No café* (1875–1876), domínio público, via Wikimedia Commons.
+Almeida Júnior, *Saudade* (1899), Pinacoteca de São Paulo, domínio público, via Wikimedia Commons.
 :::
 
 # Para saber mais {.secao}

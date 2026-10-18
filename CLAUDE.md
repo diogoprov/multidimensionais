@@ -130,14 +130,23 @@ Quase 60 slides citam Legendre. Tratamento:
   potências): a disciplina é dada no Brasil, que sofreu um golpe apoiado pelos
   EUA em 1964. O Diogo apontou isso na Aula 1 (Washington cruzando o
   Delaware saiu).
-- Memes já usados (não repetir sem motivo): *Melencolia I* (Aulas 2 e 4),
-  *O Pesadelo* (4), *O Grito*, Caravaggio e Wright of Derby (2), Inocêncio X
-  (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3), *Sísifo*
-  (Ticiano), *A lição de anatomia* (Rembrandt), *A cartomante* (La Tour) e
-  *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6), *A parábola dos cegos* (Bruegel),
-  *O comedor de feijão* (Carracci), *A Liberdade guiando o povo* (Delacroix, a pintura favorita do Diogo),
-  *A infância de Raleigh* (Millais), *Tédio* (Sickert), *Filósofo em meditação*
-  (Rembrandt), *A escola da aldeia* (Steen) e *O almoço dos barqueiros* (Renoir) (1).
+- **Memes brasileiros** (pedido do Diogo): prefira pintura brasileira em
+  domínio público. No Brasil a obra entra em domínio público 70 anos após a
+  morte do autor: Portinari (2033), Di Cavalcanti (2047), Tarsila (2044) e
+  Anita Malfatti (2035) **ainda não podem**. Livres: Almeida Júnior, Belmiro
+  de Almeida, Amoedo, Pedro Américo, Visconti, os Timótheo da Costa e, dos
+  modernistas, Ismael Nery (morto em 1934).
+- Memes já usados (não repetir sem motivo). Estrangeiros: *Melencolia I*
+  (Aula 2), *O Pesadelo* (4), *O Grito* e Caravaggio (2), Inocêncio X
+  (Velázquez) e *O desesperado* (Courbet) (3), *A lição de anatomia*
+  (Rembrandt), *A cartomante* (La Tour) e *O sono da razão* (Goya) (5), *A
+  parábola dos cegos* (Bruegel), *A Liberdade guiando o povo* (Delacroix, a
+  pintura favorita do Diogo), *A infância de Raleigh* (Millais), *A escola da
+  aldeia* (Steen) e *O almoço dos barqueiros* (Renoir) (1). Brasileiros:
+  *Arrufos* (Belmiro de Almeida), *Amolação interrompida* e *Leitura* (Almeida
+  Júnior) (1), autorretrato de Ismael Nery (2), *Saudade* (Almeida Júnior) (3),
+  *Messalina* (Henrique Bernardelli) (4), *Caipira picando fumo* (Almeida
+  Júnior) (5), *O último tamoio* (Amoedo) (6).
 - `R/mapa.R`: `mapa_plot(destaque = NULL, perguntas = TRUE)`.
 - `R/ordena.R`: `escores(ord, ref, eixos = 1:2, scaling = 2)` devolve os
   escores do vegan como tibbles, **com o sinal dos eixos travado**: o

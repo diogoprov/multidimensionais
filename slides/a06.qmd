@@ -55,14 +55,13 @@ set.seed(1); bdt <- vegan::permutest(bd, permutations = 999)
 ```
 
 ::: {.meme}
-![](../assets/memes/enxada.jpg){fig-alt="Pintura O homem com a enxada, de Jean-François Millet: um camponês exausto apoia o corpo na enxada, num campo pedregoso. Legenda: eu não aguento mais! Última aula de teoria." height="540px"}
+![](../assets/memes/tamoio.jpg){fig-alt="Pintura O último tamoio, de Rodolfo Amoedo: o corpo de um guerreiro tamoio jaz estendido na areia da praia, batido pelas ondas, amparado por um padre jesuíta. Legenda: eu não aguento mais! Calma: esta é a última aula teórica." height="540px"}
 
 [Eu não aguento mais!]{.meme-topo} [Calma: esta é a última aula teórica]{.meme-base}
 :::
 
 ::: {.ref}
-Jean-François Millet, *O homem com a enxada* (1860–1862), domínio público,
-via Wikimedia Commons.
+Rodolfo Amoedo, *O último tamoio* (1883), Museu Nacional de Belas Artes, domínio público, via Wikimedia Commons.
 :::
 
 ## Hoje
