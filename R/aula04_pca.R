@@ -254,14 +254,37 @@ tab_loadings <- function() {
   out
 }
 
-#' Biplot da PCA do Doubs
+#' Arco entre dois ângulos (em graus), para marcar ângulos nos biplots
+arco <- function(de, ate, raio, n = 60) {
+  a <- seq(de, ate, length.out = n) * pi / 180
+  tibble(x = raio * cos(a), y = raio * sin(a))
+}
+
+#' Ângulo de cada seta, em graus, a partir do lado positivo do PC1
+angulo_seta <- function(sp, var) {
+  v <- unlist(sp[sp$rotulo == var, c("PC1", "PC2")])
+  atan2(v[[2]], v[[1]]) * 180 / pi
+}
+
+#' Biplot da PCA do Doubs, montado em camadas para a leitura passo a passo
+#'
+#' Todas as camadas de um mesmo slide usam o mesmo `quadro`, para que as
+#' figuras empilhadas (.r-stack) fiquem exatamente sobrepostas.
 #'
 #' @param scaling 1 (distâncias entre locais) ou 2 (correlações entre
 #'   variáveis)
-#' @param projecao local cuja projeção perpendicular sobre a seta de
-#'   `variavel` é desenhada (só faz sentido no scaling 2)
-#' @param variavel variável da projeção
-fig_biplot <- function(scaling = 1, projecao = NULL, variavel = "nit") {
+#' @param camadas o que desenhar: "quadrantes", "locais", "setas"
+#' @param destaque anotações: "eixos" (os dois PCs), "escore" (o local
+#'   `local` com as suas coordenadas), "distancia" (entre os locais `par`),
+#'   "comprimento" (a seta mais longa e a mais curta), "angulo_eixo"
+#'   (nitrato e pH em relação ao PC1), "angulo_vars" (ângulos entre pares de
+#'   setas), "centro" (círculo em volta da origem) e "projecao" (o local
+#'   `local` projetado na seta de `variavel`)
+#' @param quadro "locais" ou "setas": o que define os limites dos eixos
+fig_biplot <- function(scaling = 1, camadas = c("locais", "setas"),
+                       destaque = NULL, local = "15", variavel = "nit",
+                       par = c("1", "30"),
+                       quadro = if ("setas" %in% camadas) "setas" else "locais") {
   e <- escores(pca_doubs(), ref = "dfs", scaling = scaling)
   sp <- e$species; si <- e$sites
   # setas com o mesmo alcance dos locais, como o biplot do vegan
@@ -269,28 +292,167 @@ fig_biplot <- function(scaling = 1, projecao = NULL, variavel = "nit") {
   sp <- sp |> mutate(PC1 = PC1 * k, PC2 = PC2 * k)
   amp <- diff(range(c(si$PC2, sp$PC2)))
   sp <- sp |> mutate(lx = PC1 * 1.13, ly = separa_rotulos(lx, PC2 * 1.13, .25 * amp, .07 * amp))
+  lim <- max(abs(c(si$PC1, si$PC2, sp$lx, sp$ly)))
+  if (quadro == "locais") {
+    qx <- max(abs(si$PC1)); qy <- max(abs(si$PC2)) * 1.35
+    xl <- c(-qx, qx) * 1.05; yl <- c(-qy, qy) * 1.05
+  } else {
+    xl <- range(c(si$PC1, sp$lx)) + c(-.1, .1)
+    yl <- range(c(si$PC2, sp$ly)) + c(-.1, .1)
+  }
+  oc <- cores[["ocre"]]
+  rotulo_oc <- function(x, y, txt, ...)
+    annotate("label", x = x, y = y, label = txt, colour = oc, size = 4.4,
+             fontface = "bold", label.size = 0, fill = cores[["papel"]], ...)
+  ponto <- function(id) unlist(si[si$rotulo == id, c("PC1", "PC2")])
+
+  sp$cor <- cores[["ferrugem"]]
+  if ("comprimento" %in% destaque) {
+    comp <- sqrt(sp$PC1^2 + sp$PC2^2)
+    sp$cor[-c(which.max(comp), which.min(comp))] <- cores[["neutro"]]
+  }
   g <- ggplot() +
     geom_hline(yintercept = 0, colour = cores[["neutro"]], linewidth = .4) +
-    geom_vline(xintercept = 0, colour = cores[["neutro"]], linewidth = .4) +
-    geom_segment(data = sp, aes(0, 0, xend = PC1, yend = PC2),
-                 colour = cores[["ferrugem"]], linewidth = .8,
-                 arrow = arrow(length = unit(.17, "cm"))) +
-    geom_text(data = sp, aes(lx, ly, label = rotulo),
-              colour = cores[["ferrugem"]], size = 4.4, fontface = "bold") +
-    geom_text(data = si, aes(PC1, PC2, label = rotulo), colour = az, size = 3.6)
-  if (!is.null(projecao)) {
-    v <- unlist(sp[sp$rotulo == variavel, 2:3]); v <- v / sqrt(sum(v^2))
-    s <- unlist(si[si$rotulo == projecao, 2:3])
+    geom_vline(xintercept = 0, colour = cores[["neutro"]], linewidth = .4)
+  if ("eixos" %in% destaque) {
+    g <- g +
+      annotate("segment", x = xl[1], xend = xl[2], y = 0, yend = 0, colour = oc,
+               linewidth = 1.4, arrow = arrow(length = unit(.3, "cm"))) +
+      annotate("segment", x = 0, xend = 0, y = yl[1], yend = yl[2], colour = oc,
+               linewidth = 1.4, arrow = arrow(length = unit(.3, "cm"))) +
+      rotulo_oc(.97 * xl[2], .1 * yl[2], "1º componente\nprincipal (PC1)", hjust = 1,
+                lineheight = .9) +
+      rotulo_oc(.04 * xl[2], .95 * yl[2], "2º componente principal (PC2)", hjust = 0)
+  }
+  if ("quadrantes" %in% camadas) {
+    qx <- max(abs(si$PC1)); qy <- max(abs(si$PC2)) * 1.35
+    quad <- tibble(x = c(qx, -qx, -qx, qx), y = c(qy, qy, -qy, -qy),
+                   h = c(1, 0, 0, 1), v = c(1, 1, 0, 0),
+                   txt = c("PC1 +\nPC2 +", "PC1 \u2212\nPC2 +",
+                           "PC1 \u2212\nPC2 \u2212", "PC1 +\nPC2 \u2212"))
+    g <- g + geom_text(data = quad, aes(x, y, label = txt, hjust = h, vjust = v),
+                       colour = oc, size = 4.6, fontface = "bold", lineheight = .9)
+  }
+  if ("setas" %in% camadas) {
+    g <- g +
+      geom_segment(data = sp, aes(0, 0, xend = PC1, yend = PC2, colour = cor),
+                   linewidth = .8, arrow = arrow(length = unit(.17, "cm"))) +
+      geom_text(data = sp, aes(lx, ly, label = rotulo, colour = cor),
+                size = 4.4, fontface = "bold") +
+      scale_colour_identity()
+  }
+  if ("locais" %in% camadas) {
+    g <- g + geom_text(data = si, aes(PC1, PC2, label = rotulo), colour = az, size = 3.6)
+  }
+  if ("escore" %in% destaque) {
+    s <- ponto(local)
+    g <- g +
+      annotate("segment", x = 0, xend = s[1], y = s[2], yend = s[2],
+               colour = oc, linetype = "22", linewidth = .9) +
+      annotate("segment", x = s[1], xend = s[1], y = 0, yend = s[2],
+               colour = oc, linetype = "22", linewidth = .9) +
+      annotate("point", x = s[1], y = s[2], shape = 21, size = 8, stroke = 1.1,
+               colour = oc) +
+      rotulo_oc(s[1], -.12 * yl[2], format(round(s[1], 2), nsmall = 2)) +
+      rotulo_oc(.03 * xl[2], s[2], format(round(s[2], 2), nsmall = 2), hjust = 0)
+  }
+  if ("distancia" %in% destaque) {
+    a <- ponto(par[1]); b <- ponto(par[2])
+    g <- g +
+      annotate("segment", x = a[1], xend = b[1], y = a[2], yend = b[2],
+               colour = oc, linewidth = 1.1) +
+      annotate("point", x = c(a[1], b[1]), y = c(a[2], b[2]), shape = 21,
+               size = 7, stroke = 1.1, colour = oc) +
+      rotulo_oc((a[1] + b[1]) / 2, (a[2] + b[2]) / 2 + .08 * yl[2], "d")
+  }
+  if ("angulo_eixo" %in% destaque) {
+    marca <- function(var, raio) {
+      a <- angulo_seta(sp, var); m <- a / 2 * pi / 180
+      list(geom_path(data = arco(0, a, raio), aes(x, y), colour = oc, linewidth = 1.1),
+           rotulo_oc((raio + .1 * lim) * cos(m), (raio + .1 * lim) * sin(m),
+                     paste0(round(abs(a)), "\u00b0")))
+    }
+    g <- g + marca("nit", .62 * lim) + marca("pH", .38 * lim)
+  }
+  if ("angulo_vars" %in% destaque) {
+    par_ang <- function(v1, v2, raio, volta = FALSE) {
+      a1 <- angulo_seta(sp, v1); a2 <- angulo_seta(sp, v2)
+      if (volta) a2 <- a2 + 360
+      m <- (a1 + a2) / 2 * pi / 180
+      list(geom_path(data = arco(a1, a2, raio), aes(x, y), colour = oc, linewidth = 1.1),
+           rotulo_oc(1.25 * raio * cos(m), 1.25 * raio * sin(m),
+                     paste0(round(abs(a2 - a1)), "\u00b0")))
+    }
+    g <- g + par_ang("pho", "nit", .55 * lim) + par_ang("nit", "pH", .3 * lim) +
+      par_ang("oxy", "bdo", .16 * lim, volta = TRUE)
+  }
+  if ("centro" %in% destaque) {
+    g <- g + geom_path(data = arco(0, 360, raio_centro * lim), aes(x, y),
+                       colour = oc, linewidth = 1.1)
+  }
+  if ("projecao" %in% destaque) {
+    v <- unlist(sp[sp$rotulo == variavel, c("PC1", "PC2")]); v <- v / sqrt(sum(v^2))
+    s <- ponto(local)
     t <- sum(s * v)
     g <- g +
       annotate("segment", x = s[1], y = s[2], xend = t * v[1], yend = t * v[2],
-               colour = cores[["ocre"]], linewidth = 1, linetype = "22") +
-      annotate("point", x = t * v[1], y = t * v[2], colour = cores[["ocre"]], size = 3) +
+               colour = oc, linewidth = 1, linetype = "22") +
+      annotate("point", x = t * v[1], y = t * v[2], colour = oc, size = 3) +
       annotate("point", x = s[1], y = s[2], shape = 21, size = 6, stroke = 1,
-               colour = cores[["ocre"]])
+               colour = oc)
   }
-  g + coord_equal() +
+  g + coord_equal(xlim = xl, ylim = yl, expand = FALSE) +
     labs(x = "PC1", y = "PC2", subtitle = paste("Scaling", scaling)) +
+    tema_aula(base = 14)
+}
+
+#' Raio do círculo do centro do biplot, como fração do alcance do gráfico
+raio_centro <- 0.2
+
+#' Locais dentro do círculo do centro no biplot em scaling 2
+locais_centro <- function() {
+  e <- escores(pca_doubs(), ref = "dfs", scaling = 2)
+  si <- e$sites; sp <- e$species
+  k <- 0.9 * max(abs(as.matrix(si[, 2:3]))) / max(abs(as.matrix(sp[, 2:3])))
+  lim <- max(abs(c(si$PC1, si$PC2, 1.13 * k * sp$PC1, 1.13 * k * sp$PC2)))
+  dentro <- sqrt(si$PC1^2 + si$PC2^2) < raio_centro * lim
+  sort(as.integer(si$rotulo[dentro]))
+}
+
+#' Correlação das variáveis do Doubs com os dois primeiros PCs
+cor_eixos <- function() {
+  si <- escores(pca_doubs(), ref = "dfs", scaling = 1)$sites
+  stats::cor(dados_doubs()$env, si[, c("PC1", "PC2")])
+}
+
+#' Só as setas do scaling 2, em unidades de correlação com os eixos (os
+#' escores do vegan no scaling 2 são proporcionais a elas), com a ponta da
+#' seta de `variavel` projetada nos dois eixos
+fig_biplot_setas <- function(variavel = "pho") {
+  r <- cor_eixos()
+  sp <- as_tibble(r, rownames = "rotulo") |>
+    mutate(lx = PC1 * 1.13, ly = separa_rotulos(lx, PC2 * 1.13, .2, .075))
+  v <- r[variavel, ]
+  oc <- cores[["ocre"]]
+  ggplot(sp) +
+    geom_hline(yintercept = 0, colour = cores[["neutro"]], linewidth = .4) +
+    geom_vline(xintercept = 0, colour = cores[["neutro"]], linewidth = .4) +
+    annotate("segment", x = v[1], xend = v[1], y = 0, yend = v[2], colour = oc,
+             linetype = "22", linewidth = .9) +
+    annotate("segment", x = 0, xend = v[1], y = v[2], yend = v[2], colour = oc,
+             linetype = "22", linewidth = .9) +
+    annotate("label", x = v[1], y = .08, label = format(round(v[1], 2), nsmall = 2), colour = oc,
+             size = 4.4, fontface = "bold", label.size = 0, fill = cores[["papel"]]) +
+    annotate("label", x = -.1, y = v[2], label = format(round(v[2], 2), nsmall = 2), colour = oc,
+             size = 4.4, fontface = "bold", label.size = 0, fill = cores[["papel"]]) +
+    geom_segment(aes(0, 0, xend = PC1, yend = PC2), colour = cores[["ferrugem"]],
+                 linewidth = .8, arrow = arrow(length = unit(.17, "cm"))) +
+    geom_text(aes(lx, ly, label = rotulo), colour = cores[["ferrugem"]],
+              size = 4.4, fontface = "bold") +
+    annotate("point", x = v[1], y = v[2], shape = 21, size = 6, stroke = 1.1, colour = oc) +
+    coord_equal(xlim = c(-1, 1.1), ylim = c(-.75, .65)) +
+    labs(x = "Correlação com o PC1", y = "Correlação com o PC2",
+         subtitle = "Scaling 2, só os descritores") +
     tema_aula(base = 14)
 }
 
