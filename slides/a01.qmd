@@ -147,8 +147,8 @@ fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
 - Legendre & Legendre (2012) *Numerical Ecology*, 3ª ed. Elsevier.
 - Borcard, Gillet & Legendre (2018) [*Numerical Ecology with R*](https://doi.org/10.1007/978-3-319-71404-2),
   2ª ed. Springer.
-- Thioulouse et al. (2018) *Multivariate Analysis of Ecological Data with
-  ade4*. Springer.
+- Thioulouse et al. (2018) [*Multivariate Analysis of Ecological Data with
+  ade4*](https://doi.org/10.1007/978-1-4939-8850-1). Springer.
 :::
 ::: {.column width="50%"}
 **Complementares**
@@ -156,6 +156,10 @@ fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
 - McCune & Grace (2002) *Analysis of Ecological Communities*. MjM Software.
 - Gotelli & Ellison (2011) *Princípios de estatística em ecologia*. Artmed:
   cap. 7 (desenhos amostrais) e cap. 12 (multivariada).
+- Warton (2022) [*Eco-Stats: Data Analysis in Ecology*](https://doi.org/10.1007/978-3-030-88443-7).
+  Springer: GLMs e métodos baseados em modelos (Aula 7).
+- da Silva et al. (2022) [*Análises ecológicas no R*](https://analises-ecologicas.com).
+  Nupeea/Canal 6: cap. 9 (multivariada).
 :::
 ::::
 

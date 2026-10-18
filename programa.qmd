@@ -84,6 +84,11 @@ os resultados em linguagem ecológica.
 - Thioulouse, J.; Dray, S.; Dufour, A.B.; Siberchicot, A.; Jombart, T.
   & Pavoine, S. 2018. *Multivariate Analysis of Ecological Data with
   ade4.* New York: Springer.
+  [doi:10.1007/978-1-4939-8850-1](https://doi.org/10.1007/978-1-4939-8850-1)
+- Warton, D.I. 2022. *Eco-Stats: Data Analysis in Ecology.* Cham:
+  Springer. [doi:10.1007/978-3-030-88443-7](https://doi.org/10.1007/978-3-030-88443-7)
+  — modelos lineares, GLMs e métodos multivariados baseados em modelos
+  (Aula 7).
 
 ### Recursos online
 
