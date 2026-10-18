@@ -35,31 +35,58 @@ As figuras dos slides foram geradas em R; o código está em
 
 ## Código R (aula prática)
 
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-aula-1-cluster-kmeans-indval-sem-resposta.html)**  
-  *Roteiro principal — cluster hierárquico, k-means, IndVal (versão sem respostas, para o aluno completar).*  
-  [{{< fa solid file-code >}} baixar `aula-1-cluster-kmeans-indval-sem-resposta.R`](aula-1-cluster-kmeans-indval-sem-resposta.R)
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-exemplo-com-pvclust.html)**  
-  *Demonstração de bootstrap de cluster com o pacote `pvclust`.*  
-  [{{< fa solid file-code >}} baixar `exemplo-com-pvclust.R`](exemplo-com-pvclust.R)
-- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-exercicio-indval-sem-resposta.html)**  
-  *Exercício adicional sobre IndVal.*  
-  [{{< fa solid file-code >}} baixar `exercicio-indval-sem-resposta.R`](exercicio-indval-sem-resposta.R)
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-agrupamento.html)**  
+  *Métodos de ligação, correlação cofenética, pvclust, k-means e IndVal,
+  com os peixes do Doubs, e dois exercícios para fazer em sala.*  
+  [{{< fa solid file-code >}} baixar `agrupamento.R`](agrupamento.R)
+
+Pacotes: `vegan`, `ade4`, `pvclust` e `labdsv`.
 
 ## Dados utilizados
 
-- [`DoubsEnv.csv`](DoubsEnv.csv)
-- [`DoubsSpe.csv`](DoubsSpe.csv)
-- [`ambiente.txt`](ambiente.txt)
-- [`bocaina.txt`](bocaina.txt)
+- Os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`
+  (`data(doubs, package = "ade4")`), os mesmos dos slides.
+- Para os exercícios em sala: [`ambiente.txt`](ambiente.txt) (variáveis
+  limnológicas de nove lagoas) e [`bocaina.txt`](bocaina.txt) (girinos de
+  13 corpos d'água). Salve-os na pasta do seu projeto.
+
+## Desafios
+
+Entregue um script `.R` que rode do zero numa sessão limpa (com sementes
+declaradas), as figuras pedidas e até uma página de interpretação.
+Critério: o script roda (30 %); as escolhas (transformação, distância,
+método de ligação, número de grupos) estão justificadas (30 %); a
+interpretação está correta (40 %).
+
+1. **Qual método de ligação?** Com `dune` (`vegan`): agrupe as parcelas com
+   a distância de Hellinger e com Bray-Curtis, pelos quatro métodos da
+   aula. Monte a tabela de correlações cofenéticas e faça o diagrama de
+   Shepard do método escolhido. *Avaliação:* usa o Ward só com a distância
+   euclidiana (de Hellinger) e explica por que a correlação cofenética
+   favorece o UPGMA.
+2. **Quantos grupos, e onde estão?** Com `mite` e `mite.xy` (`vegan`):
+   rode o `cascadeKM()` de 2 a 8 grupos com os critérios de Calinski e
+   SSI, escolha uma partição e faça o mapa dos grupos com as coordenadas.
+   *Avaliação:* compara os dois critérios, não escolhe pela soma de
+   quadrados e discute se os grupos são contíguos no espaço.
+3. **Indicadoras de quê?** Com `doubs` (`ade4`): calcule o IndVal com os
+   quatro trechos do rio definidos pela distância da nascente (como no
+   walkthrough) e com os quatro grupos do Ward das próprias espécies.
+   *Avaliação:* compara as duas listas e explica por que o teste é viciado
+   quando os grupos vêm das próprias espécies.
+
+As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 ## Leituras recomendadas
 
-*Bibliografia listada nos slides.*
+- Borcard, D., Gillet, F. & Legendre, P. (2018) *Numerical Ecology with
+  R*, 2ª ed., [cap. 4](https://doi.org/10.1007/978-3-319-71404-2_4).
+- Legendre, P. & Legendre, L. (2012) *Numerical Ecology*, 3ª ed.,
+  [cap. 8](https://doi.org/10.1016/B978-0-444-53868-0.50008-3).
 
 ## Recursos externos
 
 - [Entendendo o algoritmo do k-means (vídeo)](https://www.youtube.com/watch?v=4b5d3muPQmA)
-- [Clustering and Classification (curso online)](https://www.statlearning.com/)
 
 ---
 
