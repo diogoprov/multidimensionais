@@ -125,12 +125,16 @@ Quase 60 slides citam Legendre. Tratamento:
   as usa precisa de `library(vegan)`, não basta `vegan::`.
 - `indval()` (em `R/aula03_kmeans.R`): IndVal de Dufrêne & Legendre com teste
   de permutação, sem pacote extra.
+- **Memes: nada de símbolos patrióticos ou militares dos EUA** (nem de outras
+  potências): a disciplina é dada no Brasil, que sofreu um golpe apoiado pelos
+  EUA em 1964. O Diogo apontou isso na Aula 1 (Washington cruzando o
+  Delaware saiu).
 - Memes já usados (não repetir sem motivo): *Melencolia I* (Aulas 2 e 4),
   *O Pesadelo* (4), *O Grito*, Caravaggio e Wright of Derby (2), Inocêncio X
   (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3), *Sísifo*
   (Ticiano), *A lição de anatomia* (Rembrandt), *A cartomante* (La Tour) e
   *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6), *A parábola dos cegos* (Bruegel),
-  *O comedor de feijão* (Carracci), *Washington cruzando o Delaware* (Leutze),
+  *O comedor de feijão* (Carracci), *A aula de dança* (Degas),
   *A infância de Raleigh* (Millais), *Tédio* (Sickert), *Filósofo em meditação*
   (Rembrandt), *A escola da aldeia* (Steen) e *O almoço dos barqueiros* (Renoir) (1).
 - `R/mapa.R`: `mapa_plot(destaque = NULL, perguntas = TRUE)`.

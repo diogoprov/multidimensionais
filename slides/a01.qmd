@@ -162,13 +162,13 @@ fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
 ## Todos prontos?
 
 ::: {.meme}
-![](../assets/memes/delaware.jpg){fig-alt="Pintura Washington cruzando o Delaware, de Emanuel Leutze: George Washington em pé num barco cheio de soldados que remam entre blocos de gelo. Legenda: todos prontos? Então vamos lá." height="520px"}
+![](../assets/memes/aula-danca.jpg){fig-alt="Pintura A aula de dança, de Edgar Degas: numa sala de ensaio, bailarinas de tutu se arrumam e esperam, enquanto o velho mestre de dança, apoiado num bastão, observa. Legenda: todos prontos? Então vamos lá." height="520px"}
 
 [Todos prontos?]{.meme-topo} [Então vamos lá]{.meme-base}
 :::
 
 ::: {.ref}
-Emanuel Leutze, *Washington cruzando o Delaware* (1851), The Metropolitan Museum of Art, CC0, via Wikimedia Commons.
+Edgar Degas, *A aula de dança* (1874), The Metropolitan Museum of Art, CC0, via Wikimedia Commons.
 :::
 
 # 2. Tudo começa com uma boa pergunta {.secao}
