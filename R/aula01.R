@@ -437,3 +437,34 @@ morfo_brutos <- function() {
               Mão = .24 * crc + rnorm(2 * n, 0, .5))
   mutate(d, across(where(is.numeric), \(z) format(round(z, 1), nsmall = 1, decimal.mark = ",")))
 }
+
+#' As oito áreas no espaço de três espécies (projeção oblíqua): cada área é um
+#' ponto, com a linha vertical até o plano das espécies 1 e 3
+fig_espaco_3d <- function() {
+  m <- matrizes_exemplo()$sp
+  pr <- function(x, y, z) cbind(px = x + .55 * z, py = y + .4 * z)  # x = sp1, z = sp3 (profundidade), y = sp2
+  d <- tibble(area = rownames(m), x = m$Sp1, y = m$Sp2, z = m$Sp3)
+  p <- pr(d$x, d$y, d$z); b <- pr(d$x, 0, d$z)
+  d <- bind_cols(d, as_tibble(p), tibble(bx = b[, 1], by = b[, 2]))
+  L <- 22
+  ex <- rbind(c(pr(0, 0, 0), pr(L, 0, 0)), c(pr(0, 0, 0), pr(0, L, 0)), c(pr(0, 0, 0), pr(0, 0, L)))
+  grade <- bind_rows(lapply(seq(0, L, by = 5.5), \(k) {
+    a1 <- pr(k, 0, 0); a2 <- pr(k, 0, L); c1 <- pr(0, 0, k); c2 <- pr(L, 0, k)
+    tibble(x = c(a1[1], c1[1]), y = c(a1[2], c1[2]), xend = c(a2[1], c2[1]), yend = c(a2[2], c2[2]))
+  }))
+  ne <- cores[["accent_dark"]]
+  ggplot() +
+    geom_segment(data = grade, aes(x, y, xend = xend, yend = yend), colour = cores[["neutro_cl"]],
+                 linewidth = .4) +
+    annotate("segment", x = ex[, 1], y = ex[, 2], xend = ex[, 3], yend = ex[, 4], colour = ne,
+             linewidth = .8, arrow = arrow(length = unit(.18, "cm"), type = "closed")) +
+    annotate("text", x = ex[, 3], y = ex[, 4], label = c("Espécie 1", "Espécie 2", "Espécie 3"),
+             hjust = c(0, .5, 0), vjust = c(1.6, -.8, -.5), size = 4.6, colour = ne) +
+    geom_segment(data = d, aes(px, py, xend = bx, yend = by), colour = cores[["neutro"]],
+                 linetype = "22") +
+    geom_point(data = d, aes(bx, by), colour = cores[["neutro"]], size = 1.2) +
+    geom_point(data = d, aes(px, py), shape = 21, fill = cores[["accent"]], colour = "white", size = 4) +
+    geom_text(data = d[1:4, ], aes(px, py, label = area), vjust = -1, size = 4.2) +
+    coord_equal(clip = "off") + theme_void(base_size = 15) +
+    theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+}

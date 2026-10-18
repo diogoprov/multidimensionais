@@ -606,7 +606,8 @@ criada num contexto que hoje reconhecemos como racista.
   (1904–1908), cujos crânios foram levados para a Alemanha e só começaram a ser
   devolvidos neste século ([BBC, 2018](https://www.bbc.com/news/world-africa-45342586)),
   e culminou no mito
-  da "raça ariana" e no genocídio da Segunda Guerra Mundial.
+  da "raça ariana" e no genocídio da Segunda Guerra Mundial, com a
+  participação de cientistas ([Scientific American](https://www.scientificamerican.com/article/neurologists-role-in-nazi-racial-hygiene-only-now-comes-to-light/)).
 - Francis Galton e Karl Pearson, que criaram ferramentas que usamos até hoje,
   foram defensores da eugenia.
 
@@ -624,16 +625,17 @@ mother's laugh*; D. Salsburg, *Uma senhora toma chá*.
 - A **frenologia** (Gall e Spurzheim, início do século XIX) dizia que cada
   faculdade mental aparecia como uma saliência no crânio.
 - A **craniometria** trocou as saliências por **medidas lineares e ângulos**:
-  o ângulo facial (no alto, à direita), o comprimento e a largura do crânio, e
-  o índice cefálico (largura / comprimento × 100, embaixo).
-- Essas medidas serviram para hierarquizar "raças". Já em 1836, Tiedemann,
-  medindo cérebros, não encontrou a diferença que os craniometristas
-  afirmavam.
+  o ângulo facial (no alto) e o índice cefálico, largura / comprimento × 100
+  (embaixo).
+- **Samuel G. Morton** (1799–1851) encheu crânios de sementes e de chumbo
+  para medir a capacidade craniana e, em *Crania Americana* (1839), ordenou
+  "raças" pelo tamanho do cérebro. Já em 1836, Tiedemann, medindo cérebros,
+  não encontrara essa diferença.
 :::
 ::: {.column width="50%"}
-![](../assets/historia/angulo-facial-sec19.png){fig-align="center" height="250px" fig-alt="Gravura do século XIX com dois perfis humanos e as linhas usadas para medir o ângulo facial: uma linha horizontal da orelha à base do nariz e outra da testa aos lábios."}
+![](../assets/historia/angulo-facial-sec19.png){fig-align="center" height="215px" fig-alt="Gravura do século XIX com dois perfis humanos e as linhas usadas para medir o ângulo facial: uma linha horizontal da orelha à base do nariz e outra da testa aos lábios."}
 
-![](../assets/historia/eb1911-cranios-indice.jpg){fig-align="center" height="230px" fig-alt="Três crânios vistos de cima, A, B e C, com linhas pontilhadas do comprimento máximo, marcado como 100, e da largura máxima, marcada como 70, 80 e 85: três valores do índice cefálico."}
+![](../assets/historia/eb1911-cranios-indice.jpg){fig-align="center" height="200px" fig-alt="Três crânios vistos de cima, A, B e C, com linhas pontilhadas do comprimento máximo, marcado como 100, e da largura máxima, marcada como 70, 80 e 85: três valores do índice cefálico."}
 :::
 ::::
 
@@ -642,7 +644,8 @@ Gravura do século XIX (legenda original recortada), via [*Measuring
 Prejudice*](https://scalar.usc.edu/works/measuring-prejudice/media/profile-of-african-european-and-orang)
 (USC Scalar), fonte original não identificada; Fig. 4 do verbete *Craniometry* da
 *Encyclopædia Britannica* (1911), domínio público.
-[Tiedemann (1836)](https://doi.org/10.1098/rstl.1836.0025) *Phil. Trans. R. Soc.* 126: 497–527.
+[Tiedemann (1836)](https://doi.org/10.1098/rstl.1836.0025) *Phil. Trans. R. Soc.* 126: 497–527;
+sobre Morton, Gould (*A falsa medida do homem*) e [Lewis et al. (2011)](https://doi.org/10.1371/journal.pbio.1001071) *PLoS Biol.* 9: e1001071.
 :::
 
 ## Francis Galton e a "regressão" {.medio}
@@ -825,32 +828,35 @@ knitr::kable(mx$amb, align = "r", col.names = c("Temp", "pH", "O₂", "CO₂"))
 Dados ilustrativos do slide original.
 :::
 
-## Representação no espaço euclidiano
+## Representação no espaço euclidiano {.medio}
 
 :::: {.columns}
-::: {.column width="50%"}
+::: {.column width="45%"}
 ```{r}
 #| fig-alt: "As oito áreas como pontos num plano cujos eixos são as abundâncias das espécies 1 e 2. A distância euclidiana entre as áreas 1 e 2, igual a 14,42, é a hipotenusa de um triângulo retângulo desenhado com linhas tracejadas."
 #| fig-width: 6
 #| fig-height: 5.6
-#| out-height: 560px
+#| out-height: 440px
 fig_espaco()
 ```
 :::
-::: {.column width="50%"}
-- Cada **objeto** (área) é um ponto num espaço cujos eixos são os
-  **descritores** (espécies).
-- Com 2 espécies, um plano; com 3, o espaço tridimensional; com $p$
-  espécies, um espaço de $p$ dimensões, que não conseguimos desenhar.
-- A distância entre dois pontos é dada pelo teorema de Pitágoras, generalizado
-  para $p$ dimensões:
-
-$$D(x_1, x_2) = \sqrt{\textstyle\sum_{j=1}^{p}(y_{1j} - y_{2j})^2}$$
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "As oito áreas como pontos num espaço tridimensional, desenhado em perspectiva, cujos eixos são as abundâncias das espécies 1, 2 e 3; linhas tracejadas descem de cada ponto até o plano das espécies 1 e 3."
+#| fig-width: 7
+#| fig-height: 5.6
+#| out-height: 440px
+fig_espaco_3d()
+```
 :::
 ::::
 
+Cada **objeto** (área) é um ponto num espaço cujos eixos são os **descritores**
+(espécies): com 2 espécies, um plano; com 3, o espaço tridimensional; com $p$
+espécies, $p$ dimensões, que não conseguimos desenhar.
+
 ::: {.ref}
-[Legendre & Legendre (2012), cap. 2](`r LL2`).
+[Legendre & Legendre (2012), cap. 2](`r LL2`). Dados da matriz de espécies do slide anterior.
 :::
 
 ## Medidas de distância no espaço euclidiano
@@ -863,7 +869,7 @@ $$D(x_1, x_2) = \sqrt{\textstyle\sum_{j=1}^{p}(y_{1j} - y_{2j})^2}$$
 fig_distancia_2d3d()
 ```
 
-Com $p$ espécies, a mesma conta: a raiz da soma dos quadrados das diferenças.
+Com $p$ espécies, a mesma conta: $D(x_1, x_2) = \sqrt{\textstyle\sum_{j=1}^{p}(y_{1j} - y_{2j})^2}$.
 
 ## Um pequeno parêntese: o espaço pode ser curvo {.medio}
 
