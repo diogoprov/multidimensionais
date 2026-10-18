@@ -32,3 +32,4 @@ Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commo
 | `goya-sono.jpg` | [File:Goya-Capricho-43.jpg](https://commons.wikimedia.org/wiki/File:Goya-Capricho-43.jpg) | Francisco de Goya (1799) | Public domain | 5 |
 
 Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commons.
+| `enxada.jpg` | [File:Millet, Jean-François - Man with a Hoe - Google Art Project.jpg](https://commons.wikimedia.org/wiki/File:Millet,_Jean-Fran%C3%A7ois_-_Man_with_a_Hoe_-_Google_Art_Project.jpg) | Jean-François Millet (1860–1862) | Public domain | 6 |

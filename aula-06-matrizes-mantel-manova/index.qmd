@@ -10,9 +10,26 @@ description: "Comparação entre matrizes de distância: teste de Mantel e Mante
 
 Comparação entre matrizes de distância: teste de Mantel e Mantel parcial. Comparação de configurações multivariadas: Procrustes/PROTEST. Inferência multivariada robusta: PERMANOVA.
 
+No mapa dos métodos da disciplina, esta aula cobre os **testes entre
+matrizes e entre grupos**: relacionar matrizes de distâncias (Mantel, MRM,
+GDM), comparar configurações (Procrustes) e testar diferenças entre grupos
+(PERMANOVA, betadisper).
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-06.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a06.html){.btn .btn-outline-primary}
+
+As figuras dos slides foram geradas em R; o código está em
+[`R/aula06.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Conteúdo
+
+1. Teste de Mantel, Mantel parcial e as críticas ao seu uso em análises
+   espaciais
+2. Regressão múltipla de matrizes de distância (MRM) e GDM
+3. Análise de Procrustes e PROTEST
+4. PERMANOVA
+5. Dispersão multivariada: betadisper (PERMDISP)
 
 ## Código R (aula prática)
 
