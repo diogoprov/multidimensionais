@@ -88,9 +88,8 @@ os resultados em linguagem ecológica.
 ### Recursos online
 
 - [Numerical Ecology with R — código do livro](https://github.com/JoeyBernhardt/NumericalEcology)
-- [Mapa mental dos métodos filogenéticos comparativos (Coggle)](https://coggle.it/diagram/WhbkkxE2BAAB0R0m),
-  da disciplina irmã [Métodos filogenéticos comparativos](https://provetelab.org/teaching/mfc/):
-  útil para quem vai analisar atributos de espécies aparentadas.
+- [Mapa mental da disciplina (Coggle)](https://coggle.it/diagram/V9b5wrC3-20Gx7bX/t/an%C3%A1lise-multivariada-aplicada-ao-monitoramento/eBZcNupumwFaA9cbkGw4yNKufvDBWG0syU4Xb3gbOFg): os métodos organizados por
+  pergunta (ordenação, classificação, comparação de espécies, testes).
 
 ## Edições anteriores
 

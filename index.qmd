@@ -137,6 +137,9 @@ script `.R` correspondente), os **desafios** e as leituras. Os slides abrem
 no navegador; tecle **F** para tela cheia e **Esc** para ver todos os
 slides de uma vez.
 
+Para ver a disciplina inteira de uma vez, há também um
+[mapa mental](https://coggle.it/diagram/V9b5wrC3-20Gx7bX/t/an%C3%A1lise-multivariada-aplicada-ao-monitoramento/eBZcNupumwFaA9cbkGw4yNKufvDBWG0syU4Xb3gbOFg) (Coggle) com os métodos organizados por pergunta.
+
 Todas as figuras dos slides foram geradas em R, com os conjuntos de dados
 dos pacotes `vegan`, `ade4` e `ecodados` ou com dados simulados. O código
 está na pasta [`R/`](https://github.com/diogoprov/multidimensionais/tree/main/R)
