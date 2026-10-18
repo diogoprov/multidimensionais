@@ -223,7 +223,7 @@ centro da nuvem; a rotação encontra as dimensões com maior variação.
 Dados simulados. Baseado em slides de Thiago Gonçalves-Souza.
 :::
 
-## A PCA em três dimensões {.medio}
+## Rotacionar para achar as dimensões de maior variação {.medio}
 
 :::: {.columns}
 ::: {.column width="36%"}
