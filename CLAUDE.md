@@ -88,8 +88,8 @@ aula, na ordem 5 → 3 → 2 → 4 → 6 → 7 → 1, commit só com aprovação
   `$familia-*` (`slides/theme.scss`): mude nos dois lugares.
 - **Pacotes**: `vegan`, `ade4`, `cluster`, `pvclust` (este a pedido do Diogo, na Aula 3) e `adespatial` (scripts de prática), além de `ggplot2`, `dplyr`,
   `tidyr`, `purrr`, `tibble`, `patchwork`, `ape`, `here` e `knitr`.
-  Também em uso: `mvabund`, `gllvm` e `ecoCopula` (Aula 7, autorizados pelo
-  Diogo), `MASS`, `ggrepel` (rótulos do triplot com variável categórica, Aula
+  Também em uso: `mvabund`, `gllvm` e `ecoCopula` (Aula 7) e `plotly` (PCA 3D
+  da Aula 4, PR #1), autorizados pelo Diogo, `MASS`, `ggrepel` (rótulos do triplot com variável categórica, Aula
   5) e `spdep` (redes dos MEMs, Aula 5); `rphylopic` só para baixar as
   silhuetas, fora do render. Pergunte antes de adicionar outro.
 - **Dados**: os conjuntos dos pacotes (`doubs` do `ade4`, sem CSV; `dune`,
