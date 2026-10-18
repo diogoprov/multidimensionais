@@ -41,6 +41,26 @@ páginas de cada aula para retirar links e arquivos desnecessários, revisar
 os walkthroughs e propor melhorias para a parte prática da disciplina,
 incluindo desafios para os alunos. Mostrar a proposta antes de mexer.
 
+**Revisão da parte prática** (proposta aprovada em 18/out/2026; um lote por
+aula, na ordem 5 → 3 → 2 → 4 → 6 → 7 → 1, commit só com aprovação):
+
+- O walkthrough é a fonte: seções que seguem os blocos dos slides, texto
+  curto em português e chunks curtos (`eval: false`). O `.R` para download
+  sai dele com `knitr::purl(..., documentation = 0)`; não edite o `.R` à mão.
+  Antes do commit, rode o `.R` inteiro numa sessão limpa.
+- Dados do Doubs: `ade4::doubs`, como nos slides (sem os CSV de Borcard e
+  sem o `Doubs.RData`). Atenção às unidades do ade4: `oxy`, `bdo` e `pH`
+  ×10; `slo` já é log(x + 1); `dfs` em km ×10.
+- `adespatial` autorizado (dbMEM na Aula 5, `dist.ldc` na Aula 2).
+- Sementes e `permutations = 999` em todo teste; `ward.D2`; nada de
+  `install.packages`, `?ajuda`, `dev.new()` nos scripts.
+- **Desafios**: seção no fim de cada página de aula, três por aula, com
+  dados de pacotes. As respostas comentadas serão publicadas no site
+  **depois do prazo de entrega**; até lá, ficam fora do repositório.
+- `bocaina.txt` (Aula 3): os prefixos dos locais são os tipos de ambiente:
+  BP = brejo permanente, AP = açude permanente, PP = poça permanente,
+  PT = poça temporária.
+
 ## Como trabalhar com o Diogo
 
 - **Commit e push só com aprovação explícita de cada lote.** Mostre o
@@ -66,7 +86,7 @@ incluindo desafios para os alunos. Mostrar a proposta antes de mexer.
   Classes: `.associacao`, `.classificacao`, `.irrestrita`, `.restrita`,
   `.testes`, `.modelos`. Cores em `cores_familia` (`R/tema.R`) e em
   `$familia-*` (`slides/theme.scss`): mude nos dois lugares.
-- **Pacotes**: `vegan`, `ade4`, `cluster` e `pvclust` (este a pedido do Diogo, na Aula 3), além de `ggplot2`, `dplyr`,
+- **Pacotes**: `vegan`, `ade4`, `cluster`, `pvclust` (este a pedido do Diogo, na Aula 3) e `adespatial` (scripts de prática), além de `ggplot2`, `dplyr`,
   `tidyr`, `purrr`, `tibble`, `patchwork`, `ape`, `here` e `knitr`.
   Também em uso: `mvabund`, `gllvm` e `ecoCopula` (Aula 7, autorizados pelo
   Diogo), `MASS`, `ggrepel` (rótulos do triplot com variável categórica, Aula

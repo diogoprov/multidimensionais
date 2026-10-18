@@ -1,10 +1,10 @@
 ---
-title: "Walkthrough — CCA, RDA, pRDA, db-RDA, LDA com vegan."
-subtitle: "Walkthrough do código — Aula 5: Ordenações restritas: CCA, RDA, pRDA, db-RDA, LDA"
+title: "Walkthrough: ordenações restritas no R"
+subtitle: "Aula 5 · CCA, RDA, seleção de variáveis, db-RDA, RDA parcial, dbMEM, partição de variância e LDA"
 format:
   html:
     toc: true
-    toc-depth: 3
+    toc-depth: 2
     code-tools: true
     code-overflow: scroll
 execute:
@@ -12,300 +12,409 @@ execute:
 ---
 
 ::: {.callout-note appearance="minimal"}
-Walkthrough do código usado em sala. Os comandos **não são executados**
-pelo renderizador — copie e cole no seu R local. Você pode baixar o
-script `.R` original e os dados em [Aula 5](./).
+Roteiro da aula prática. Os comandos **não são executados** nesta página:
+rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está em
+[`quinta.R`](quinta.R). As seções seguem os blocos dos
+[slides da Aula 5](../slides/a05.html).
 :::
 
+## 0. Pacotes e dados
+
+Usamos os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`,
+os mesmos dos slides. O local 8 não tem peixes e sai das três tabelas.
+A variável `dfs` (distância da nascente) também sai: ela resume o gradiente
+inteiro e competiria com todas as outras.
+
+As variáveis do `ade4` estão em unidades diferentes (`alt` em metros, `oxy`
+em mg/L × 10, `slo` já em log...). Como vamos comparar os seus efeitos,
+padronizamos todas (média 0, desvio-padrão 1).
+
 ```{r}
-# Wed May  8 22:12:42 2019 ------------------------------
-
-#--Aula quinta : ordenações restritas
-library(vegan)
+library(vegan)   # ordiR2step() precisa do vegan carregado, não basta vegan::
 library(ade4)
-
-#### Aula 13 - CANONICAL CORRESPONDENCE ANALYSIS (CCA)
-
-#13.1 - Preparation of data
-#Import the data from CSV files
-spe <- read.csv("DoubsSpe.csv", row.names=1)
-env <- read.csv("DoubsEnv.csv", row.names=1)
-
-data(doubs)
-spa <- doubs$xy
-
-head(spa)
-#Remove empty site 8
-spe <- spe[-8, ]
-env <- env[-8, ]
-spa <- spa[-8, ]
-
-#Remove the 'das' variable from the env dataset
-env <- env[, -1]
-#Recode the slope variable (pen) into a factor (qualitative) 
-#variable (to show how these are handled in the ordinations)
-pen2 <- rep("very_steep", nrow(env))
-pen2[env$pen <= quantile(env$pen)[4]] = "steep"
-pen2[env$pen <= quantile(env$pen)[3]] = "moderate"
-pen2[env$pen <= quantile(env$pen)[2]] = "low"
-pen2 <- factor(pen2, levels=c("low", "moderate", "steep", "very_steep"))
-table(pen2)
-#Create an env2 data frame with slope as a qualitative variable
-env$pen <- pen2
-head(env)
-
-#13.2 - CCA
-head(spe)  #Utilizar dados não transformados
-spe.cca <- cca(spe ~ ., env)
-spe.cca
-summary(spe.cca) #Scaling 2 (default)
-summary(spe.cca)$species
-summary(spe.cca)$sites
-summary(spe.cca)$constraints
-summary(spe.cca)$biplot
-
-summary(spe.cca, scaling=1) #Scaling 1
-summary(spe.cca, scaling=1)$species
-summary(spe.cca, scaling=1)$sites
-summary(spe.cca, scaling=1)$constraints
-summary(spe.cca, scaling=1)$biplot
-
-#13.3 - CCA triplots (using lc site scores)
-#Scaling 1: A projeção de um objeto em ângulo reto em uma variável aproxima a posição do objeto ao longo da variável.
-plot(spe.cca, scaling=1, display=c("sp","lc","cn"), main="Triplot CCA spe ~ env2 - scaling 1")
-plot(spe.cca, scaling=1, display=c("lc", "cn"), main="Biplot CCA spe ~ env2 - scaling 1") #without species
-
-#Default scaling 2: O ?timo e uma espécie ao longo das variáveis ambientais pode ser obtido projetando-a em ângulo reto em uma variável.
-plot(spe.cca, display=c("sp","lc","cn"), main="Triplot CCA spe ~ env2 - scaling 2")
-plot(spe.cca, scaling=2, display=c("sp", "cn"), main="Biplot CCA spe ~ env2 - scaling 2") #without sites
-
-#13.4 - Permutation tests of CCA results
-anova(spe.cca, step=1000) #Permutation test of the overall analysis
-set.seed(1001)
-anova(spe.cca, by="axis", step=1000) #Permutation test of each axis
-
-anova(spe.cca, by="margin", step=1000) #Permutation test of variables
-
-#14.3 - Recuperando os R^2 ajustados
-RsquareAdj(spe.cca) #Adjusted R^2
-
-#13.5 - Three-dimensional interactive ordination plots
-library(vegan3d)
-spe.hel <- decostand(spe, "hell")
-#Scaling=1
-#Plot of the sites only (wa scores)
-ordirgl(spe.cca, type="t", scaling=1)
-#Plot the sites (wa scores) with a clustering result. Colour sites according to cluster membership
-gr <- cutree(hclust(vegdist(spe.hel, "euc"), "ward.D"), 4)
-ordirgl(spe.cca, type="t", scaling=1, ax.col="black", col=gr+1)
-# Connect sites to cluster centroids
-orglspider(spe.cca, gr, scaling=1)
-
-#Scaling=2
-ordirgl(spe.cca, type="t", scaling=2)
-orgltext(spe.cca.pars, display="species", type="t", scaling=2, col="cyan")
-#Plot species groups (Jaccard similarity, useable in R mode)
-gs <- cutree(hclust(vegdist(t(spe), method="jaccard"), "ward"), 4)
-ordirgl(spe.cca.pars, display="species", type="t", col=gs+1)
-
-#-------------------------------------------------------------------------------
-
-#### Aula 14 - RDA
-
-#Hellinger-transform the species dataset
-spe.hel <- decostand(spe, "hellinger")
-
-#14.2 - RDA using Vegan
-#RDA of the Hellinger-transformed fish species data, constrained by all the environmental variables contained in env2
-spe.rda <- rda(spe.hel~., env) # Observe the shortcut formula
-summary(spe.rda) # Scaling 2 (default) #Here the default choices are used, i.e. scale=FALSE (RDA on a covariance matrix) and scaling=2.
-
-#How to obtain canonical coefficients from an rda() object. Canonical coefficients are the equivalent of regression coefficients 
-#for each explanatory variable on each canonical axis.
-coef(spe.rda)
-
-#14.3 - Recuperando os R^2 ajustados
-RsquareAdj(spe.rda) #Adjusted R^2
-
-#The numerical output shows that the first two canonical axes explain together 56.1% of the total variance of
-#the data, the first axis alone explaining 45.4%. These are unadjusted values, however. Since adj R2 = 0.5224,
-#the percentages of accumulated constrained eigenvalues show that the first axis alone explains
-#0.5224 × 0.6242 = 0.326 or 32.6% variance, and the two first 0.5224 × 0.7712 = 0.4029 or 40.3% variance
-
-#14.4 - Triplots of the rda results. #Site scores as linear combinations of the environmental variables (lc)
-#Scaling 1
-spe.sc <- scores(spe.rda, choices=1:2, scaling=1, display="sp")
-plot(spe.rda, scaling=1, display=c("sp", "lc", "cn"),	main="Triplot RDA spe.hel ~ env2 - scaling 1 - lc scores")
-arrows(0, 0, spe.sc[, 1], spe.sc[, 2], length=0, lty=1, col="red")
-
-#Scaling 2
-spe2.sc <- scores(spe.rda, choices=1:2, display="sp")
-plot(spe.rda, display=c("sp", "lc", "cn"), main="Triplot RDA spe.hel ~ env2 - scaling 2 - lc scores")
-arrows(0, 0, spe2.sc[,1], spe2.sc[,2], length=0, lty=1, col="red")
-
-#OBS: Em ambas, a projeção dos objetos (ua) em ângulo reto sobre uma variável resposta (sp) ou explanatória (env)
-#aproxima a posição do objeto ao longo daquela variável.
-
-#14.5 - Global test of the RDA result
-anova.cca(spe.rda, step=1000)
-#Tests of all canonical axes
-anova.cca(spe.rda, by="axis", step=1000)
-anova.cca(spe.rda, by="margin", step=1000)
-#Apply Kaiser-Guttman criterion to residual axes
-spe.rda$CA$eig[spe.rda$CA$eig > mean(spe.rda$CA$eig)]  
-#Of course, given that these tests are available, it is useless to apply other criteria
-#like the broken-stick or Kaiser-Guttman's criterion to canonical axes. These could
-#be applied to the residual, unconstrained axes, however.
-
-#-------------------------------------------------------------------------------
-
-#### Aula 15 - Partial RDA
-#15.1 - Preparation of data
-
-#Create two subsets of explanatory variables
-#Physiography (upstream-downstream gradient)
-envtopo <- env[, c(1:3)]
-names(envtopo)
-#Water quality
-envchem <- env[, c(4:9)]
-names(envchem)
-
-#Hellinger-transform the species dataset
-spe.hel <- decostand(doubs$fish[-8,], "hellinger")
-
-#15.2 - Explanation of fraction labels
-dev.new(title="Symbols of variation partitioning fractions",12,4)
-par(mfrow=c(1,3))
-showvarparts(2) # Two explanatory matrices
-showvarparts(3) # Three explanatory matrices
-showvarparts(4) # Four explanatory matrices
-
-#15.3 - Variation partitioning with all explanatory variables
-spe.part.all <- varpart(spe.hel, envchem, envtopo)
-spe.part.all
-dev.new(title="Variation partitioning - all variables")
-plot(spe.part.all, digits=2)  # Plot of the partitioning results
-
-#Tests of all testable fractions
-#Test of fractions [a+b]
-anova.cca(rda(spe.hel, envchem), step=1000)
-#Test of fractions [b+c]
-anova.cca(rda(spe.hel, envtopo), step=1000)
-#Test of fractions [a+b+c]
-env<- cbind(envchem, envtopo)
-anova.cca(rda(spe.hel, env), step=1000)
-#Test of fraction [a]
-anova.cca(rda(spe.hel, envchem, envtopo), step=1000)
-#Test of fraction [c]
-anova.cca(rda(spe.hel, envtopo, envchem), step=1000)
-
-#MEMs
 library(adespatial)
-mems_doubs <- dbmem(spa, MEM.autocor = "positive")
-mems.doubs <- data.frame(mems_doubs$MEM1, mems_doubs$MEM2, mems_doubs$MEM3, mems_doubs$MEM4, mems_doubs$MEM5, mems_doubs$MEM6, mems_doubs$MEM7)
-
-vp <- varpart(spe.hel, env, mems.doubs)
-plot(vp)
-
-# Linear discriminant analysis (LDA) ==============================
-
-# Ward clustering result of Hellinger-transformed species data, 
-# cut into 4 groups
-gr <- cutree(hclust(vegdist(spe.hel, "euc"), "ward.D2"), k = 4)
-
-# Environmental matrix with only 3 variables (ele, oxy and bod)
-env.pars2 <- as.matrix(env[, c(3, 10, 11)])
-
-# Verify multivariate homogeneity of within-group covariance
-# matrices using the betadisper() function {vegan}
-env.pars2.d1 <- dist(env.pars2)
-(env.MHV <- betadisper(env.pars2.d1, gr))
-anova(env.MHV)
-permutest(env.MHV)	# Permutational test
-
-# Log transform ele and bod
-env.pars3 <- cbind(log(env$slo), env$oxy, log(env$bdo))
-colnames(env.pars3) <- c("ele.ln", "oxy", "bod.ln") 
-rownames(env.pars3) <- rownames(env)
-env.pars3.d1 <- dist(env.pars3)
-(env.MHV2 <- betadisper(env.pars3.d1, gr))
-permutest(env.MHV2)
-
-# Preliminary test :  do the means of the explanatory variable 
-# differ among groups?
-# Compute Wilk'S lambda test
-# First way: with function Wilks.test() of package rrcov, χ2 test
-library(rrcov)
 library(MASS)
-Wilks.test(env.pars3, gr)
-# Second way: with function manova() of stats, which uses
-#             an F-test approximation
-lw <-  manova(env.pars3 ~ as.factor(gr))
-summary(lw, test = "Wilks")
 
-## Computation of LDA - identification functions (on unstandardized 
-## variables)
+data(doubs, package = "ade4")
+spe <- doubs$fish[-8, ]
+env <- as.data.frame(scale(doubs$env[-8, -1]))   # sem o local 8 e sem dfs
+xy  <- doubs$xy[-8, ]
 
-env.pars3.df <- as.data.frame(env.pars3)
-(spe.lda <- lda(gr ~ ele.ln + oxy + bod.ln, data = env.pars3.df))
-# Alternate coding without formula interface :  
-#    spe.lda <- lda(env.pars3.df, gr)
-# The result object contains the information necessary to interpret 
-# the LDA
+spe.hel <- decostand(spe, "hellinger")
+```
 
-# Display the group means for the 3 variables
-spe.lda$means
+A transformação de Hellinger permite usar a RDA (que é euclidiana) com
+abundâncias de espécies, sem que os duplos zeros aproximem locais que não
+têm nada em comum (Aula 2).
 
-# Extract the unstandardized identification functions (matrix C, 
-# eq. 11.33 in Legendre and Legendre 2012)
-(C <- spe.lda$scaling)
+## 1. CCA
 
-# Classification of two new objects (identification)
-# A new object is created with two sites: 
-#     (1) ln(ele) = 6.8, oxygen = 9 and ln(bod) = 0.8 
-# and (2) ln(ele) = 5.5, oxygen = 10 and ln(bod) = 1.0
-newo <- data.frame(c(6.8, 5.5), c(9, 10), c(0.8, 1))
-colnames(newo) <- colnames(env.pars3)
-newo
-(predict.new <- predict(spe.lda, newdata = newo))
+A CCA usa as abundâncias **brutas**: ela mesma trabalha com a distância de
+qui-quadrado.
 
-## Computation of LDA - discrimination functions (on standardized 
-## variables)
+```{r}
+spe.cca <- cca(spe ~ ., data = env)
+spe.cca
+```
 
-env.pars3.sc <- as.data.frame(scale(env.pars3.df))
-spe.lda2 <- lda(gr ~ ., data = env.pars3.sc)
+Na saída, *Total inertia* é a variação total (qui-quadrado), *Constrained*
+é a parte explicada pelas variáveis ambientais e *Unconstrained* é o resto,
+ordenado pelos eixos residuais (CA1, CA2...).
 
-# Display the group means for the 3 variables
-spe.lda2$means
+```{r}
+summary(spe.cca)   # scaling 2 é o padrão
+RsquareAdj(spe.cca)
+```
 
-# Extract the classification functions
-(C2 <- spe.lda2$scaling)
+Use sempre o **R² ajustado** para dizer quanto da variação o modelo
+explica: o R² cresce com o número de variáveis, mesmo que sejam ruído.
 
-# Compute the canonical eigenvalues
-spe.lda2$svd^2
+### Triplots
 
-# Position the objects in the space of the canonical variates
-(Fp2 <- predict(spe.lda2)$x)
-# alternative way :  Fp2 <- as.matrix(env.pars3.sc) %*% C2
+```{r}
+plot(spe.cca, scaling = 1, display = c("sp", "lc", "cn"),
+     main = "CCA, scaling 1")
+plot(spe.cca, scaling = 2, display = c("sp", "lc", "cn"),
+     main = "CCA, scaling 2")
+```
 
-# Classification of the objects
-(spe.class2 <- predict(spe.lda2)$class)
+- **Scaling 1**: os locais ficam no centroide das espécies que ocorrem
+  neles; a projeção de um local sobre uma seta aproxima o valor da variável
+  naquele local.
+- **Scaling 2**: as espécies ficam no centroide dos locais onde ocorrem; a
+  projeção de uma espécie sobre uma seta aproxima o seu **ótimo** ao longo
+  daquela variável.
 
-# Posterior probabilities of the objects to belong to the groups
-# (rounded for easier interpretation)
-(spe.post2 <- round(predict(spe.lda2)$posterior, 2))
+### Testes por permutação
 
-# Contingency table of prior versus predicted classifications
-(spe.table2 <- table(gr, spe.class2))
+Fixe a semente e o número de permutações: assim, você e os colegas obtêm o
+mesmo *p*.
 
-# Proportion of correct classification (classification success)
-diag(prop.table(spe.table2, 1))
+```{r}
+set.seed(1)
+anova(spe.cca, permutations = 999)                 # modelo inteiro
+set.seed(1)
+anova(spe.cca, by = "axis", permutations = 999)    # cada eixo canônico
+set.seed(1)
+anova(spe.cca, by = "margin", permutations = 999)  # cada variável, dadas as outras
+```
 
-# Plot the LDA results using the homemade function plot.lda()
+O teste por variável (`by = "margin"`) avalia o efeito **marginal**: o que a
+variável explica além de todas as outras. Variáveis correlacionadas entre
+si (no Doubs, quase tudo covaria com a distância da nascente) podem sair não
+significativas uma a uma e o modelo inteiro ser altamente significativo.
 
-plot(spe.lda2, 
-         groups = gr, 
-         plot.sites = 2, 
-         plot.centroids = 1, 
-         mul.coef = 2.35)
+## 2. RDA
+
+```{r}
+spe.rda <- rda(spe.hel ~ ., data = env)
+summary(spe.rda)
+RsquareAdj(spe.rda)
+```
+
+A RDA é uma regressão múltipla de cada espécie (já transformada) contra as
+variáveis ambientais, seguida de uma PCA dos valores ajustados. Os
+coeficientes de cada variável em cada eixo canônico:
+
+```{r}
+coef(spe.rda)
+```
+
+A saída mostra a proporção da variação explicada por cada eixo **sem
+ajuste**. Para ter a parte ajustada de cada eixo, multiplique o R² ajustado
+pela proporção acumulada dos autovalores canônicos:
+
+```{r}
+r2a <- RsquareAdj(spe.rda)$adj.r.squared
+r2a * cumsum(spe.rda$CCA$eig) / sum(spe.rda$CCA$eig)
+```
+
+### Triplots e testes
+
+```{r}
+plot(spe.rda, scaling = 1, display = c("sp", "lc", "cn"),
+     main = "RDA, scaling 1")
+plot(spe.rda, scaling = 2, display = c("sp", "lc", "cn"),
+     main = "RDA, scaling 2")
+
+set.seed(1)
+anova(spe.rda, permutations = 999)
+set.seed(1)
+anova(spe.rda, by = "axis", permutations = 999)
+```
+
+- **Scaling 1**: as distâncias entre os locais aproximam as suas distâncias
+  euclidianas (aqui, de Hellinger); os ângulos entre setas de espécies
+  **não** representam correlações.
+- **Scaling 2**: os ângulos entre as setas (espécies e variáveis)
+  aproximam as suas correlações; as distâncias entre locais não são
+  euclidianas.
+
+Os eixos canônicos já têm teste. Critérios como o de Kaiser-Guttman só
+fazem sentido para os eixos **residuais**:
+
+```{r}
+spe.rda$CA$eig[spe.rda$CA$eig > mean(spe.rda$CA$eig)]
+```
+
+## 3. RDA ou CCA?
+
+O comprimento do primeiro eixo de uma DCA, em unidades de desvio-padrão,
+indica se as respostas das espécies ao gradiente são longas (unimodais) ou
+curtas (aproximadamente lineares).
+
+```{r}
+spe.dca <- decorana(spe)
+diff(range(scores(spe.dca, display = "sites", choices = 1)))
+```
+
+Gradientes longos (acima de ~4 DP) favorecem a CCA; curtos, a RDA. Com a
+transformação de Hellinger, a RDA (tb-RDA) funciona bem nos dois casos, e
+é por isso que ela é a escolha mais comum hoje.
+
+## 4. Seleção progressiva de variáveis
+
+Onze variáveis para 29 locais é muito, e várias delas são redundantes. O
+fator de inflação da variância (VIF) mostra a redundância:
+
+```{r}
+vif.cca(spe.rda)
+```
+
+Valores acima de 10 indicam forte colinearidade. A seleção progressiva
+acrescenta uma variável por vez e para quando a próxima não é significativa
+**ou** quando o R² ajustado passaria o do modelo completo (o duplo critério
+de parada de Blanchet et al. 2008). O `ordiR2step()` faz isso:
+
+```{r}
+mod0 <- rda(spe.hel ~ 1, data = env)   # só o intercepto
+set.seed(1)
+spe.sel <- ordiR2step(mod0, scope = formula(spe.rda),
+                      permutations = 999, trace = FALSE)
+spe.sel$anova
+RsquareAdj(spe.sel)
+```
+
+Compare o R² ajustado do modelo selecionado com o do modelo completo: com
+poucas variáveis, ele chega perto.
+
+## 5. db-RDA
+
+A db-RDA aceita qualquer matriz de distâncias: ela faz uma PCoA da matriz e
+uma RDA dos eixos da PCoA. Com Bray-Curtis:
+
+```{r}
+spe.dbrda <- dbrda(spe ~ ., data = env, distance = "bray")
+spe.dbrda
+RsquareAdj(spe.dbrda)
+set.seed(1)
+anova(spe.dbrda, permutations = 999)
+```
+
+Se a distância não for euclidiana (Bray-Curtis não é), a PCoA gera
+autovalores negativos, que aparecem na saída como eixos "imaginários"
+(`idbRDA1`) e na coluna `RealDims`. Use
+`sqrt.dist = TRUE` ou `add = "lingoes"` para corrigi-los (Aula 4).
+
+## 6. RDA parcial
+
+A RDA parcial mede o efeito de um conjunto de variáveis (**X**) depois de
+remover o efeito de outro (**W**, as covariáveis). Vamos separar as
+variáveis do Doubs em dois grupos:
+
+```{r}
+envtopo <- env[, c("alt", "slo", "flo")]                              # relevo
+envchem <- env[, c("pH", "har", "pho", "nit", "amm", "oxy", "bdo")]   # química da água
+```
+
+Qual o efeito da química da água, controlando o relevo? As duas formas
+abaixo dão o mesmo resultado:
+
+```{r}
+spe.parc <- rda(spe.hel, envchem, envtopo)   # forma matricial: Y, X, W
+spe.parc <- rda(spe.hel ~ pH + har + pho + nit + amm + oxy + bdo +
+                  Condition(alt + slo + flo), data = env)
+spe.parc
+set.seed(1)
+anova(spe.parc, permutations = 999)
+```
+
+Na saída aparece a linha *Conditioned*: a variação explicada pelas
+covariáveis, que foi removida antes da análise.
+
+## 7. Variáveis espaciais: dbMEM
+
+Locais próximos tendem a ter composição parecida (autocorrelação espacial).
+Os dbMEMs são variáveis que descrevem a estrutura espacial em várias
+escalas, das amplas (os primeiros) às finas (os últimos). Ficamos só com os
+de autocorrelação positiva:
+
+```{r}
+mem <- as.data.frame(dbmem(xy, MEM.autocor = "positive", silent = FALSE))
+ncol(mem)
+```
+
+Aqui são poucos, mas em geral há muitos dbMEMs (até perto do número de
+locais), e eles também precisam ser selecionados, com o mesmo duplo
+critério:
+
+```{r}
+mem.full <- rda(spe.hel ~ ., data = mem)
+set.seed(1)
+mem.sel <- ordiR2step(rda(spe.hel ~ 1, data = mem), scope = formula(mem.full),
+                      permutations = 999, trace = FALSE)
+mem.sel$anova
+mem.x <- mem[, attr(terms(mem.sel), "term.labels"), drop = FALSE]
+names(mem.x)
+```
+
+As coordenadas do `doubs$xy` são cartesianas e o rio é uma rede: a distância
+em linha reta entre dois locais nem sempre é a distância pela água. É uma
+simplificação razoável para o exemplo.
+
+## 8. Partição de variância
+
+Quanto da variação da comunidade é explicada pelo ambiente, quanto pelo
+espaço e quanto pelos dois juntos? Usamos as variáveis ambientais e os
+dbMEMs selecionados:
+
+```{r}
+env.x <- env[, attr(terms(spe.sel), "term.labels"), drop = FALSE]
+
+spe.vp <- varpart(spe.hel, env.x, mem.x)
+spe.vp
+plot(spe.vp, digits = 2, Xnames = c("Ambiente", "Espaço"), bg = c("seagreen", "goldenrod"))
+```
+
+Nos slides (e em Legendre & Legendre 2012), **[a]** é o ambiente puro,
+**[c]** o espaço puro e **[b]** a parte explicada pelos dois ao mesmo
+tempo. A saída do `varpart()` pode usar outras letras: guie-se pela
+descrição da linha (`X1|X2` é o ambiente puro, `X2|X1` o espaço puro, e a
+linha sem graus de liberdade é a fração compartilhada). No Doubs, o
+gradiente ambiental é também espacial (nascente → foz), então a fração
+compartilhada é grande.
+
+Só as frações **[a]**, **[c]** e as que vêm de um modelo de RDA podem ser
+testadas. A fração **[b]** não é um modelo: ela é obtida por subtração e
+não tem teste. Pela mesma razão, ela pode sair negativa, o que **não** é
+uma variação negativa: indica que as duas matrizes, juntas, explicam mais
+do que a soma do que explicam separadas (por exemplo, quando têm efeitos
+opostos sobre a comunidade).
+
+```{r}
+set.seed(1)
+anova(rda(spe.hel, env.x), permutations = 999)          # [a + b]
+set.seed(1)
+anova(rda(spe.hel, mem.x), permutations = 999)          # [b + c]
+set.seed(1)
+anova(rda(spe.hel, env.x, mem.x), permutations = 999)   # [a]
+set.seed(1)
+anova(rda(spe.hel, mem.x, env.x), permutations = 999)   # [c]
+```
+
+Para ver os símbolos das frações com duas, três ou quatro matrizes:
+
+```{r}
+showvarparts(2)
+showvarparts(3)
+```
+
+## 9. Análise discriminante linear (LDA)
+
+A LDA responde: as variáveis ambientais separam grupos de locais definidos
+de antemão? Os grupos aqui são os quatro do agrupamento de Ward dos peixes
+(Aula 3). As variáveis são a altitude, o oxigênio e a DBO, como em Borcard
+et al. (2018), cap. 6. Para a LDA, voltamos às unidades originais.
+
+```{r}
+gr <- cutree(hclust(dist(spe.hel), "ward.D2"), k = 4)
+table(gr)
+
+env0 <- doubs$env[-8, ]
+env.lda <- data.frame(alt = env0$alt, oxy = env0$oxy / 10, bdo = env0$bdo / 10)
+```
+
+### Pressuposto: matrizes de covariância homogêneas
+
+A LDA supõe que a dispersão dos grupos seja parecida. O `betadisper()`
+compara a distância de cada local ao centroide do seu grupo:
+
+```{r}
+set.seed(1)
+permutest(betadisper(dist(env.lda), gr), permutations = 999)
+```
+
+Com as variáveis brutas, a dispersão difere entre os grupos. O log da
+altitude e da DBO resolve:
+
+```{r}
+env.ln <- data.frame(ln_alt = log(env.lda$alt), oxy = env.lda$oxy,
+                     ln_bdo = log(env.lda$bdo), row.names = rownames(env0))
+set.seed(1)
+permutest(betadisper(dist(env.ln), gr), permutations = 999)
+```
+
+### Os grupos diferem nas médias?
+
+```{r}
+summary(manova(as.matrix(env.ln) ~ factor(gr)), test = "Wilks")
+```
+
+O lambda de Wilks varia de 0 (grupos totalmente separados) a 1 (médias
+iguais).
+
+### A LDA
+
+```{r}
+env.sc <- as.data.frame(scale(env.ln))
+spe.lda <- lda(gr ~ ., data = env.sc)
+spe.lda$scaling   # coeficientes das funções discriminantes (variáveis padronizadas)
+spe.lda$svd^2     # autovalores canônicos: quanto cada função separa os grupos
+```
+
+Como as variáveis estão padronizadas, os coeficientes podem ser comparados
+entre si: o maior em valor absoluto indica a variável que mais contribui
+para a função.
+
+### Quão bem a LDA classifica?
+
+```{r}
+classe <- predict(spe.lda)$class
+(tab <- table(observado = gr, previsto = classe))
+diag(prop.table(tab, 1))   # proporção de acertos em cada grupo
+```
+
+Esse sucesso é **otimista**: cada local é classificado por uma função que
+ele mesmo ajudou a calcular. A validação cruzada (deixa um de fora) dá uma
+estimativa honesta:
+
+```{r}
+spe.cv <- lda(gr ~ ., data = env.sc, CV = TRUE)
+(tab.cv <- table(observado = gr, previsto = spe.cv$class))
+diag(prop.table(tab.cv, 1))
+```
+
+### Classificar locais novos
+
+Dois locais hipotéticos: (1) altitude de 900 m, 9 mg/L de oxigênio e DBO de
+2,2 mg/L; (2) 250 m, 10 mg/L e 2,7 mg/L. Eles precisam passar pela mesma
+transformação e padronização dos dados originais:
+
+```{r}
+novos <- data.frame(ln_alt = log(c(900, 250)), oxy = c(9, 10),
+                    ln_bdo = log(c(2.2, 2.7)))
+novos.sc <- scale(novos, center = attr(scale(env.ln), "scaled:center"),
+                  scale = attr(scale(env.ln), "scaled:scale"))
+predict(spe.lda, newdata = as.data.frame(novos.sc))
+```
+
+`$class` é o grupo previsto e `$posterior`, a probabilidade de cada local
+pertencer a cada grupo.
+
+### Os locais no espaço discriminante
+
+```{r}
+fp <- predict(spe.lda)$x
+plot(fp[, 1:2], type = "n", xlab = "LD1", ylab = "LD2")
+text(fp[, 1:2], labels = rownames(env.sc), col = gr + 1)
 ```
