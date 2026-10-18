@@ -149,6 +149,22 @@ Quase 60 slides citam Legendre. Tratamento:
 - **Passo a passo de contas**: quando o original mostra de onde vem cada
   número (centralizar, montar **S**, resolver a equação característica),
   preserve esse detalhe, com um passo por fragmento.
+- **Referências com link** (pedido do Diogo): toda referência verificada na
+  `.ref` leva link para o DOI, `[Autor (ano)](https://doi.org/...)`.
+  Legendre & Legendre (2012) aponta para o capítulo citado, pelo DOI do
+  capítulo (o ScienceDirect bloqueia acesso automatizado; o DOI resolve
+  para a página certa): cap. 1 `10.1016/B978-0-444-53868-0.50001-0`;
+  cap. 2 `...50002-2`; cap. 7 `...50007-1`; cap. 8 `...50008-3`; cap. 9
+  `...50009-5`; cap. 10 `...50010-1`; cap. 11 `...50011-3`. Borcard et al.
+  (2018): livro `10.1007/978-3-319-71404-2`, capítulo N com sufixo `_N`
+  (cap. 5 = `_5`). McCune & Grace e Gotelli & Ellison ficam sem link.
+- **Espaço**: slide de uma frase só vai para o slide vizinho; lista curta
+  ganha uma tabela ou figura que acrescente informação (como a tabela de
+  propriedades em "Três tipos de coeficientes", na Aula 2). Meça a altura
+  útil e mire em ~500–740 px.
+- **Esquemas já feitos em outros cursos** (como as origens do zero, do
+  curso de Análise de Dados Univariados) são reaproveitados de
+  `assets/esquemas/`, com a origem em `assets/esquemas/FONTES.md`.
 - **Números com vírgula dentro de LaTeX**: no modo matemático a vírgula
   vira pontuação e ganha espaço ("64, 3"). Escreva `8{,}2` e, para números
   calculados, use `numm()` (definida no `setup` da Aula 4) em vez de `num()`.

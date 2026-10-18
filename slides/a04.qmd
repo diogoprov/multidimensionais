@@ -72,7 +72,7 @@ Albrecht Dürer, *Melencolia I* (1514), domínio público, via Wikimedia Commons
 4. Análise de Coordenadas Principais (PCoA)
 5. Escalonamento Multidimensional Não Métrico (nMDS)
 
-Não falaremos de MCA. Leitura: Legendre & Legendre (2012), cap. 9.
+Não falaremos de MCA. Leitura: [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), cap. 9.
 
 ::: {.nota}
 Todas as figuras foram geradas em R, com os dados do rio Doubs (pacote
@@ -117,7 +117,7 @@ fig_arvore()
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 9.1.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), Tabela 9.1.
 :::
 
 # 2. Análise de Componentes Principais (PCA) {.secao}
@@ -235,7 +235,7 @@ $\mathbf{S}$:
 Vejamos o passo a passo.
 
 ::: {.ref}
-Legendre & Legendre (2012), seção 9.1.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), seção 9.1.
 :::
 
 ## Passo 1: a média de cada variável
@@ -258,7 +258,7 @@ $$\bar{y}_2 = \frac{1 + 4 + 0 + 6 + 2}{5} = \frac{13}{5} = 2{,}6$$
 ::::
 
 ::: {.ref}
-Exemplo numérico de Legendre & Legendre (2012), seção 9.1, recalculado em R.
+Exemplo numérico de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), seção 9.1, recalculado em R.
 :::
 
 ## Passo 1: centrar, subtraindo a média
@@ -377,7 +377,7 @@ das variâncias: 8,2/14 = 58,6% seria a fração de $y_1$, não a do PC1.
 :::
 
 ::: {.ref}
-Legendre & Legendre (2012), seção 9.1.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), seção 9.1.
 :::
 
 ## A posição dos objetos: escores
@@ -397,7 +397,7 @@ Os autovetores são ortogonais por definição (veja a Aula 1):
 $\mathbf{u}_1'\mathbf{u}_2 = (0{,}8944 \times -0{,}4472) + (0{,}4472 \times 0{,}8944) = 0$.
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 432.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 432.
 :::
 
 ## Algumas terminologias importantes
@@ -479,11 +479,11 @@ knitr::kable(t(tab_loadings()), align = "r")
 
 - Não se pode testar a significância da correlação, já que os eixos são
   combinações lineares das próprias variáveis.
-- Alternativa: intervalo de confiança por um *bootstrap* modificado (Peres-Neto
-  et al. 2003).
+- Alternativa: intervalo de confiança por um *bootstrap* modificado ([Peres-Neto
+  et al. 2003](https://doi.org/10.1890/00-0634)).
 
 ::: {.ref}
-Peres-Neto, Jackson & Somers (2003) *Ecology* 84: 2347–2363.
+[Peres-Neto, Jackson & Somers (2003)](https://doi.org/10.1890/00-0634) *Ecology* 84: 2347–2363.
 :::
 
 ## Quantos eixos interpretar?
@@ -497,7 +497,7 @@ Critérios de seleção de eixos (existem mais de 20):
 - Kaiser-Guttman: interpretar os eixos com λ maior que a média dos λ (λ > 1
   na matriz de correlação)
 
-Veja Peres-Neto et al. (2005) para mais detalhes.
+Veja [Peres-Neto et al. (2005)](https://doi.org/10.1016/j.csda.2004.06.015) para mais detalhes.
 :::
 ::: {.column width="60%"}
 ```{r}
@@ -511,9 +511,9 @@ fig_autovalores()
 ::::
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 448–9. Peres-Neto, Jackson & Somers (2005)
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 448–9. [Peres-Neto, Jackson & Somers (2005)](https://doi.org/10.1016/j.csda.2004.06.015)
 *Comput. Stat. Data Anal.* 49: 974–997. Recalculado com os dados da Fig. 5.1
-de Borcard et al. (2018).
+de [Borcard et al. (2018)](https://doi.org/10.1007/978-3-319-71404-2_5).
 :::
 
 ## O que é um biplot?
@@ -532,8 +532,8 @@ Dois tipos:
   entre as **variáveis**.
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 443–5. Para aprofundar: Gower, Lubbe & le Roux
-(2010) *Understanding Biplots*, Wiley.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 443–5. Para aprofundar: [Gower, Lubbe & le Roux
+(2010)](https://doi.org/10.1002/9780470973196) *Understanding Biplots*, Wiley.
 :::
 
 ## No scaling 1 {.medio}
@@ -656,8 +656,8 @@ fig_circulo_equilibrio()
 ::::
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 437–9. Mesma análise da Fig. 5.4 de Borcard
-et al. (2018).
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 437–9. Mesma análise da Fig. 5.4 de [Borcard
+et al. (2018)](https://doi.org/10.1007/978-3-319-71404-2_5).
 :::
 
 ## Pressupostos da PCA
@@ -676,7 +676,7 @@ et al. (2018).
    `ade4::dudi.hillsmith`).
 
 ::: {.ref}
-Hill & Smith (1976) *Taxon* 25: 249–255.
+[Hill & Smith (1976)](https://doi.org/10.2307/1219449) *Taxon* 25: 249–255.
 :::
 
 ## Multinormalidade
@@ -706,7 +706,7 @@ fig_cov_cor()
 As variáveis com maiores unidades de medida dominam a ordenação.
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 445–6. Baseado em slides de Thiago
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 445–6. Baseado em slides de Thiago
 Gonçalves-Souza.
 :::
 
@@ -720,7 +720,7 @@ Gonçalves-Souza.
   todas elas.
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 445–6.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 445–6.
 :::
 
 ## Só tem uma última regra...
@@ -733,7 +733,7 @@ Legendre & Legendre (2012), p. 445–6.
 
 ::: {.ref}
 Henry Fuseli, *O Pesadelo* (1781), domínio público, via Wikimedia Commons.
-Legendre & Legendre (2012), p. 450–1 e 462–4.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 450–1 e 462–4.
 :::
 
 ## Três abordagens para dados de espécies
@@ -746,7 +746,7 @@ fig_abordagens()
 ```
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Fig. 9.8, p. 462–4.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), Fig. 9.8, p. 462–4.
 :::
 
 # 3. Análise de Correspondência (CA) {.secao}
@@ -765,7 +765,7 @@ Adaptado de Legendre & Legendre (2012), Fig. 9.8, p. 462–4.
 - Sinônimo de *Reciprocal Averaging* (RA).
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 464–82.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 464–82.
 :::
 
 ## Como interpretar o biplot de uma CA?
@@ -905,7 +905,7 @@ fig_arco()
 ```
 
 ::: {.ref}
-Dados simulados. Inspirado em Legendre & Legendre (2012), p. 484.
+Dados simulados. Inspirado em [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 484.
 :::
 
 ## O que fazer nesses casos?
@@ -932,8 +932,8 @@ inércia, mas quase não afetam os primeiros eixos, e removê-las não muda a
 estrutura principal da ordenação.
 
 ::: {.ref}
-Árvores de 50 parcelas de 1 ha da ilha de Barro Colorado (Condit et al.
-2002, *Science* 295: 666–669), via `vegan::BCI`.
+Árvores de 50 parcelas de 1 ha da ilha de Barro Colorado ([Condit et al.
+2002](https://doi.org/10.1126/science.1066854), *Science* 295: 666–669), via `vegan::BCI`.
 :::
 
 ## Detrended Correspondence Analysis (DCA)
@@ -949,7 +949,7 @@ estrutura principal da ordenação.
   muito longo.
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 483–7.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 483–7.
 :::
 
 # 4. Análise de Coordenadas Principais (PCoA) {.secao}
@@ -959,7 +959,7 @@ Legendre & Legendre (2012), p. 483–7.
 Ou escalonamento multidimensional métrico (Gower 1966).
 
 ::: {.ref}
-Gower (1966) *Biometrika* 53: 325–338. Legendre & Legendre (2012), p. 492–512.
+[Gower (1966)](https://doi.org/10.1093/biomet/53.3-4.325) *Biometrika* 53: 325–338. [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 492–512.
 :::
 
 ## Principal Coordinate Analysis (PCoA)
@@ -985,7 +985,7 @@ fig_pcoa_passos()
 $$a_{hi} = -\tfrac{1}{2} D_{hi}^2 \qquad \delta_{hi} = a_{hi} - \bar{a}_h - \bar{a}_i + \bar{a}$$
 
 ::: {.ref}
-Legendre & Legendre (2012), p. 492–5. Baseado em slides de Thiago
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 492–5. Baseado em slides de Thiago
 Gonçalves-Souza.
 :::
 
@@ -1010,7 +1010,7 @@ head(pcoa$points, 3)
 :::
 
 ::: {.ref}
-Legendre & Legendre (2012), seção 9.3. Baseado em slides de Thiago
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), seção 9.3. Baseado em slides de Thiago
 Gonçalves-Souza.
 :::
 
@@ -1048,7 +1048,7 @@ reduzido. Na PCoA, os dois primeiros eixos representam
 `r num(r2_pco, 0)`% da variação (soma dos autovalores positivos).
 
 ::: {.ref}
-Peixes do Doubs, distância de Bray-Curtis. Legendre & Legendre (2012), p. 427–8.
+Peixes do Doubs, distância de Bray-Curtis. [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 427–8.
 :::
 
 ## Propriedades da PCoA
@@ -1072,7 +1072,7 @@ fig_nao_euclidiano()
 ```
 
 ::: {.ref}
-Redesenhado de Legendre & Legendre (2012), Fig. 9.17.
+Redesenhado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), Fig. 9.17.
 :::
 
 ## Correções para autovalores negativos
@@ -1098,7 +1098,7 @@ fig_autovalores_negativos()
 ::::
 
 ::: {.ref}
-Legendre & Legendre (2012), seção 9.3. Calculado com `ape::pcoa()`.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), seção 9.3. Calculado com `ape::pcoa()`.
 :::
 
 # 5. Escalonamento Multidimensional Não Métrico (nMDS) {.secao}
@@ -1108,7 +1108,7 @@ Legendre & Legendre (2012), seção 9.3. Calculado com `ape::pcoa()`.
 *Non-metric Multidimensional Scaling* (Kruskal 1964).
 
 ::: {.ref}
-Kruskal (1964) *Psychometrika* 29: 1–27. Legendre & Legendre (2012), p. 512–9.
+[Kruskal (1964)](https://doi.org/10.1007/BF02289565) *Psychometrika* 29: 1–27. [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 512–9.
 :::
 
 ## O que é um nMDS?
@@ -1248,7 +1248,7 @@ fig_nmds_doubs()
 :::
 
 ::: {.ref}
-Adaptado de Borcard et al. (2018), p. 194–5.
+Adaptado de [Borcard et al. (2018)](https://doi.org/10.1007/978-3-319-71404-2_5), p. 194–5.
 :::
 
 ## Diferenças entre PCoA e nMDS (2/2) {.medio}
@@ -1267,7 +1267,7 @@ distâncias entre locais em poucas dimensões.
 :::
 
 ::: {.ref}
-Adaptado de Borcard et al. (2018), p. 194–5.
+Adaptado de [Borcard et al. (2018)](https://doi.org/10.1007/978-3-319-71404-2_5), p. 194–5.
 :::
 
 # Para saber mais {.secao}
@@ -1284,7 +1284,7 @@ Adaptado de Borcard et al. (2018), p. 194–5.
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 9.4.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), Tabela 9.4.
 :::
 
 ## Roteiro da PCA (para consulta): os resultados {.medio}
@@ -1300,5 +1300,5 @@ Adaptado de Legendre & Legendre (2012), Tabela 9.4.
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 9.4.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), Tabela 9.4.
 :::

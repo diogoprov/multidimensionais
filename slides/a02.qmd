@@ -65,7 +65,7 @@ Ao fim da aula, você deverá ter compreendido:
 4. Os coeficientes para descritores e para objetos
 5. Como escolher o coeficiente de acordo com o tipo de dado
 
-Leitura: Legendre & Legendre (2012), cap. 7 (a escolha do coeficiente está
+Leitura: [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), cap. 7 (a escolha do coeficiente está
 na seção 7.6).
 
 ::: {.nota}
@@ -173,16 +173,24 @@ A soma de dois lados de um triângulo nunca é menor que o terceiro: ir de
 *a* a *c* passando por *b* não pode ser mais curto que ir direto.
 :::
 
-## Três tipos de coeficientes de distância
+## Três tipos de coeficientes de distância {.medio}
 
-- **Métricos**: têm as quatro propriedades.
-- **Semimétricos**: violam a desigualdade triangular.
-- **Não métricos**: podem violar as propriedades 1 a 3. Não são usados em
+::: {.tabela-grande}
+| Tipo | 1. Mín. 0 | 2. Posit. | 3. Simetria | 4. Triângulo | Exemplos |
+|-----------|:----:|:----:|:----:|:----:|--------------------------|
+| **Métricos** | ✓ | ✓ | ✓ | ✓ | euclidiana, Jaccard, chord, Hellinger |
+| **Semimétricos** | ✓ | ✓ | ✓ | ✗ | diferença percentual (Bray-Curtis), Sørensen |
+| **Não métricos** | ? | ? | ? | ✗ | $S_4$ e Kulczynski ($S_{12}$) |
+:::
+
+- Semimétricos violam a desigualdade triangular: não dá para representá-los
+  exatamente num espaço euclidiano (voltaremos a isso na PCoA).
+- Não métricos podem violar até as propriedades 1 a 3. Não são usados em
   ecologia.
 
 ::: {.ref}
 Para uma comparação das propriedades dos coeficientes de dissimilaridade em
-estudos de diversidade beta, veja Legendre & De Cáceres (2013) *Ecol. Lett.*
+estudos de diversidade beta, veja [Legendre & De Cáceres (2013)](https://doi.org/10.1111/ele.12141) *Ecol. Lett.*
 16: 951–963.
 :::
 
@@ -192,14 +200,21 @@ estudos de diversidade beta, veja Legendre & De Cáceres (2013) *Ecol. Lett.*
 
 Coeficientes para objetos (modo Q).
 
-## Coeficientes métricos para dados quantitativos
+## Coeficientes métricos para dados quantitativos {.medio}
 
-- Geralmente usados para **variáveis ambientais** contínuas, medidas
-  morfométricas, biomassa etc.
-- Distância euclidiana, Canberra, Mahalanobis, Manhattan, chord, χ² e
-  Hellinger.
-- A de Hellinger não dá peso excessivo às espécies raras, diferentemente da
-  de qui-quadrado.
+Para variáveis ambientais contínuas, medidas morfométricas, biomassa etc.
+
+::: {.tabela-grande}
+| Distância | Ideia | Em L&L |
+|----------|-----------------------------------------|:----:|
+| Euclidiana | Pitágoras em $p$ dimensões | $D_1$ |
+| Manhattan | soma das diferenças em cada eixo | $D_7$ |
+| Canberra | soma das diferenças relativas de cada descritor | $D_{10}$ |
+| Chord | euclidiana depois de normalizar cada objeto para comprimento 1 | $D_3$ |
+| Hellinger | chord sobre a raiz das abundâncias relativas; não dá peso excessivo às espécies raras | $D_{17}$ |
+| Qui-quadrado | euclidiana ponderada pelos totais; dá muito peso às raras | $D_{16}$ |
+| Mahalanobis | leva em conta a covariância entre os descritores | $D_5$ |
+:::
 
 ## Distância euclidiana
 
@@ -222,7 +237,7 @@ fig_euclid_plantas()
 ::::
 
 ::: {.ref}
-Legendre & Legendre (2012), eq. 7.34; McCune & Grace (2002). Figura com
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), eq. 7.34; McCune & Grace (2002). Figura com
 dados simulados, inspirada na Fig. 12.2 de Gotelli & Ellison (2011).
 :::
 
@@ -300,7 +315,7 @@ fig_manhattan()
 ::::
 
 ::: {.ref}
-McCune & Grace (2002); Legendre & Legendre (2012), eq. 7.45.
+McCune & Grace (2002); [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), eq. 7.45.
 :::
 
 ## Distância de chord
@@ -359,26 +374,29 @@ Dados simulados.
 
 ## Duas comunidades
 
+:::: {.columns}
+::: {.column width="58%"}
 ```{r}
 #| fig-alt: "Diagrama de Venn com duas comunidades. Só na comunidade 1: perereca, roedor e sabiá. Nas duas: mosca, jacaré e gafanhoto. Só na comunidade 2: lambari, preguiça e queixada. Fora dos dois círculos, ausentes das duas: lontra e tamanduá."
-#| fig-width: 8
-#| fig-height: 5.4
-#| out-height: 560px
+#| fig-width: 7.2
+#| fig-height: 5.2
+#| out-height: 540px
 fig_venn()
 ```
-
-::: {.ref}
-Baseado em slides de Thiago Gonçalves-Souza.
 :::
-
-## Problema com as métricas de distância
-
+::: {.column width="42%"}
 A distância euclidiana trata uma ausência dupla (as espécies fora dos dois
 círculos) como uma semelhança entre os locais.
 
-::: {.definicao}
+::: {.fragment .definicao}
 Resultado: locais sem nenhuma espécie em comum podem ter distância
 **menor** do que locais que compartilham espécies.
+:::
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
 :::
 
 ## Exemplo com distância euclidiana
@@ -418,7 +436,7 @@ nenhuma espécie em comum parecem os mais semelhantes.
 ::::
 
 ::: {.ref}
-Exemplo numérico de Legendre & Legendre (2012), recalculado em R.
+Exemplo numérico de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), recalculado em R.
 :::
 
 ## Poderia ser legal e interessante...
@@ -476,15 +494,12 @@ Inspirado na Fig. 5.3 de McCune & Grace (2002).
 
 ## O que significa um zero?
 
-```{r}
-#| fig-alt: "Árvore de decisão. Uma observação pode ser zero ou maior que zero. Zeros podem ser falsos, por erros do observador (a espécie estava lá e não foi encontrada) ou de delineamento (local, momento ou esforço inadequados), e são zeros a evitar; ou verdadeiros, estruturais (há uma razão ecológica, como estar fora do nicho) ou aleatórios (sem razão ecológica), que geram a inflação de zeros."
-#| fig-height: 4.8
-#| out-height: 540px
-fig_tipos_zero()
-```
+![](../assets/esquemas/origens-do-zero.svg){fig-align="center" width="82%" fig-alt="Esquema das quatro origens de uma contagem igual a zero. Um zero pode ser falso, por erro de observação (estavam lá e não foram vistos) ou de delineamento (lugar ou época errados), e aí a solução é consertar o desenho; ou verdadeiro, estrutural (não podiam estar lá) ou aleatório (podiam estar e não estavam), o que gera a inflação de zeros. Contagens maiores que zero formam o componente de contagem."}
 
 ::: {.ref}
-Adaptado de Blasco-Moreno et al. (2019) *Methods Ecol. Evol.* 10: 949–959.
+Esquema próprio (do curso de Análise de Dados Univariados), a partir da
+classificação de [Blasco-Moreno et al. (2019)](https://doi.org/10.1111/2041-210X.13185)
+*Methods Ecol. Evol.* 10: 949–959. Silhuetas: PhyloPic, CC0.
 :::
 
 ## Duplos zeros não têm interpretação única {.medio}
@@ -525,11 +540,9 @@ Numérica).
 - Então, **não podemos dizer que dois locais são parecidos porque
   compartilham ausências de espécies**.
 
-## Coeficientes assimétricos
-
-::: {.definicao}
-Logo, precisamos de coeficientes que desconsiderem as duplas ausências.
-Esses coeficientes são chamados de **assimétricos**.
+::: {.fragment .definicao}
+Logo, precisamos de coeficientes que desconsiderem as duplas ausências:
+os coeficientes **assimétricos**.
 :::
 
 ## Ah, entendi...
@@ -567,7 +580,7 @@ outras em diferentes locais e tempos?
 :::
 
 ::: {.ref}
-Anderson et al. (2011) *Ecol. Lett.* 14: 19–28.
+[Anderson et al. (2011)](https://doi.org/10.1111/j.1461-0248.2010.01552.x) *Ecol. Lett.* 14: 19–28.
 :::
 
 ## A notação a, b, c e d
@@ -673,7 +686,7 @@ correspondente, $D_{14} = 1 - S_{17}$, é a **diferença percentual**.
 :::
 
 ::: {.ref}
-Legendre & Legendre (2012), eqs. 7.11 e 7.24.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), eqs. 7.11 e 7.24.
 :::
 
 ## Dados binários de descritores (modo R)
@@ -711,7 +724,7 @@ Coeficientes para objetos (modo Q).
 :::
 
 ::: {.ref}
-Legendre & Legendre (2012), Tabelas 7.2 e 7.4.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), Tabelas 7.2 e 7.4.
 :::
 
 ## Domínios e amplitudes das distâncias (1/2) {.medio}
@@ -774,7 +787,7 @@ percentual é **semimétrica**.
 :::
 
 ::: {.ref}
-Exemplo de Orlóci (1978), em Legendre & Legendre (2012), cap. 7; recalculado
+Exemplo de Orlóci (1978), em [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), cap. 7; recalculado
 em R.
 :::
 
@@ -808,11 +821,11 @@ $$D_{\text{Gower}}(x_1, x_2) = 1 - \frac{1}{p} \sum_{j=1}^{p} s_j(x_1, x_2)$$
 - Descritores qualitativos ou binários: $s_j = 1$ se os dois objetos têm o
   mesmo estado; senão, 0.
 
-Pavoine et al. (2009) o expandiram para mais tipos de dados: circulares
+[Pavoine et al. (2009)](https://doi.org/10.1111/j.1600-0706.2008.16668.x) o expandiram para mais tipos de dados: circulares
 (fenológicos), *fuzzy* (pertencimento difuso) e ordinais.
 
 ::: {.ref}
-Gower (1971) *Biometrics* 27: 857–871; Pavoine et al. (2009) *Oikos* 118:
+[Gower (1971)](https://doi.org/10.2307/2528823) *Biometrics* 27: 857–871; [Pavoine et al. (2009)](https://doi.org/10.1111/j.1600-0706.2008.16668.x) *Oikos* 118:
 391–402. Fórmula de um slide de P. Legendre.
 :::
 
@@ -836,7 +849,7 @@ normais.
 :::
 
 ::: {.ref}
-Legendre & Legendre (2012), cap. 1.
+[Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50001-0), cap. 1.
 :::
 
 ## Padronização das variáveis ambientais {.medio}
@@ -891,7 +904,7 @@ distância.
 ::::
 
 ::: {.ref}
-Baseado em slides de Thiago Gonçalves-Souza. Legendre et al. (2011): "menor
+Baseado em slides de Thiago Gonçalves-Souza. [Legendre & Gallagher (2001)](https://doi.org/10.1007/s004420100716): "menor
 probabilidade de cometer erro do tipo I utilizando matrizes padronizadas".
 :::
 
@@ -916,8 +929,8 @@ fig_dominancia()
 ::::
 
 ::: {.ref}
-Árvores de 50 parcelas de 1 ha da ilha de Barro Colorado (Condit et al.
-2002, *Science* 295: 666–669), via `vegan::BCI`.
+Árvores de 50 parcelas de 1 ha da ilha de Barro Colorado ([Condit et al.
+2002](https://doi.org/10.1126/science.1066854), *Science* 295: 666–669), via `vegan::BCI`.
 :::
 
 ## Transformar antes de ordenar
@@ -934,7 +947,7 @@ ordenação (PCA, PCoA, RDA) que satisfaça os critérios de metricidade.
 Voltaremos a isso na aula de ordenações restritas.
 
 ::: {.ref}
-Legendre & Gallagher (2001) *Oecologia* 129: 271–280.
+[Legendre & Gallagher (2001)](https://doi.org/10.1007/s004420100716) *Oecologia* 129: 271–280.
 :::
 
 ## Transformações de Box-Cox-chord
@@ -949,7 +962,7 @@ Legendre & Gallagher (2001) *Oecologia* 129: 271–280.
 - Os autores fornecem o código em R.
 
 ::: {.ref}
-Legendre & Borcard (2018) *Ecography* 41: 1820–1824.
+[Legendre & Borcard (2018)](https://doi.org/10.1111/ecog.03498) *Ecography* 41: 1820–1824.
 :::
 
 ## Tudo confuso?
@@ -981,7 +994,7 @@ Os mesmos três locais do exemplo do duplo zero: só a distância euclidiana
 põe juntos $x_2$ e $x_3$, que não têm nenhuma espécie em comum.
 
 ::: {.ref}
-Inspirado na Fig. 7.9 de Legendre & Legendre (2012).
+Inspirado na Fig. 7.9 de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1).
 :::
 
 ## Uma chave dicotômica? Sim, ela existe!
@@ -994,7 +1007,7 @@ fig_chave_especies()
 ```
 
 ::: {.ref}
-Resumo da Tabela 7.4 de Legendre & Legendre (2012), que traz a chave
+Resumo da Tabela 7.4 de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), que traz a chave
 completa (veja também a seção 7.6).
 :::
 
@@ -1011,7 +1024,7 @@ Entre descritores (modo R): covariância ou correlação de Pearson para
 relações lineares; Spearman ou Kendall para relações monotônicas.
 
 ::: {.ref}
-Resumo das Tabelas 7.5 e 7.6 de Legendre & Legendre (2012).
+Resumo das Tabelas 7.5 e 7.6 de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1).
 :::
 
 # Para saber mais {.secao}
@@ -1030,7 +1043,7 @@ Resumo das Tabelas 7.5 e 7.6 de Legendre & Legendre (2012).
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 7.2.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), Tabela 7.2.
 :::
 
 ## Propriedades das distâncias derivadas das similaridades (2/4) {.medio}
@@ -1047,7 +1060,7 @@ Adaptado de Legendre & Legendre (2012), Tabela 7.2.
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 7.2.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), Tabela 7.2.
 :::
 
 ## Propriedades das distâncias derivadas das similaridades (3/4) {.medio}
@@ -1064,7 +1077,7 @@ Adaptado de Legendre & Legendre (2012), Tabela 7.2.
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 7.2.
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), Tabela 7.2.
 :::
 
 ## Propriedades das distâncias derivadas das similaridades (4/4) {.medio}
@@ -1080,7 +1093,7 @@ Adaptado de Legendre & Legendre (2012), Tabela 7.2.
 :::
 
 ::: {.ref}
-Adaptado de Legendre & Legendre (2012), Tabela 7.2 ("provável" = *likely*).
+Adaptado de [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50007-1), Tabela 7.2 ("provável" = *likely*).
 :::
 
 ## Ajustes nos dados de espécies (para consulta) {.medio}

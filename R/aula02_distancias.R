@@ -103,8 +103,8 @@ fig_euclid_plantas <- function() {
     geom_segment(aes(x = altura[1], y = envergadura[1], xend = altura[2], yend = envergadura[2]),
                  colour = cores[["verde"]], linewidth = 1.1) +
     geom_point(size = 3.5, colour = cores[["texto"]]) +
-    geom_text(aes(label = paste("planta", planta)), nudge_y = .35, size = 4.6) +
-    scale_y_continuous(expand = expansion(mult = .12)) +
+    # rótulo ao lado de cada ponto, para dentro do gráfico
+    geom_text(aes(label = paste("planta", planta), hjust = c(-.15, 1.15)), size = 5) +
     annotate("text", x = 560, y = 58.2, size = 5, colour = cores[["verde"]],
              label = "d[ij] == sqrt((y[i1] - y[j1])^2 + (y[i2] - y[j2])^2)", parse = TRUE) +
     labs(x = "Altura (mm)", y = "Envergadura do apêndice (mm)") +
