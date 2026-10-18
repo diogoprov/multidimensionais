@@ -96,6 +96,60 @@ mrm <- function(Dy, ..., nperm = 999, semente = 1) {
 
 #' Composição × ambiente quando a dissimilaridade satura: a reta da MRM e uma
 #' curva não linear, como no GDM (coenoclina simulada)
+#' Por que as dissimilaridades saturam: a amplitude de cada espécie no
+#' gradiente (barras), a matriz de presença e ausência que sai dela e a
+#' dissimilaridade de Jaccard do local A para os outros, que para em 1
+saturacao_ex <- function() {
+  sp <- tibble(sp = paste0("sp", 1:12), otimo = seq(5, 95, length.out = 12),
+               larg = c(26, 18, 30, 22, 34, 20, 28, 24, 32, 18, 26, 22)) |>
+    mutate(ini = pmax(otimo - larg / 2, 0), fim = pmin(otimo + larg / 2, 100))
+  locais <- c(A = 8, B = 22, C = 38, D = 55, E = 75, F = 95)
+  Y <- sapply(seq_len(nrow(sp)), \(k) as.integer(locais >= sp$ini[k] & locais <= sp$fim[k]))
+  dimnames(Y) <- list(names(locais), sp$sp)
+  list(sp = sp, locais = locais, Y = Y,
+       jac = as.matrix(vegan::vegdist(Y, "jaccard", binary = TRUE))["A", ])
+}
+
+fig_saturacao <- function(ex = saturacao_ex()) {
+  sp <- ex$sp; loc <- ex$locais; Y <- ex$Y
+  sp$y <- rev(seq_len(nrow(sp)))
+  p1 <- ggplot(sp) +
+    geom_vline(xintercept = loc, colour = "#c0392b", linetype = "22", linewidth = .6) +
+    geom_segment(aes(x = ini, xend = fim, y = y, yend = y), colour = oc, linewidth = 4.2,
+                 lineend = "round") +
+    annotate("label", x = loc, y = nrow(sp) + 1.1, label = names(loc), colour = "#c0392b",
+             fontface = "bold", size = 5.4, linewidth = 0, fill = cores[["papel"]]) +
+    scale_y_continuous(breaks = sp$y, labels = sp$sp) +
+    coord_cartesian(xlim = c(0, 100), ylim = c(.5, nrow(sp) + 1.5)) +
+    labs(x = "Gradiente ambiental", y = NULL, title = "Amplitude de cada espécie") +
+    tema_aula(base = 14) + theme(panel.grid.major.y = element_blank())
+  dm <- as_tibble(Y, rownames = "local") |>
+    tidyr::pivot_longer(-local, names_to = "sp", values_to = "pres") |>
+    mutate(sp = factor(sp, colnames(Y)), local = factor(local, rev(rownames(Y))))
+  p2 <- ggplot(dm, aes(sp, local)) +
+    geom_tile(aes(fill = factor(pres)), colour = "white", linewidth = .8) +
+    geom_text(aes(label = pres), size = 4.2,
+              colour = ifelse(dm$pres == 1, "white", cores[["neutro"]])) +
+    scale_fill_manual(values = c(`0` = cores[["neutro_cl"]], `1` = oc), guide = "none") +
+    scale_x_discrete(position = "top") +
+    labs(x = NULL, y = NULL, title = "Matriz de composição") +
+    tema_aula(base = 14) +
+    theme(panel.grid = element_blank(), axis.text.x = element_text(angle = 90, vjust = .5),
+          axis.text.y = element_text(face = "bold", colour = "#c0392b", size = 15))
+  dj <- tibble(local = names(loc), dist = loc - loc["A"], jac = ex$jac[names(loc)])
+  p3 <- ggplot(dj, aes(dist, jac)) +
+    geom_hline(yintercept = 1, colour = cores[["neutro"]], linetype = "22") +
+    geom_line(colour = oc, linewidth = 1.1) +
+    geom_point(colour = "#c0392b", size = 3.4) +
+    geom_text(aes(label = local), colour = "#c0392b", fontface = "bold", size = 5,
+              vjust = -1) +
+    coord_cartesian(ylim = c(0, 1.15)) +
+    labs(x = "Distância ambiental até A", y = "Jaccard com A",
+         title = "Dissimilaridade a partir de A") +
+    tema_aula(base = 14)
+  (p1 | p2 | p3) + plot_layout(widths = c(1.15, 1, 1))
+}
+
 fig_gdm <- function() {
   grad <- seq(0, 100, length.out = 40)
   otimo <- seq(-10, 110, length.out = 30)
@@ -123,7 +177,7 @@ fig_gdm <- function() {
 
 #' Os três passos da superposição de Procrustes: translação, escalonamento e
 #' rotação de um triângulo sobre outro
-fig_procrustes_passos <- function() {
+fig_procrustes_passos <- function(passo = NULL) {
   A <- rbind(c(0, 0), c(2, 3), c(3, .5))
   ang <- 50 * pi / 180
   R <- matrix(c(cos(ang), sin(ang), -sin(ang), cos(ang)), 2)
@@ -155,9 +209,21 @@ fig_procrustes_passos <- function() {
       theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA),
             plot.title = element_text(face = "bold", hjust = .5, colour = cores[["texto"]]))
   }
-  painel(A, B, "Dados originais") + painel(A1, B1, "1. Translação") +
-    painel(A2, B2, "2. Escalonamento") + painel(A2, B3, "3. Rotação") +
-    plot_layout(nrow = 1)
+  est <- list(list(A, B, "Dados originais"), list(A1, B1, "1. Translação"),
+              list(A2, B2, "2. Escalonamento"), list(A2, B3, "3. Rotação"))
+  if (is.null(passo))
+    return(Reduce(`+`, lapply(est, \(e) painel(e[[1]], e[[2]], e[[3]]))) + plot_layout(nrow = 1))
+  # um passo: antes → depois
+  seta <- ggplot() +
+    annotate("segment", x = 0, xend = 1, y = 0, yend = 0, linewidth = 2.5,
+             colour = cores[["accent_dark"]], arrow = arrow(length = unit(.4, "cm"), type = "closed")) +
+    annotate("text", x = .5, y = .25, label = sub("^\\d\\. ", "", est[[passo + 1]][[3]]),
+             size = 6, fontface = "bold", colour = cores[["accent_dark"]]) +
+    coord_cartesian(xlim = c(-.1, 1.1), ylim = c(-1, 1)) + theme_void() +
+    theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+  antes <- est[[passo]]; depois <- est[[passo + 1]]
+  painel(antes[[1]], antes[[2]], "Antes") + seta + painel(depois[[1]], depois[[2]], "Depois") +
+    plot_layout(widths = c(1, .55, 1))
 }
 
 #' PROTEST: concordância entre a PCA ambiental e a PCA dos peixes do Doubs
@@ -186,6 +252,65 @@ fig_protest <- function(p = doubs_protest()) {
     tema_aula(base = 13)
 }
 
+#' Procrustes como ferramenta geral: dos dados às coordenadas, à superposição e
+#' aos resíduos (adaptado de Peres-Neto & Jackson 2001)
+fig_procrustes_fluxo <- function() {
+  ne <- cores[["accent_dark"]]
+  cx <- tribble(
+    ~x,    ~y,   ~w,   ~h,   ~rotulo,                                        ~cor,
+    0,     1.9,  2.5,  1,    "Dados brutos\n(X e Y, separados)",             ne,
+    4.6,   1.9,  2.5,  1,    "Matriz de\ndistâncias",                        ne,
+    2.3,   -.4,  2.9,  1,    "Coordenadas\nde X e de Y",                     ne,
+    6.4,   -.4,  2.5,  1,    "Superposição\nde Procrustes",                  oc,
+    10.1,  -.4,  2.6,  1,    "Resíduos\n(objetos × dimensões)",              oc,
+    14.2,  1.2,  2.7,  .8,   "Agrupamento",                                  ne,
+    14.2,  -.4,  2.7,  .8,   "Ordenação",                                    ne,
+    14.2,  -2,   2.7,  1,    "PROTEST, ANOVA,\nMANOVA, regressão",           ne
+  )
+  setas <- tribble(
+    ~x,    ~y,    ~xend, ~yend, ~tipo,
+    1.25,  1.9,   3.35,  1.9,   "solid",
+    .4,    1.4,   1.6,   .1,    "solid",
+    4.2,   1.4,   3.0,   .1,    "solid",
+    -1.25, 1.6,   .85,   -.4,   "22",
+    3.75,  -.4,   5.15,  -.4,   "solid",
+    7.65,  -.4,   8.8,   -.4,   "solid",
+    11.4,  -.2,   12.85, 1.2,   "solid",
+    11.4,  -.4,   12.85, -.4,   "solid",
+    11.4,  -.6,   12.85, -2,    "solid"
+  )
+  setas$curv <- c(0, 0, 0, .35, 0, 0, 0, 0, 0)
+  diagrama(cx, setas, base = 4.8) +
+    annotate("text", x = 2.3, y = 2.25, size = 4.3, colour = ne, label = "distância\n(euclidiana, Jaccard...)",
+             lineheight = .85, vjust = 0) +
+    annotate("text", x = -.05, y = .75, size = 4.3, colour = ne, label = "ordenação\n(PCA, CA)",
+             lineheight = .85, hjust = 1) +
+    annotate("text", x = 4.75, y = .75, size = 4.3, colour = ne, label = "ordenação\n(PCoA, nMDS)",
+             lineheight = .85, hjust = 0) +
+    annotate("text", x = -1.5, y = -.6, size = 4.1, colour = cores[["neutro"]],
+             label = "ou os próprios\ndados", lineheight = .85, fontface = "italic") +
+    annotate("text", x = 12.1, y = -2.6, size = 4.1, colour = cores[["neutro"]],
+             label = "testes de hipótese", fontface = "italic") +
+    geom_blank(data = tibble(x = c(-2.6, 15.6), y = c(-2.8, 2.9)), aes(x, y))
+}
+
+#' PROTEST: distribuição dos m² das permutações e o m² observado
+fig_protest_perm <- function(p = doubs_protest()) {
+  m2 <- 1 - p$t^2
+  obs <- p$ss
+  d <- tibble(m2 = m2)
+  topo <- max(hist(m2, breaks = 30, plot = FALSE)$counts)
+  ggplot(d, aes(m2)) +
+    geom_histogram(bins = 30, fill = cores[["neutro_cl"]], colour = cores[["neutro"]]) +
+    annotate("segment", x = obs, xend = obs, y = topo * .55, yend = topo * .03,
+             colour = "#c0392b", linewidth = 1.3, arrow = arrow(length = unit(.3, "cm"), type = "closed")) +
+    annotate("text", x = obs, y = topo * .62, colour = "#c0392b", fontface = "bold", size = 5.2, hjust = 0,
+             label = paste0("m² observado = ", format(round(obs, 3), decimal.mark = ","))) +
+    labs(x = "m² das permutações", y = "Frequência",
+         subtitle = paste(length(m2), "permutações das linhas de uma das matrizes")) +
+    tema_aula(base = 16)
+}
+
 # ---- PERMANOVA ----------------------------------------------------------------------
 
 #' A matriz de distâncias ordenada pelos grupos: as somas de quadrados vêm das
@@ -204,12 +329,46 @@ fig_permanova_matriz <- function(a = anuros()) {
     scale_fill_manual(values = c(Campo = cores[["verde"]], `Coleção` = cores[["accent"]],
                                  `entre grupos` = cores[["neutro"]]), name = NULL) +
     scale_alpha(range = c(.35, 1), guide = "none") +
-    scale_y_reverse(breaks = rot$i, labels = rot$nome) +
-    scale_x_continuous(breaks = rot$i, labels = rot$nome, position = "top") +
-    coord_equal() + labs(x = NULL, y = NULL) +
-    tema_aula(base = 17) +
-    theme(axis.text.x = element_blank(), panel.grid = element_blank(),
-          legend.position = "bottom")
+    scale_y_reverse(breaks = rot$i[-1], labels = rot$nome[-1]) +
+    scale_x_continuous(breaks = rot$i[-n], labels = rot$nome[-n]) +
+    coord_equal(clip = "off") + labs(x = NULL, y = NULL) +
+    tema_aula(base = 15) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5),
+          panel.grid = element_blank(), legend.position = "right")
+}
+
+#' PERMANOVA: distâncias dos objetos ao centroide do seu grupo (SS_W) e dos
+#' centroides dos grupos ao centroide geral (SS_A); dados simulados
+fig_permanova_centroides <- function() {
+  set.seed(11)
+  d <- bind_rows(tibble(x = rnorm(8, -2, .7), y = rnorm(8, 0, .7), g = "A"),
+                 tibble(x = rnorm(8, 2, .7), y = rnorm(8, .3, .7), g = "B"))
+  cen <- d |> group_by(g) |> summarise(cx = mean(x), cy = mean(y))
+  ger <- tibble(x = mean(d$x), y = mean(d$y))
+  d <- left_join(d, cen, by = "g")
+  pal <- c(A = cores[["accent"]], B = cores[["verde"]])
+  base <- function(titulo) ggplot() +
+    geom_point(data = d, aes(x, y, fill = g, shape = g), size = 3.6, colour = "white") +
+    scale_fill_manual(values = pal, guide = "none") +
+    scale_shape_manual(values = c(A = 21, B = 24), guide = "none") +
+    coord_equal(xlim = c(-4, 4), ylim = c(-2, 2.2)) +
+    labs(title = titulo, x = NULL, y = NULL) +
+    theme_void(base_size = 16) +
+    theme(plot.title = element_text(hjust = .5, face = "bold", colour = cores[["accent_dark"]]),
+          panel.border = element_rect(fill = NA, colour = cores[["neutro"]]),
+          plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+  p1 <- base("Objetos → centroide do grupo") +
+    geom_segment(data = d, aes(x, y, xend = cx, yend = cy), colour = cores[["accent_dark"]],
+                 linewidth = .6) +
+    geom_point(data = cen, aes(cx, cy), shape = 4, size = 5, stroke = 2, colour = cores[["accent_dark"]]) +
+    annotate("text", x = 0, y = -1.8, label = "SS[W]", parse = TRUE, size = 7, colour = "#c0392b")
+  p2 <- base("Centroides dos grupos → centroide geral") +
+    geom_segment(data = cen, aes(cx, cy, xend = ger$x, yend = ger$y), colour = cores[["accent_dark"]],
+                 linewidth = 1.2) +
+    geom_point(data = cen, aes(cx, cy), shape = 4, size = 5, stroke = 2, colour = cores[["accent_dark"]]) +
+    geom_point(data = ger, aes(x, y), shape = 8, size = 6, stroke = 1.6, colour = "#c0392b") +
+    annotate("text", x = 0, y = -1.8, label = "SS[A]", parse = TRUE, size = 7, colour = "#c0392b")
+  p1 + p2
 }
 
 #' Posição × dispersão: quatro situações com dois grupos (dados simulados)

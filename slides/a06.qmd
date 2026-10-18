@@ -316,14 +316,36 @@ fig_mantel_dispersao(md, mang$statistic, x = "Dg", xlab = "Distância geográfic
 `mrm()` em `R/aula06.R`.
 :::
 
+## Por que as dissimilaridades saturam? {.medio}
+
+```{r}
+#| fig-alt: "Três painéis. À esquerda, a amplitude de 12 espécies ao longo de um gradiente, como barras horizontais, com seis locais, de A a F, marcados por linhas verticais. No centro, a matriz de presença e ausência dos seis locais, lida das barras: cada local tem as espécies cujas barras cruzam a sua linha. À direita, a dissimilaridade de Jaccard entre A e os outros locais contra a distância ambiental: sobe de B para C e chega a 1 em D; E e F, mais distantes, também ficam em 1."
+#| fig-width: 12.5
+#| fig-height: 4.8
+#| out-height: 430px
+fig_saturacao()
+```
+
+- Jaccard, Sørensen e Bray-Curtis vão até **1**: nenhuma espécie em comum.
+- Depois que dois locais deixam de compartilhar espécies (D, E e F em relação
+  a A), afastá-los mais não aumenta a dissimilaridade: a relação **satura**,
+  e uma reta (MRM) não a descreve.
+
+::: {.ref}
+Comunidade simulada. [Ferrier et al. (2007)](https://doi.org/10.1111/j.1472-4642.2007.00341.x)
+*Divers. Distrib.* 13: 252–264.
+:::
+
 ## Generalized Dissimilarity Modelling (GDM)
 
 :::: {.columns}
 ::: {.column width="42%"}
 - Extensão da MRM.
 - Acomoda relações **não lineares**.
-- Bom desempenho com dissimilaridades que **saturam** (locais sem espécies
-  em comum têm todos dissimilaridade 1).
+- Lida com a saturação por uma função de ligação exponencial negativa:
+  $d = 1 - e^{-\eta}$.
+- Transforma cada preditora por *I-splines*: a taxa de substituição de
+  espécies pode mudar ao longo do gradiente.
 - Aplicações em modelagem de comunidades e mapeamento da diversidade beta.
 :::
 ::: {.column width="58%"}
@@ -331,7 +353,7 @@ fig_mantel_dispersao(md, mang$statistic, x = "Dg", xlab = "Distância geográfic
 #| fig-alt: "Dissimilaridade de Bray-Curtis contra a distância ambiental entre locais de uma coenoclina simulada. Os pontos sobem e saturam em 1. A reta da regressão linear (MRM), tracejada, não acompanha a saturação; uma curva que satura, como a do GDM, descreve bem os pontos."
 #| fig-width: 6.6
 #| fig-height: 5
-#| out-height: 500px
+#| out-height: 470px
 fig_gdm()
 ```
 :::
@@ -347,8 +369,10 @@ fig_gdm()
 
 [Testes]{.familia .testes}
 
-## Por que "Procrustes"?
+## Por que "Procrustes"? {.medio}
 
+:::: {.columns}
+::: {.column width="58%"}
 - Na mitologia grega, Procrustes era um bandido que convidava os viajantes a
   dormir numa cama de ferro: se fossem altos demais, cortava-lhes as pernas;
   se fossem baixos, esticava-os até caberem.
@@ -359,26 +383,86 @@ fig_gdm()
 A análise de Procrustes "estica", gira e desloca uma configuração de pontos
 até ela se ajustar o máximo possível a outra.
 :::
+:::
+::: {.column width="42%"}
+![](../assets/historia/teseu-procrustes.jpg){fig-alt="Ânfora ática de figuras vermelhas: Teseu, à esquerda, de túnica e com um machado erguido, segura pelo ombro Procrustes, um homem barbado e nu que tropeça sobre a cama." height="520px"}
+:::
+::::
 
-## Os passos da superposição {.medio}
+::: {.ref}
+Pintor de Alkimachos, *Teseu e Procrustes*, ânfora ática de figuras
+vermelhas (470–460 a.C.), Staatliche Antikensammlungen, Munique. Foto de
+Bibi Saint-Pol, domínio público, via Wikimedia Commons.
+:::
+
+## Os dados originais
 
 ```{r}
-#| fig-alt: "Quatro painéis com dois triângulos, ABC e abc. Nos dados originais, os triângulos têm posição, tamanho e orientação diferentes. Na translação, os dois são centrados na origem. No escalonamento, ficam com o mesmo tamanho. Na rotação, abc é girado até quase coincidir com ABC."
+#| fig-alt: "Dois triângulos, ABC (linha cheia) e abc (tracejado), com posição, tamanho e orientação diferentes; linhas pontilhadas ligam os vértices correspondentes."
 #| fig-width: 12
 #| fig-height: 3.6
-#| out-height: 320px
+#| out-height: 330px
 fig_procrustes_passos()
 ```
 
-$$\mathbf{Z} = \frac{1}{CS}\,(\mathbf{Y} - \bar{\mathbf{Y}})\,\mathbf{H}$$
+O algoritmo minimiza a **soma dos quadrados das distâncias** entre os pontos
+correspondentes das duas configurações (as linhas pontilhadas), em três
+passos.
 
-translação (centrar: $\mathbf{Y} - \bar{\mathbf{Y}}$), escalonamento (dividir pelo
-tamanho do centroide, $CS$) e rotação ($\mathbf{H}$), minimizando a soma dos quadrados
-das distâncias entre os pontos correspondentes.
+## A fórmula da superposição
+
+$$\large \overbrace{\mathbf{Z}}^{\color{#8a5a2b}{\text{resíduos}}} =
+\underbrace{\color{#2e6b4f}{\left[\operatorname{tr}\!\left((\mathbf{Y}-\bar{\mathbf{Y}})(\mathbf{Y}-\bar{\mathbf{Y}})'\right)\right]^{-1/2}}}_{\text{2. escalonamento: } 1/CS}\;
+\underbrace{\color{#1c6e8c}{(\mathbf{Y}-\bar{\mathbf{Y}})}}_{\text{1. translação}}\;
+\underbrace{\color{#c0392b}{\mathbf{H}}}_{\text{3. rotação}}$$
+
+- $\mathbf{Y} - \bar{\mathbf{Y}}$: **centra** a configuração, subtraindo a média
+  de cada coordenada.
+- $CS$, o tamanho do centroide (*centroid size*): a raiz da soma dos quadrados
+  das distâncias de cada ponto ao centroide, $CS = \sqrt{\operatorname{tr}[(\mathbf{Y}-\bar{\mathbf{Y}})(\mathbf{Y}-\bar{\mathbf{Y}})']}$.
+  Dividir por ele deixa as duas configurações com **tamanho 1**.
+- $\mathbf{H}$: a matriz de **rotação** ótima, obtida pela decomposição em valores
+  singulares de $\mathbf{Y}_1'\mathbf{Y}_2$.
 
 ::: {.ref}
 Baseado em slides de M. Collyer.
 :::
+
+## 1. Translação
+
+```{r}
+#| fig-alt: "Antes e depois da translação: os dois triângulos, em posições diferentes, passam a ter o centroide na origem."
+#| fig-width: 11
+#| fig-height: 4
+#| out-height: 400px
+fig_procrustes_passos(1)
+```
+
+$$\Large \mathbf{Z} = \frac{1}{CS}\,\boxed{\color{#1c6e8c}{(\mathbf{Y}-\bar{\mathbf{Y}})}}\,\mathbf{H}$$
+
+## 2. Escalonamento
+
+```{r}
+#| fig-alt: "Antes e depois do escalonamento: os dois triângulos centrados passam a ter o mesmo tamanho do centroide."
+#| fig-width: 11
+#| fig-height: 4
+#| out-height: 400px
+fig_procrustes_passos(2)
+```
+
+$$\Large \mathbf{Z} = \boxed{\color{#2e6b4f}{\frac{1}{CS}}}\,(\mathbf{Y}-\bar{\mathbf{Y}})\,\mathbf{H}$$
+
+## 3. Rotação
+
+```{r}
+#| fig-alt: "Antes e depois da rotação: o triângulo abc gira até quase coincidir com ABC."
+#| fig-width: 11
+#| fig-height: 4
+#| out-height: 400px
+fig_procrustes_passos(3)
+```
+
+$$\Large \mathbf{Z} = \frac{1}{CS}\,(\mathbf{Y}-\bar{\mathbf{Y}})\,\boxed{\color{#c0392b}{\mathbf{H}}}$$
 
 ## Concordância entre duas matrizes
 
@@ -409,6 +493,31 @@ Doubs: PCA ambiental × PCA dos peixes (Hellinger): $r$ = `r num(prot$t0, 3)`,
 $m^2$ = `r num(prot$ss, 3)`, $p$ = `r pv(prot$signif)`.
 :::
 
+## PROTEST: o teste por permutação {.medio}
+
+:::: {.columns}
+::: {.column width="40%"}
+- As linhas de uma das matrizes são **permutadas**, e a superposição é refeita
+  a cada vez.
+- Quanto **menor** o $m^2$, maior a concordância: o *p* é a proporção de
+  permutações com $m^2$ menor ou igual ao observado.
+- Doubs: $p$ = `r pv(prot$signif)`.
+:::
+::: {.column width="60%"}
+```{r}
+#| fig-alt: "Histograma dos valores de m² obtidos em 999 permutações, concentrados perto de 1. Uma seta vermelha aponta o m² observado, bem à esquerda de toda a distribuição."
+#| fig-width: 7
+#| fig-height: 5
+#| out-height: 500px
+fig_protest_perm(prot)
+```
+:::
+::::
+
+::: {.ref}
+[Jackson (1995)](https://doi.org/10.1080/11956860.1995.11682297) *Écoscience* 2: 297–303.
+:::
+
 ## Vantagens do Procrustes/PROTEST
 
 - Mais poderoso (menor erro do tipo II) do que o Mantel para detectar
@@ -430,6 +539,21 @@ $m^2$ = `r num(prot$ss, 3)`, $p$ = `r pv(prot$signif)`.
 
 ::: {.ref}
 [Peres-Neto & Jackson (2001)](https://doi.org/10.1007/s004420100720) *Oecologia* 129: 169–178.
+:::
+
+## Procrustes como ferramenta geral
+
+```{r}
+#| fig-alt: "Fluxograma. Os dados brutos de X e de Y, separados, viram coordenadas por ordenação direta (PCA, CA), por uma matriz de distâncias seguida de PCoA ou nMDS, ou são usados como estão. As coordenadas de X e de Y passam pela superposição de Procrustes, que gera os resíduos, uma tabela de objetos por dimensões. Os resíduos podem ir para agrupamento, ordenação ou testes de hipótese (PROTEST, ANOVA, MANOVA, regressão)."
+#| fig-width: 12.5
+#| fig-height: 4.6
+#| out-height: 480px
+fig_procrustes_fluxo()
+```
+
+::: {.ref}
+Adaptado de um esquema de [Peres-Neto & Jackson (2001)](https://doi.org/10.1007/s004420100720)
+*Oecologia* 129: 169–178.
 :::
 
 # 4. PERMANOVA {.secao}
@@ -481,6 +605,26 @@ fig_permanova_matriz(an)
 $a$ = número de grupos; $N$ = número de observações; $n$ = observações por grupo.
 Anuros de campo e de coleções ([da Silva et al. 2017](https://doi.org/10.2994/SAJH-D-16-00051.1)
 *S. Am. J. Herpetol.* 12: 99–106).
+:::
+
+
+## Dentro e entre os grupos
+
+```{r}
+#| fig-alt: "Dois painéis com os mesmos objetos de dois grupos, círculos azuis e triângulos verdes. À esquerda, cada objeto ligado ao centroide do seu grupo, marcado com um x: a soma de quadrados dentro dos grupos. À direita, os dois centroides ligados ao centroide geral, uma estrela vermelha: a soma de quadrados entre os grupos."
+#| fig-width: 11
+#| fig-height: 4.4
+#| out-height: 430px
+fig_permanova_centroides()
+```
+
+A PERMANOVA testa se os **centroides** dos grupos diferem: $F$ grande quando a
+distância entre os centroides ($SS_A$) é grande em relação à dispersão dentro
+dos grupos ($SS_W$).
+
+::: {.ref}
+Dados simulados. [Anderson (2001)](https://doi.org/10.1111/j.1442-9993.2001.01070.pp.x)
+*Austral Ecol.* 26: 32–46.
 :::
 
 ## Um exemplo: campo × coleções
