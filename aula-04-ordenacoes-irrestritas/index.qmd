@@ -18,11 +18,11 @@ Reduzir a dimensionalidade preservando estrutura. PCA (variáveis contínuas), P
 
 - {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-quarta.html)**  
   *Walkthrough da aula prática — PCA, PCoA, nMDS, CA com vegan e ade4.*  
-  [{{< fa solid file-code >}} baixar `quarta.R`](quarta.R)
+  [{{< fa solid file-code >}} baixar `Quarta.R`](Quarta.R)
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+- [`DoubsSpe.csv`](../aula-03-agrupamento/DoubsSpe.csv) e [`DoubsEnv.csv`](../aula-03-agrupamento/DoubsEnv.csv), os mesmos da Aula 3. Salve-os na mesma pasta do script.
 
 ## Leituras recomendadas
 

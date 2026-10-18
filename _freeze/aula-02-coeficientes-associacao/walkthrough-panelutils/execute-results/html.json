@@ -1,0 +1,15 @@
+{
+  "hash": "001828285b8ef62c863a3dd738603590",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Função auxiliar: utilitários para painéis de gráficos.\"\nsubtitle: \"Walkthrough do código — Aula 2: Coeficientes de associação\"\nformat:\n  html:\n    toc: true\n    toc-depth: 3\n    code-tools: true\n    code-overflow: scroll\nexecute:\n  eval: false\n---\n\n::: {.callout-note appearance=\"minimal\"}\nWalkthrough do código usado em sala. Os comandos **não são executados**\npelo renderizador — copie e cole no seu R local. Você pode baixar o\nscript `.R` original e os dados em [Aula 2](./).\n:::\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# panelutils.R \n#\n# License: GPL-2 \n# Author: Francois Gillet, 23 August 2012\n#\n## Put Pearson, Spearman or Kendall correlations on the upper panel\npanel.cor <- function(x, y, method=\"pearson\", digits=3, cex.cor=1.2, no.col=FALSE)\n{\n\tusr <- par(\"usr\"); on.exit(par(usr))\n\tpar(usr = c(0, 1, 0, 1))\n\tr <- cor(x, y, method=method)\n\tra <- cor.test(x, y, method=method)$p.value\n\ttxt <- round(r, digits)\n\tprefix <- \"\"\n\tif(ra <= 0.1) prefix <- \".\"\n\tif(ra <= 0.05) prefix <- \"*\"\n\tif(ra <= 0.01) prefix <- \"**\"\n\tif(ra <= 0.001) prefix <- \"***\"\n\tif(no.col)\n\t{\n\t\tcolor <- 1\n\t\tif(r < 0) { if(ra <= 0.001) sig <- 4 else sig <- 3 }\n\t\telse { if(ra <= 0.001) sig <- 2 else sig <- 1 }\n\t}\n\telse\n\t{\n\t\tsig <- 1\n\t\tif(ra <= 0.001) sig <- 2\n\t\tcolor <- 2\n\t\tif(r < 0) color <- 4\n\t}\n\ttxt <- paste(txt, prefix, sep=\"\\n\")\n\ttext(0.5, 0.5, txt, cex = cex.cor, font=sig, col=color)\n}\n\n\n## Put histograms on the diagonal\npanel.hist <- function(x, no.col=FALSE, ...)\n{\n\tusr <- par(\"usr\"); on.exit(par(usr))\n\tpar(usr = c(usr[1:2], 0, 1.5) )\n\this <- hist(x, plot=FALSE)\n\tbreaks <- his$breaks; nB <- length(breaks)\n\ty <- his$counts\n\ty <- y/max(y)\n\tif(no.col) rect(breaks[-nB], 0, breaks[-1], y, col=\"gray\", ...)\n\telse rect(breaks[-nB], 0, breaks[-1], y, col=\"cyan\", ...)\n}\n\n\n## Add black lowess curves to scatter plots\npanel.smoothb <- function (x, y, col=par(\"col\"), bg=NA, pch=par(\"pch\"), \n\tcex=1, col.smooth=\"black\", span=2/3, iter=3, ...) \n{\n\tpoints(x, y, pch=pch, col=col, bg=bg, cex=cex)\n\tok <- is.finite(x) & is.finite(y)\n\tif (any(ok)) \n\tlines(stats::lowess(x[ok], y[ok], f=span, iter=iter), col=col.smooth, ...)\n}\n\n\n#Usage:\n#pairs(num.mat, lower.panel=panel.smooth, upper.panel=panel.cor, diag.panel=panel.hist)\n#pairs(num.mat, lower.panel=panel.smooth, upper.panel=panel.cor, method=\"kendall\")\n```\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

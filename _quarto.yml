@@ -1,6 +1,17 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    # PDFs das versões anteriores: continuam publicados para não quebrar
+    # links antigos depois que as aulas passarem para revealjs.
+    - "slides/*.pdf"
+  render:
+    - "*.qmd"
+    - "aula-*/*.qmd"
+    - "slides/*.qmd"
+    - "!README.md"
+    - "!CLAUDE.md"
+    - "!PLANO-conversao-qmd.md"
 
 website:
   title: "Análises Multidimensionais"
@@ -43,5 +54,20 @@ format:
       - text: |
           <link rel="stylesheet"
                 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+knitr:
+  opts_chunk:
+    dev.args:
+      bg: "#faf7f0"
+
+# Os slides têm chunks de R que geram as figuras. Com freeze, o resultado
+# fica em _freeze/ (versionado) e o CI renderiza só com o Quarto, sem os
+# pacotes de ecologia numérica. Depois de mudar um .qmd com código ou uma
+# função em R/, rode `quarto render` localmente e commite _freeze/ junto.
+lang: pt
+execute:
+  freeze: auto
+  warning: false
+  message: false
 
 editor: source

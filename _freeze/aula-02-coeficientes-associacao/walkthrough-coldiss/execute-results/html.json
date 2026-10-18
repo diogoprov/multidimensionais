@@ -1,0 +1,15 @@
+{
+  "hash": "f0ef61fcb5d386959d261ecb56f03764",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Função auxiliar: visualização de matrizes de dissimilaridade.\"\nsubtitle: \"Walkthrough do código — Aula 2: Coeficientes de associação\"\nformat:\n  html:\n    toc: true\n    toc-depth: 3\n    code-tools: true\n    code-overflow: scroll\nexecute:\n  eval: false\n---\n\n::: {.callout-note appearance=\"minimal\"}\nWalkthrough do código usado em sala. Os comandos **não são executados**\npelo renderizador — copie e cole no seu R local. Você pode baixar o\nscript `.R` original e os dados em [Aula 2](./).\n:::\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# coldiss()\n# Color plots of a dissimilarity matrix, without and with ordering\n#\n# License: GPL-2\n# Author: Francois Gillet, 23 August 2012 - rev. 07 June 2016\n#\n\n\"coldiss\" <- function(D,\n                      nc = 4,\n                      byrank = TRUE,\n                      diag = FALSE) {\n  require(gclus)\n  \n  D <- as.dist(as.matrix(D))\n  \n  if (max(D) > 1)\n    D <- D / max(D)\n  \n  if (byrank) {\n    spe.color <- dmat.color(1 - D, cm.colors(nc))\n  }\n  else {\n    spe.color <- dmat.color(1 - D, byrank = FALSE, cm.colors(nc))\n  }\n  \n  spe.o <- order.single(1 - D)\n  speo.color <- spe.color[spe.o, spe.o]\n  \n  op <- par(mfrow = c(1, 2), pty = \"s\")\n  \n  if (diag) {\n    plotcolors(\n      spe.color,\n      rlabels = attributes(D)$Labels,\n      main = \"Dissimilarity Matrix\",\n      dlabels = attributes(D)$Labels\n    )\n    plotcolors(\n      speo.color,\n      rlabels = attributes(D)$Labels[spe.o],\n      main = \"Ordered Dissimilarity Matrix\",\n      dlabels = attributes(D)$Labels[spe.o]\n    )\n  }\n  else {\n    plotcolors(spe.color, rlabels = attributes(D)$Labels,\n               main = \"Dissimilarity Matrix\")\n    plotcolors(speo.color,\n               rlabels = attributes(D)$Labels[spe.o],\n               main = \"Ordered Dissimilarity Matrix\")\n  }\n  \n  par(op)\n}\n\n# Usage:\n# coldiss(D = dissimilarity.matrix, nc = 4, byrank = TRUE, diag = FALSE)\n# If D is not a dissimilarity matrix (max(D) > 1), then D is divided by max(D)\n# nc \t\t\t\t\t\t\tnumber of colours (classes)\n# byrank = TRUE\t\tequal-sized classes\n# byrank = FALSE\tequal-length intervals\n# diag = TRUE\t\t\tprint object labels also on the diagonal\n\n# Example:\n# coldiss(spe.dj, nc = 9, byrank = FALSE, diag = TRUE)\n```\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

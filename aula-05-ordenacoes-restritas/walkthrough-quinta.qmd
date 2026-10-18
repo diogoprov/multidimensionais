@@ -55,7 +55,7 @@ env$pen <- pen2
 head(env)
 
 #13.2 - CCA
-head(spe)  #Utilizar dados n?o transformados
+head(spe)  #Utilizar dados não transformados
 spe.cca <- cca(spe ~ ., env)
 spe.cca
 summary(spe.cca) #Scaling 2 (default)
@@ -71,11 +71,11 @@ summary(spe.cca, scaling=1)$constraints
 summary(spe.cca, scaling=1)$biplot
 
 #13.3 - CCA triplots (using lc site scores)
-#Scaling 1: A proje??o de um objeto em ?ngulo reto em uma vari?vel aproxima a posi??o do objeto ao longo da vari?vel.
+#Scaling 1: A projeção de um objeto em ângulo reto em uma variável aproxima a posição do objeto ao longo da variável.
 plot(spe.cca, scaling=1, display=c("sp","lc","cn"), main="Triplot CCA spe ~ env2 - scaling 1")
 plot(spe.cca, scaling=1, display=c("lc", "cn"), main="Biplot CCA spe ~ env2 - scaling 1") #without species
 
-#Default scaling 2: O ?timo e uma esp?cie ao longo das vari?veis ambientais pode ser obtido projetando-a em ?ngulo reto em uma vari?vel.
+#Default scaling 2: O ?timo e uma espécie ao longo das variáveis ambientais pode ser obtido projetando-a em ângulo reto em uma variável.
 plot(spe.cca, display=c("sp","lc","cn"), main="Triplot CCA spe ~ env2 - scaling 2")
 plot(spe.cca, scaling=2, display=c("sp", "cn"), main="Biplot CCA spe ~ env2 - scaling 2") #without sites
 
@@ -130,19 +130,21 @@ RsquareAdj(spe.rda) #Adjusted R^2
 #The numerical output shows that the first two canonical axes explain together 56.1% of the total variance of
 #the data, the first axis alone explaining 45.4%. These are unadjusted values, however. Since adj R2 = 0.5224,
 #the percentages of accumulated constrained eigenvalues show that the first axis alone explains
-#0.5224 ? 0.6242 = 0.326 or 32.6% variance, and the two first 0.5224 ? 0.7712 = 0.4029 or 40.3% variance
+#0.5224 × 0.6242 = 0.326 or 32.6% variance, and the two first 0.5224 × 0.7712 = 0.4029 or 40.3% variance
 
 #14.4 - Triplots of the rda results. #Site scores as linear combinations of the environmental variables (lc)
 #Scaling 1
+spe.sc <- scores(spe.rda, choices=1:2, scaling=1, display="sp")
 plot(spe.rda, scaling=1, display=c("sp", "lc", "cn"),	main="Triplot RDA spe.hel ~ env2 - scaling 1 - lc scores")
 arrows(0, 0, spe.sc[, 1], spe.sc[, 2], length=0, lty=1, col="red")
 
 #Scaling 2
+spe2.sc <- scores(spe.rda, choices=1:2, display="sp")
 plot(spe.rda, display=c("sp", "lc", "cn"), main="Triplot RDA spe.hel ~ env2 - scaling 2 - lc scores")
 arrows(0, 0, spe2.sc[,1], spe2.sc[,2], length=0, lty=1, col="red")
 
-#OBS: Em ambas, a proje??o dos objetos (ua) em ?ngulo reto sobre uma vari?vel resposta (sp) ou explanat?ria (env)
-#aproxima a posi??o do objeto ao longo daquela vari?vel.
+#OBS: Em ambas, a projeção dos objetos (ua) em ângulo reto sobre uma variável resposta (sp) ou explanatória (env)
+#aproxima a posição do objeto ao longo daquela variável.
 
 #14.5 - Global test of the RDA result
 anova.cca(spe.rda, step=1000)
@@ -152,7 +154,7 @@ anova.cca(spe.rda, by="margin", step=1000)
 #Apply Kaiser-Guttman criterion to residual axes
 spe.rda$CA$eig[spe.rda$CA$eig > mean(spe.rda$CA$eig)]  
 #Of course, given that these tests are available, it is useless to apply other criteria
-#like the broken-stick or Kaiser?Guttman?s criterion to canonical axes. These could
+#like the broken-stick or Kaiser-Guttman's criterion to canonical axes. These could
 #be applied to the residual, unconstrained axes, however.
 
 #-------------------------------------------------------------------------------
@@ -172,7 +174,7 @@ names(envchem)
 spe.hel <- decostand(doubs$fish[-8,], "hellinger")
 
 #15.2 - Explanation of fraction labels
-windows(title="Symbols of variation partitioning fractions",12,4)
+dev.new(title="Symbols of variation partitioning fractions",12,4)
 par(mfrow=c(1,3))
 showvarparts(2) # Two explanatory matrices
 showvarparts(3) # Three explanatory matrices
@@ -181,7 +183,7 @@ showvarparts(4) # Four explanatory matrices
 #15.3 - Variation partitioning with all explanatory variables
 spe.part.all <- varpart(spe.hel, envchem, envtopo)
 spe.part.all
-windows(title="Variation partitioning - all variables")
+dev.new(title="Variation partitioning - all variables")
 plot(spe.part.all, digits=2)  # Plot of the partitioning results
 
 #Tests of all testable fractions

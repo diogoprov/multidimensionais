@@ -22,7 +22,8 @@ Ordenação canônica: explica composição em função de variáveis ambientais
 
 ## Dados utilizados
 
-*Sem datasets associados.*
+- [`DoubsSpe.csv`](../aula-03-agrupamento/DoubsSpe.csv) e [`DoubsEnv.csv`](../aula-03-agrupamento/DoubsEnv.csv), os mesmos da Aula 3. Salve-os na mesma pasta do script.
+- As coordenadas dos locais vêm do conjunto `doubs` do pacote `ade4` (`data(doubs)`).
 
 ## Leituras recomendadas
 

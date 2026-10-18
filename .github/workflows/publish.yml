@@ -1,8 +1,9 @@
 name: Render & deploy course site
 
-# Every .qmd in this repo has `eval: false`, so nothing is executed at
-# render time — R and knitr are here only because the knitr engine still
-# processes the documents. No scholar/pagedown/Chrome needed.
+# The walkthroughs have `eval: false`, and the slides' R chunks are frozen
+# in _freeze/ (committed), so CI never executes R code: R and knitr are here
+# only because the knitr engine still processes the documents. vegan, ade4
+# and cluster are needed only on the machine that renders the slides.
 
 on:
   push:

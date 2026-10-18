@@ -4,17 +4,17 @@
 
 #### Aula 16 - Mantel e Mantel Parcial
 
-#16.1 - Mantel #preciso criar duas matrizes de dist?ncias que ser?o correlacionadas
+#16.1 - Mantel #preciso criar duas matrizes de distâncias que serão correlacionadas
 library(vegan)
 data(varespec)
 data(varechem)
 veg.dist <- vegdist(varespec) # Bray-Curtis
 varstand <- decostand(varechem,method="standardize")
 env.dist <- vegdist(varstand, "euclid")
-mantel(veg.dist,env.dist)     #correla??o de pearson param?trico e correla??o de spearman n?o param?trico
+mantel(veg.dist,env.dist)     #correlação de pearson paramétrico e correlação de spearman não paramétrico
 mantel(veg.dist, env.dist, method="spear")
 
-#16.2 - Mantel Parcial # a ?ltima matriz que entra na an?lise ser? a que eu quero controlar o efeito
+#16.2 - Mantel Parcial # a ?ltima matriz que entra na análise será a que eu quero controlar o efeito
 dist<-read.table ("dist.txt", header=TRUE)
 amb<-read.table ("amb.txt", header=TRUE)
 gen<-read.table ("gen.txt", header=TRUE)
@@ -22,17 +22,17 @@ amb<-decostand(amb,"standardize")
 distdist<-vegdist(dist, method="euclidean")
 ambdist<-vegdist(amb, method="euclidean")
 gendist<-vegdist(gen, method="euclidean")
-mantel.partial(gendist, ambdist, distdist, method = "pearson", permutations = 10000)#aqui controlei o efeito geogr?fico
+mantel.partial(gendist, ambdist, distdist, method = "pearson", permutations = 10000)#aqui controlei o efeito geográfico
 
 #--------------------------------------------------------------------------------
 
 #### Aula 17 - Protest
 clad<-read.table("clad.txt", header = TRUE)
 cope<-read.table("cope.txt", header = TRUE)
-dcaclad<-decorana(clad) #m?todo de ordena??o (DCA)
+dcaclad<-decorana(clad) #método de ordenação (DCA)
 dcacope<-decorana(cope)
-summary(dcaclad)
-summary(dcacope)
+dcaclad
+dcacope
 scordcaclad<-scores(dcaclad, display=c("sites"), choices =1:2) #salvando os escores da DCA e salvando os dois primeiros eixos
 scordcacope<-scores(dcacope, display=c("sites"), choices =1:2)
 cladcope<-protest(scordcaclad, scordcacope, scores = "sites", permutations = 10000)
@@ -67,7 +67,7 @@ head(anuros_permanova)
 repteis_permanova <- read.csv("repteis_permanova.csv", header = T, row.names = 1)
 head(repteis_permanova)
 
-adonis(anuros_permanova[,-28] ~ anuros_permanova[,28], method = "bray")#considering abundance
-adonis(anuros_permanova[,-28] ~ anuros_permanova[,28], method = "bray", binary=TRUE)#using Sørensen index for incidence
+adonis2(anuros_permanova[,-28] ~ anuros_permanova[,28], method = "bray")#considering abundance
+adonis2(anuros_permanova[,-28] ~ anuros_permanova[,28], method = "bray", binary=TRUE)#using Sørensen index for incidence
 
 #Both tests are significant, showing that the diference in abundance of museum species did not affect our conclusions. 
