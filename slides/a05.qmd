@@ -1372,7 +1372,7 @@ fig_confusao(ld$fit$tabela)
 #| fig-alt: "Três colunas, cada uma com as matrizes Y e X. Todas maximizam o quadrado da covariância entre as combinações lineares de X e de Y, que é a correlação ao quadrado vezes as duas variâncias. Na correlação canônica, as duas variâncias são fixadas em 1, e só a correlação é maximizada. Na RDA e na CCA, só a variância de X é fixada, e Y aparece maior. Na co-inércia, não há restrição: maximiza-se a covariância."
 #| fig-width: 10
 #| fig-height: 5
-#| out-height: 380px
+#| out-height: 340px
 fig_cancor_rda_coia()
 ```
 
