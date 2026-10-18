@@ -10,9 +10,30 @@ description: "Reduzir a dimensionalidade preservando estrutura. PCA (variáveis 
 
 Reduzir a dimensionalidade preservando estrutura. PCA (variáveis contínuas), PCoA (qualquer distância), nMDS (não-paramétrica, robusta), CA (dados de frequência).
 
+No mapa dos métodos da disciplina, esta aula cobre a **ordenação
+irrestrita**: encontrar os principais gradientes de uma matriz de dados sem
+usar variáveis explicativas. Os exemplos usam os dados do rio Doubs
+(pacote `ade4`).
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-04.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a04.html){.btn .btn-outline-primary}
+
+As figuras dos slides foram geradas em R; o código está em
+[`R/aula04_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Conteúdo
+
+1. Qual ordenação usar? Árvore de decisão e domínio de cada método
+2. Análise de Componentes Principais (PCA): centrar e rotacionar, o exemplo
+   numérico passo a passo, quantos eixos interpretar, biplots nos
+   *scalings* 1 e 2, círculo de equilíbrio, matriz de covariância ×
+   correlação e a abordagem baseada em transformação (tb-PCA)
+3. Análise de Correspondência (CA): espécies raras, efeito arco e DCA
+4. Análise de Coordenadas Principais (PCoA): passo a passo, diagrama de
+   Shepard e autovalores negativos
+5. Escalonamento Multidimensional Não Métrico (nMDS): o *stress* e as
+   diferenças em relação à PCoA
 
 ## Código R (aula prática)
 

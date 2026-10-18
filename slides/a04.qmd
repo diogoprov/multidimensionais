@@ -1,0 +1,1161 @@
+---
+title: "Ordenações irrestritas"
+subtitle: "Aula 4 · Análises Multidimensionais · PPGBA/UFMS"
+author: "Diogo B. Provete"
+lang: pt
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    slide-number: c/t
+    show-slide-number: all
+    auto-stretch: false
+    preview-links: auto
+    history: false
+    footer: "Análises Multidimensionais · PPGBA/UFMS"
+    code-overflow: wrap
+    fig-align: center
+    width: 1250
+    height: 750
+knitr:
+  opts_chunk:
+    dev.args:
+      bg: "#faf7f0"
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  fig-width: 10
+  fig-height: 4.4
+---
+
+```{r}
+#| label: setup
+source(here::here("R/mapa.R"))
+source(here::here("R/aula04_intro.R"))
+source(here::here("R/aula04_pca.R"))
+source(here::here("R/aula04_ca.R"))
+source(here::here("R/aula04_pcoa.R"))
+source(here::here("R/aula04_nmds.R"))
+
+num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",")
+# dentro de $...$ a vírgula vira pontuação (com espaço): {,} evita isso
+numm <- function(x, d = 1) sub(",", "{,}", num(x, d), fixed = TRUE)
+
+ll   <- pca_ll()
+pca  <- pca_doubs()
+pct  <- 100 * pca$CA$eig / pca$tot.chi
+cc   <- coenoclina()
+dca_cc <- vegan::decorana(cc$m)
+comp_dca <- diff(range(vegan::scores(dca_cc, display = "sites", choices = 1)))
+nm   <- nmds_doubs()
+pco  <- ape::pcoa(dist_doubs())
+ev_pco <- pco$values$Eigenvalues
+r2_pco <- 100 * sum(ev_pco[1:2]) / sum(ev_pco[ev_pco > 0])
+```
+
+::: {.meme}
+![](../assets/memes/melencolia.jpg){fig-alt="Gravura Melencolia I, de Albrecht Dürer: uma figura alada sentada, com a cabeça apoiada na mão, cercada de instrumentos de medida, um poliedro e uma ampulheta. Legenda: você já pensou em desistir da disciplina? Todos os dias quando acordo." height="560px"}
+
+[Você já pensou em desistir da disciplina?]{.meme-topo} [Todos os dias quando acordo]{.meme-base}
+:::
+
+::: {.ref}
+Albrecht Dürer, *Melencolia I* (1514), domínio público, via Wikimedia Commons.
+:::
+
+## Hoje
+
+1. Qual ordenação usar?
+2. Análise de Componentes Principais (PCA)
+3. Análise de Correspondência (CA) e DCA
+4. Análise de Coordenadas Principais (PCoA)
+5. Escalonamento Multidimensional Não Métrico (nMDS)
+
+Não falaremos de MCA. Leitura: Legendre & Legendre (2012), cap. 9.
+
+::: {.nota}
+Todas as figuras foram geradas em R, com os dados do rio Doubs (pacote
+`ade4`), do BCI (pacote `vegan`) ou com dados simulados. O código está em
+[`R/`](https://github.com/diogoprov/multidimensionais/tree/main/R), nos
+arquivos `aula04_*.R`.
+:::
+
+## Onde estamos
+
+```{r}
+#| fig-alt: "Mapa dos métodos multidimensionais. Da matriz de dados saem a associação, que leva à classificação, à ordenação irrestrita, à ordenação restrita e aos testes, e os métodos baseados em modelos. A ordenação irrestrita, tema da Aula 4, está destacada."
+#| fig-height: 5.6
+#| out-height: 590px
+mapa_plot("Ordenação irrestrita")
+```
+
+# 1. Qual ordenação usar? {.secao}
+
+[Ordenação irrestrita]{.familia .irrestrita}
+
+## Árvore de decisão das análises de ordenação
+
+```{r}
+#| fig-alt: "Árvore de decisão. Das técnicas informais saem a análise indireta de gradientes e a análise direta de gradientes. A indireta se divide em métodos baseados em distâncias (ordenação polar, PCoA e nMDS) e em autoanálise, com modelo linear (PCA) ou unimodal (CA e DCA). A direta tem modelo linear (RDA) e unimodal (CCA e DCCA). PCA, CA, DCA, PCoA e nMDS, os métodos de hoje, estão destacados em azul; RDA, CCA e DCCA, da Aula 5, em verde."
+#| fig-height: 5.4
+#| out-height: 590px
+fig_arvore()
+```
+
+<!-- TODO: referência. O slide original não dá a fonte desta árvore. -->
+
+## Onde cada método se aplica {.smaller}
+
+::: {.tabela-grande}
+| Método | Distância preservada | Variáveis |
+|---|---|---|
+| Análise de componentes principais (PCA) | Euclidiana | Dados quantitativos, relações lineares (cuidado com os duplos zeros) |
+| Análise de correspondência (CA) | Qui-quadrado | Dados quantitativos não negativos e dimensionalmente homogêneos, ou binários; frequências ou presença e ausência de espécies |
+| Análise de coordenadas principais (PCoA), escalonamento multidimensional métrico | Qualquer medida de distância | Quantitativas, semiquantitativas, qualitativas ou mistas |
+| Escalonamento multidimensional não métrico (nMDS) | Qualquer medida de distância | Quantitativas, semiquantitativas, qualitativas ou mistas |
+:::
+
+::: {.ref}
+Adaptado de Legendre & Legendre (2012), Tabela 9.1.
+:::
+
+# 2. Análise de Componentes Principais (PCA) {.secao}
+
+[Ordenação irrestrita]{.familia .irrestrita}
+
+## Matrizes de dados ecológicos
+
+Rio Doubs: 29 locais ao longo do rio, da nascente à foz, com a abundância de
+27 espécies de peixes e 11 variáveis ambientais.
+
+:::: {.columns}
+::: {.column width="50%"}
+**Espécies** (primeiras linhas e colunas)
+
+```{r}
+d <- dados_doubs()
+knitr::kable(head(d$fish[, 1:6], 6))
+```
+:::
+::: {.column width="50%"}
+**Variáveis ambientais**
+
+```{r}
+knitr::kable(head(d$env[, c("dfs", "alt", "slo", "pH", "nit", "oxy")], 6))
+```
+:::
+::::
+
+::: {.ref}
+Dados de Verneaux (1973), via `ade4::doubs`. `dfs`: distância da nascente;
+`alt`: altitude; `slo`: declividade; `nit`: nitrato; `oxy`: oxigênio
+dissolvido. Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## Da regressão à combinação linear
+
+:::: {.columns}
+::: {.column width="45%"}
+```{r}
+#| fig-alt: "Uma reta num plano de eixos X e Y, com a equação Y = a + bX."
+#| fig-width: 5.5
+#| fig-height: 4.2
+fig_regressao()
+```
+:::
+::: {.column width="55%"}
+Na regressão, uma variável é função de outra: $Y = a + bX$.
+
+Com muitas variáveis, o eixo da PCA é uma **combinação linear** de todas
+elas:
+
+$$Y = a + b_1 X_1 + b_2 X_2 + \dots + b_n X_n$$
+:::
+::::
+
+## Principal Component Analysis (PCA)
+
+1. Reduz a dimensionalidade de dados multivariados.
+
+::: {.fragment}
+2. A PCA se aplica à tabela de dados em que as linhas são os indivíduos e as
+   colunas, variáveis quantitativas. Portanto, preserva a distância
+   euclidiana.
+:::
+
+::: {.fragment}
+3. **Ou** se aplica à tabela de dados em que as linhas são os locais de
+   coleta e as colunas, espécies, **desde que previamente transformadas**
+   (veja a Aula 2).
+:::
+
+::: {.fragment}
+4. Dimensionalidade efetiva: um número menor de dimensões representa a
+   maior parte da variação nos dados.
+:::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## O que a PCA faz: centrar e rotacionar
+
+```{r}
+#| fig-alt: "Três painéis com a mesma nuvem de 70 localidades em um plano de temperatura por umidade. No primeiro, os dados brutos; no segundo, os dados centrados na média, com linhas tracejadas passando pela origem; no terceiro, dois eixos perpendiculares, PC1 ao longo da maior dispersão da nuvem e PC2 perpendicular a ele."
+#| fig-width: 11
+#| fig-height: 4.2
+fig_nuvem()
+```
+
+Cada ponto representa uma localidade. A centralização põe a origem no
+centro da nuvem; a rotação encontra as dimensões com maior variação.
+
+::: {.ref}
+Dados simulados. Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## A PCA é a autoanálise da matriz de dispersão
+
+$$\mathbf{S} = \frac{1}{n-1}\, \mathbf{Y}_c' \mathbf{Y}_c$$
+
+em que $\mathbf{Y}_c$ é a matriz $\mathbf{Y}$ centrada por coluna.
+
+Os **componentes principais** são os autovetores normalizados de
+$\mathbf{S}$:
+
+- eixos de um novo sistema de coordenadas, criados para representar a
+  maior variância dos dados;
+- o número de eixos é o número de variáveis (no máximo $n - 1$);
+- calculados pela equação $(\mathbf{S} - \lambda_k \mathbf{I})\, \mathbf{u}_k = \mathbf{0}$,
+  com os autovalores $\lambda_k$ vindos de $|\mathbf{S} - \lambda_k \mathbf{I}| = 0$.
+
+Vejamos o passo a passo.
+
+::: {.ref}
+Legendre & Legendre (2012), seção 9.1.
+:::
+
+## Passo 1: centrar os dados
+
+$$\mathbf{Y} = \begin{bmatrix} 2 & 1\\ 3 & 4\\ 5 & 0\\ 7 & 6\\ 9 & 2 \end{bmatrix}
+\qquad \mathbf{Y}_c = [\,y - \bar{y}\,] =
+\begin{bmatrix} -3{,}2 & -1{,}6\\ -2{,}2 & 1{,}4\\ -0{,}2 & -2{,}6\\ 1{,}8 & 3{,}4\\ 3{,}8 & -0{,}6 \end{bmatrix}$$
+
+```{r}
+#| fig-alt: "Dois gráficos dos cinco objetos do exemplo. À esquerda, os dados brutos, com linhas tracejadas nas médias 5,2 e 2,6. À direita, os mesmos pontos centrados, com a origem no centro da nuvem."
+#| fig-height: 3.4
+fig_exemplo_ll()
+```
+
+::: {.ref}
+Exemplo numérico de Legendre & Legendre (2012), seção 9.1, recalculado em R.
+:::
+
+## Passos 2 a 4: autovalores e autovetores {.smaller}
+
+1. Matriz de dispersão:
+   $\mathbf{S} = \frac{1}{n-1}\mathbf{Y}_c'\mathbf{Y}_c = \begin{bmatrix} `r numm(ll$s[1,1])` & `r numm(ll$s[1,2])`\\ `r numm(ll$s[2,1])` & `r numm(ll$s[2,2])` \end{bmatrix}$
+2. Equação característica:
+   $\left|\begin{bmatrix} 8{,}2 & 1{,}6\\ 1{,}6 & 5{,}8 \end{bmatrix} - \begin{bmatrix} \lambda_k & 0\\ 0 & \lambda_k \end{bmatrix}\right| = 0$
+   $\;\Rightarrow\; \lambda_1 = `r numm(ll$lambda[1], 0)`$ e $\lambda_2 = `r numm(ll$lambda[2], 0)`$
+3. Autovetores: $(\mathbf{S} - \lambda_k \mathbf{I})\,\mathbf{u}_k = \mathbf{0}$
+4. Depois de normalizados (comprimento 1), tornam-se os componentes
+   principais:
+   $\mathbf{U} = \begin{bmatrix} `r numm(ll$u[1,1], 4)` & `r numm(ll$u[1,2], 4)`\\ `r numm(ll$u[2,1], 4)` & `r numm(ll$u[2,2], 4)` \end{bmatrix}$
+
+::: {.definicao}
+O PC1 retém $`r numm(ll$lambda[1], 0)`/14 = `r numm(100 * ll$lambda[1] / sum(ll$lambda))`$% da variação, e o PC2,
+$`r numm(ll$lambda[2], 0)`/14 = `r numm(100 * ll$lambda[2] / sum(ll$lambda))`$%. A soma dos autovalores
+(14) é igual à soma das variâncias (o traço de $\mathbf{S}$: 8,2 + 5,8), mas
+as porcentagens vêm dos autovalores, não das variâncias.
+:::
+
+::: {.ref}
+Legendre & Legendre (2012), seção 9.1.
+:::
+
+## A posição dos objetos: escores
+
+A posição de um objeto ao longo dos eixos da PCA é dada pela combinação
+linear
+
+$$f_{i1} = (y_{i1} - \bar{y}_1)\, u_{11} + \dots + (y_{ip} - \bar{y}_p)\, u_{p1} = [\,y - \bar{y}\,]_i\, \mathbf{u}_1$$
+
+```{r}
+#| fig-alt: "À esquerda, os cinco objetos centrados com os eixos PC1 e PC2 desenhados sobre eles. À direita, os mesmos objetos no novo sistema de coordenadas: PC1 na horizontal e PC2 na vertical."
+#| fig-height: 3.6
+fig_exemplo_eixos()
+```
+
+Os autovetores são ortogonais por definição (veja a Aula 1):
+$\mathbf{u}_1'\mathbf{u}_2 = (0{,}8944 \times -0{,}4472) + (0{,}4472 \times 0{,}8944) = 0$.
+
+::: {.ref}
+Legendre & Legendre (2012), p. 432.
+:::
+
+## Algumas terminologias importantes
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Os cinco objetos centrados e o eixo PC1. Linhas tracejadas perpendiculares ligam cada objeto à sua projeção no eixo: são os resíduos que a PCA minimiza."
+#| fig-width: 6.5
+#| fig-height: 4.6
+fig_projecao()
+```
+:::
+::: {.column width="45%"}
+- Os novos valores obtidos são os **escores** (*scores*).
+- O PC1 minimiza a soma dos quadrados dos resíduos perpendiculares ao eixo.
+- Cada PC tem um **autovalor** (*eigenvalue*) associado. A soma dos
+  autovalores de todos os eixos é a variação total.
+- Olha a combinação linear aí: $\text{PC1} = `r numm(ll$u[1,1], 4)`\, y_1 + `r numm(ll$u[2,1], 4)`\, y_2$.
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## O PC1 não é a reta de regressão
+
+```{r}
+#| fig-alt: "Dois gráficos com os mesmos 14 pontos. À esquerda, a reta de mínimos quadrados, com os resíduos verticais. À direita, o eixo maior, que corresponde ao PC1, com os resíduos perpendiculares à reta."
+#| fig-height: 4.3
+fig_mqo_eixo_maior()
+```
+
+A regressão por mínimos quadrados supõe erro só em Y. O eixo maior (o PC1)
+trata as duas variáveis da mesma forma, e é o indicado quando ambas têm
+variação amostral ou erro de medida.
+
+::: {.ref}
+Dados simulados.
+:::
+
+## Distâncias preservadas
+
+O procedimento anterior implica que a posição relativa dos objetos no
+espaço multidimensional rotacionado (os componentes principais) é
+preservada, ou seja, equivale à **distância euclidiana** entre eles.
+
+## Como essas informações aparecem no R? {.smaller}
+
+::: {.codigo-compacto}
+```{r}
+#| echo: true
+library(vegan)
+data(doubs, package = "ade4")
+env <- doubs$env[-8, ]
+env.pca <- rda(env, scale = TRUE)   # PCA da matriz de correlação
+summary(eigenvals(env.pca))[, 1:4]
+```
+:::
+
+- **Inertia** total = `r num(pca$tot.chi, 0)`: com as variáveis padronizadas,
+  é o número de variáveis.
+- **Proportion Explained** = autovalor do eixo / variação total
+  (PC1: `r num(pct[1])`%).
+- **Cumulative Proportion**: a soma dos primeiros eixos
+  (PC1 + PC2: `r num(pct[1] + pct[2])`%).
+
+## Como interpretar os eixos? {.smaller}
+
+**Loadings**: correlação de Pearson entre os PCs e as variáveis originais.
+
+:::: {.columns}
+::: {.column width="45%"}
+```{r}
+knitr::kable(tab_loadings(), align = "r")
+```
+:::
+::: {.column width="55%"}
+- Não se pode testar a significância da correlação, já que os eixos são
+  combinações lineares das próprias variáveis.
+- Alternativa: intervalo de confiança por um *bootstrap* modificado (Peres-Neto
+  et al. 2003).
+:::
+::::
+
+::: {.ref}
+Peres-Neto, Jackson & Somers (2003) *Ecology* 84: 2347–2363.
+:::
+
+## Quantos eixos interpretar?
+
+:::: {.columns}
+::: {.column width="40%"}
+Critérios de seleção de eixos (existem mais de 20):
+
+- *Broken stick*
+- *Scree plot*
+- Kaiser-Guttman: interpretar os eixos com λ maior que a média dos λ (λ > 1
+  na matriz de correlação)
+
+Veja Peres-Neto et al. (2005) para mais detalhes.
+:::
+::: {.column width="60%"}
+```{r}
+#| fig-alt: "Gráfico de barras com os 11 autovalores da PCA das variáveis ambientais do Doubs, do PC1 ao PC11, com uma linha de broken stick e uma linha tracejada na média dos autovalores. Os dois primeiros autovalores passam do broken stick e da média."
+#| fig-width: 6.8
+#| fig-height: 4.6
+fig_autovalores()
+```
+:::
+::::
+
+::: {.ref}
+Legendre & Legendre (2012), p. 448–9. Peres-Neto, Jackson & Somers (2005)
+*Comput. Stat. Data Anal.* 49: 974–997. Recalculado com os dados da Fig. 5.1
+de Borcard et al. (2018).
+:::
+
+## O que é um biplot?
+
+Diagrama de ordenação que representa dois tipos de informação:
+
+- a posição dos **descritores** (por exemplo, variáveis ambientais),
+  geralmente mostrados como setas;
+- a posição dos **objetos** (por exemplo, locais), mostrados como pontos.
+
+Dois tipos:
+
+- **Scaling 1** (enfatiza as distâncias): bom para mostrar as relações
+  entre os **objetos**.
+- **Scaling 2** (enfatiza as correlações): bom para mostrar as relações
+  entre as **variáveis**.
+
+::: {.ref}
+Legendre & Legendre (2012), p. 443–5. Para aprofundar: Gower, Lubbe & le Roux
+(2010) *Understanding Biplots*, Wiley.
+:::
+
+## No scaling 1
+
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 1. Os locais aparecem como números e as variáveis como setas. Locais da nascente (1 a 10) ficam à esquerda; os da foz (23 a 30), à direita."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 560px
+fig_biplot(1)
+```
+:::
+::: {.column width="42%"}
+- O diagrama se divide em quatro quadrantes, pelos sinais do PC1 e do PC2.
+- Os escores dos locais dão a sua posição.
+
+::: {.fragment}
+- A distância entre os objetos aproxima a sua **distância euclidiana**. O
+  mesmo não ocorre no scaling 2.
+:::
+
+::: {.fragment}
+- Quanto maior a seta, maior a contribuição do descritor para os eixos.
+:::
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## No scaling 2 {.smaller}
+
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2. O local 29 está circulado, com uma linha tracejada perpendicular até a seta do nitrato, marcando a sua projeção sobre essa variável."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 560px
+fig_biplot(2, projecao = "29", variavel = "nit")
+```
+:::
+::: {.column width="42%"}
+- O ângulo entre a seta e o eixo indica o quanto o descritor se correlaciona
+  com aquele PC.
+
+::: {.fragment}
+- O ângulo entre os descritores indica as suas correlações (ângulo agudo:
+  correlação positiva; reto: nula; obtuso: negativa).
+:::
+
+::: {.fragment}
+- Ao projetar um objeto em 90° sobre a seta de um descritor, obtém-se a
+  posição aproximada do objeto ao longo dele (aqui, o local 29 e o nitrato).
+:::
+
+::: {.fragment}
+- Descritores e objetos no centro do diagrama contribuíram pouco tanto para
+  o PC1 quanto para o PC2.
+:::
+:::
+::::
+
+## Leia o biplot {.smaller}
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2, sem destaques, para a atividade de leitura."
+#| fig-width: 6.4
+#| fig-height: 5.4
+#| out-height: 540px
+fig_biplot(2)
+```
+:::
+::: {.column width="45%"}
+::: {.atividade}
+Em duplas, três minutos:
+
+1. Que variáveis mais se associam ao PC1?
+2. O que os locais do lado positivo do PC1 têm em comum?
+3. E os locais 23, 24 e 25?
+:::
+
+::: {.fragment .definicao}
+1. Nitrato (r = `r num(cor(dados_doubs()$env$nit, escores(pca, "dfs")$sites$PC1), 2)`) e distância
+   da nascente (r = `r num(cor(dados_doubs()$env$dfs, escores(pca, "dfs")$sites$PC1), 2)`), no sentido
+   oposto à altitude, à declividade e ao oxigênio.
+2. Trechos baixos do rio: mais vazão, dureza e nutrientes. O PC1 é o
+   gradiente nascente–foz.
+3. Do lado do fósforo, do amônio e da DBO: o PC2 separa esse trecho, mais
+   rico em matéria orgânica, do resto do baixo rio.
+:::
+:::
+::::
+
+## Círculo de equilíbrio
+
+:::: {.columns}
+::: {.column width="45%"}
+- Maneira visual e rápida de estimar a relevância dos descritores para a
+  construção dos componentes principais.
+- As setas que ficam dentro do círculo têm pouca relevância: contribuem
+  menos do que a média para o plano dos dois eixos.
+- Só faz sentido no scaling 1. Raio = $\sqrt{d/p}$, com $d$ eixos e $p$
+  descritores.
+:::
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "PCA das abundâncias de peixes do Doubs transformadas por Hellinger, em scaling 1. As 27 espécies são setas; um círculo marca a contribuição de equilíbrio. Setas que passam do círculo, como as de Satr, Phph, Neba, Alal e Ruru, estão em destaque."
+#| fig-width: 6.2
+#| fig-height: 5.4
+#| out-height: 550px
+fig_circulo_equilibrio()
+```
+:::
+::::
+
+::: {.ref}
+Legendre & Legendre (2012), p. 437–9. Mesma análise da Fig. 5.4 de Borcard
+et al. (2018).
+:::
+
+## Pressupostos da PCA {.smaller}
+
+1. **Independência** dos componentes entre si, de modo a não invalidar a
+   ortogonalidade. Útil para gerar variáveis combinadas.
+2. **Aditividade**: os componentes somam suas contribuições, sem interação.
+   A soma dos autovalores dos componentes dá a variância total dos pontos
+   em relação a todos os eixos.
+3. **Linearidade** das relações entre os descritores e entre descritores e
+   objetos (gradiente). Se a relação esperada é unimodal, faça uma CA (daqui
+   a alguns slides).
+4. **Multinormalidade** dos dados, especialmente para dar sentido
+   estatístico aos resultados. Logo, não é possível calcular uma PCA de
+   dados ordinais, categóricos ou multiestado (mas veja Hill & Smith 1976 e
+   `ade4::dudi.hillsmith`).
+
+::: {.ref}
+Hill & Smith (1976) *Taxon* 25: 249–255.
+:::
+
+## Multinormalidade
+
+```{r}
+#| fig-alt: "Nuvem de 3000 pontos de uma normal bivariada, com uma elipse de 95% e as duas distribuições marginais, ambas normais, desenhadas acima e à direita."
+#| fig-width: 7.5
+#| fig-height: 5.2
+#| out-height: 560px
+fig_normal_bivariada()
+```
+
+::: {.ref}
+Dados simulados. Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## Problema: variáveis não padronizadas
+
+```{r}
+#| fig-alt: "Duas PCAs das variáveis ambientais do Doubs. À esquerda, sobre a matriz de covariância: as setas da distância da nascente e da vazão dominam a figura e as demais quase não aparecem. À direita, sobre a matriz de correlação: todas as setas têm comprimentos comparáveis."
+#| fig-width: 11
+#| fig-height: 4.8
+fig_cov_cor()
+```
+
+As variáveis com maiores unidades de medida dominam a ordenação.
+
+::: {.ref}
+Legendre & Legendre (2012), p. 445–6. Baseado em slides de Thiago
+Gonçalves-Souza.
+:::
+
+## PCA de matriz de correlação ou de covariância?
+
+- PCA sobre as variáveis brutas (centradas), ou seja, **matriz de
+  covariância**: só é apropriada quando as variáveis são
+  **dimensionalmente homogêneas**.
+- PCA sobre a **matriz de correlação**: quando as variáveis são
+  **dimensionalmente heterogêneas**, ou quando se quer dar peso igual a
+  todas elas.
+
+::: {.ref}
+Legendre & Legendre (2012), p. 445–6.
+:::
+
+## Só tem uma última regra...
+
+::: {.meme}
+![](../assets/memes/pesadelo.jpg){fig-alt="Pintura O Pesadelo, de Henry Fuseli: uma mulher dorme estendida na cama enquanto uma criatura se senta sobre o seu peito e um cavalo de olhos brancos espia por trás da cortina. Legenda: nunca faça uma PCA com dados brutos de abundância de espécies, senão o Pai Legendre virá do Canadá puxar seu pé à noite."  height="520px"}
+
+[Nunca faça uma PCA com dados brutos de abundância de espécies…]{.meme-topo} […senão o Pai Legendre virá do Canadá puxar seu pé à noite!]{.meme-base}
+:::
+
+::: {.ref}
+Henry Fuseli, *O Pesadelo* (1781), domínio público, via Wikimedia Commons.
+Legendre & Legendre (2012), p. 450–1 e 462–4.
+:::
+
+## Três abordagens para dados de espécies
+
+```{r}
+#| fig-alt: "Três caminhos de uma matriz de locais por espécies até a ordenação. (a) Abordagem clássica: dados brutos diretamente na PCA (gradientes curtos) ou na CA (gradientes longos). (b) Abordagem baseada em transformação, destacada: os dados passam por uma transformação, como a de Hellinger, e depois pela PCA; as distâncias resultantes têm propriedades euclidianas. (c) Abordagem baseada em distâncias: dos dados brutos a uma matriz de distâncias, e daí à PCoA ou ao nMDS."
+#| fig-height: 4.8
+#| out-height: 540px
+fig_abordagens()
+```
+
+::: {.ref}
+Adaptado de Legendre & Legendre (2012), Fig. 9.8, p. 462–4.
+:::
+
+# 3. Análise de Correspondência (CA) {.secao}
+
+[Ordenação irrestrita]{.familia .irrestrita}
+
+## O que é? Como funciona?
+
+- Equivale a uma PCA feita sobre a matriz das contribuições ao
+  qui-quadrado; preserva a **distância de qui-quadrado**.
+- Desempenho melhor do que a PCA quando a matriz tem muitos zeros: ideal
+  para **gradientes longos**.
+- Aplicável a uma matriz de **locais por espécies** com incidência ou
+  abundância.
+- Supõe relação **unimodal** entre as espécies e os gradientes.
+- Sinônimo de *Reciprocal Averaging* (RA).
+
+::: {.ref}
+Legendre & Legendre (2012), p. 464–82.
+:::
+
+## Como interpretar o biplot de uma CA?
+
+- A distância entre os objetos no biplot reflete a distância de
+  qui-quadrado entre eles.
+- Locais mais próximos entre si no espaço reduzido têm frequências relativas
+  de espécies parecidas.
+- Espécies (pontos) próximas de um local indicam que aquele local tem alta
+  abundância, ou presença, da espécie.
+
+## Ordenação de locais e de espécies {.smaller}
+
+:::: {.columns}
+::: {.column width="28%"}
+```{r}
+knitr::kable(ca_ex1())
+```
+:::
+::: {.column width="36%"}
+```{r}
+#| fig-alt: "Biplot da CA do exemplo de 6 objetos e 3 espécies em scaling 1. Os objetos ficam espalhados; as espécies 1, 2 e 3 ficam nas extremidades, longe do centro."
+#| fig-width: 5
+#| fig-height: 4.6
+fig_ca(ca_ex1(), scaling = 1, ref = c("Spec.3", "Spec.1"))
+```
+:::
+::: {.column width="36%"}
+```{r}
+#| fig-alt: "Biplot da CA do mesmo exemplo em scaling 2. Agora as espécies ficam perto do centro e os objetos 6, 3 e 1 nas extremidades."
+#| fig-width: 5
+#| fig-height: 4.6
+fig_ca(ca_ex1(), scaling = 2, ref = c("Spec.3", "Spec.1"))
+```
+:::
+::::
+
+- **Scaling 1**: os objetos ficam no centroide das espécies; boa para a
+  ordenação dos **locais**.
+- **Scaling 2**: as espécies ficam no centroide dos objetos; boa para a
+  ordenação das **espécies**.
+
+::: {.ref}
+Exemplo numérico de P. Legendre (material do curso de Ecologia Numérica),
+recalculado em R: λ₁ = `r num(vegan::cca(ca_ex1())$CA$eig[1], 4)` e λ₂ = `r num(vegan::cca(ca_ex1())$CA$eig[2], 4)`.
+:::
+
+## Detalhes da CA
+
+- **Problema com espécies raras ou pouco frequentes**
+  - Muitos zeros.
+  - A distância de qui-quadrado dá muito peso às espécies raras. É um
+    coeficiente assimétrico (exclui os duplos zeros).
+  - Elas aparecem muito deslocadas no diagrama de ordenação.
+- **Efeito do arco**
+  - Ocorre em gradientes fortes (alto *turnover*).
+  - Nos extremos do gradiente, a série de *turnover* é distorcida.
+  - A distância de qui-quadrado tem um limite superior.
+
+## Espécies raras em scaling 1 {.smaller}
+
+:::: {.columns}
+::: {.column width="40%"}
+```{r}
+x <- ca_ex2()
+knitr::kable(rbind(x, Soma = colSums(x), Ocorr. = colSums(x > 0)))
+```
+
+As espécies 6 e 7 têm o menor número de ocorrências; a espécie 5 tem
+abundância total baixa, mas ocorre em todos os locais.
+:::
+::: {.column width="60%"}
+```{r}
+#| fig-alt: "Biplot da CA do exemplo de 6 locais e 7 espécies em scaling 1. Os locais e as espécies comuns ficam amontoados perto do centro; as espécies raras 6 e 7, em destaque, ficam muito longe, em cantos opostos."
+#| fig-width: 6.4
+#| fig-height: 5.2
+#| out-height: 520px
+fig_ca(ca_ex2(), scaling = 1, ref = "Sp.7", destaque = c("Sp.6", "Sp.7"))
+```
+:::
+::::
+
+A Sp.6 ocorre nos locais 1, 2, 4 e 5 e os puxa para o seu lado; a Sp.7, nos
+locais 3 e 6.
+
+::: {.ref}
+Exemplo numérico de P. Legendre (material do curso de Ecologia Numérica),
+recalculado em R.
+:::
+
+## Simulação de distribuições de espécies
+
+```{r}
+#| fig-alt: "Dezenove curvas de abundância em forma de sino, uma por espécie, distribuídas ao longo de um gradiente ecológico de 0 a 100, cada uma com o máximo de 20 indivíduos e ótimos igualmente espaçados."
+#| fig-height: 4.2
+fig_coenoclina()
+```
+
+`r num(100 * mean(cc$m == 0), 0)`% de zeros na matriz (99 locais × 19
+espécies). A CA é um método apropriado para esse tipo de dado, porque se
+aproxima de uma ordenação gaussiana.
+
+::: {.ref}
+Dados simulados, no desenho da simulação de P. Legendre (material do curso de
+Ecologia Numérica).
+:::
+
+## O efeito arco
+
+```{r}
+#| fig-alt: "Dois painéis. À esquerda, a distância de qui-quadrado entre o local 1 e os demais cresce até perto da posição 20 do gradiente e depois fica num patamar. À direita, a CA dos 99 locais desenha um arco em forma de U, com o local 1 marcado numa ponta."
+#| fig-height: 4.4
+fig_quiquadrado()
+```
+
+As distâncias de qui-quadrado entre o local 1 e os demais atingem um máximo
+quando os locais deixam de compartilhar espécies, e não aumentam mais. A
+ordenação reage formando um arco.
+
+::: {.ref}
+Dados simulados, no desenho da simulação de P. Legendre (material do curso de
+Ecologia Numérica).
+:::
+
+## Efeitos arco e ferradura
+
+```{r}
+#| fig-alt: "Três ordenações da mesma coenoclina simulada. A CA forma um arco; a PCA forma uma ferradura, com as pontas do gradiente dobradas para dentro; a DCA, desenhada com a mesma escala nos dois eixos, mostra o primeiro eixo esticado e o arco achatado, com ondulações residuais."
+#| fig-height: 5.4
+#| out-height: 580px
+fig_arco()
+```
+
+::: {.ref}
+Dados simulados. Inspirado em Legendre & Legendre (2012), p. 484.
+:::
+
+## O que fazer nesses casos?
+
+- No arco, o 2º eixo é uma transformação quadrática do 1º: é um eixo inútil.
+- Espécies raras são "exceções". O que fazer com elas depende do objetivo
+  do estudo e do tipo de organismo.
+- Considere excluí-las da análise:
+  - repita a CA eliminando as espécies com 1 ocorrência, depois 2 etc.;
+  - veja quanto a inércia (variação total) muda ao eliminar essas espécies;
+  - plote os autovalores e procure uma quebra.
+
+## Remover espécies raras: um exemplo
+
+```{r}
+#| fig-alt: "Dois gráficos para as árvores do BCI. À esquerda, a inércia total da CA cai de 1,33 para cerca de 1,02 à medida que se removem as espécies com até 10 ocorrências. À direita, os quatro primeiros autovalores quase não mudam; o primeiro fica constante em torno de 0,20."
+#| fig-height: 4.4
+fig_raras_inercia()
+```
+
+As espécies raras inflam a inércia total, mas quase não afetam os
+primeiros eixos: removê-las não muda a estrutura principal da ordenação.
+
+::: {.ref}
+Árvores de 50 parcelas de 1 ha da ilha de Barro Colorado (Condit et al.
+2002, *Science* 295: 666–669), via `vegan::BCI`.
+:::
+
+## Detrended Correspondence Analysis (DCA)
+
+- Arcos em diagramas de ordenação indicam **não linearidade**.
+- A DCA destendencia o arco, dividindo o primeiro eixo em segmentos (de 10
+  a 46) e centralizando o segundo eixo dentro de cada um.
+- O comprimento do DCA1, em unidades de desvio-padrão (DP), ajuda a
+  determinar o comprimento do gradiente ambiental:
+  - gradiente unimodal: mais de 4 DP;
+  - gradiente linear: de 1 a 3 DP.
+- Na coenoclina simulada, o DCA1 tem `r num(comp_dca)` DP: um gradiente
+  muito longo.
+
+::: {.ref}
+Legendre & Legendre (2012), p. 483–7.
+:::
+
+# 4. Análise de Coordenadas Principais (PCoA) {.secao}
+
+[Ordenação irrestrita]{.familia .irrestrita}
+
+Ou escalonamento multidimensional métrico (Gower 1966).
+
+::: {.ref}
+Gower (1966) *Biometrika* 53: 325–338. Legendre & Legendre (2012), p. 492–512.
+:::
+
+## Principal Coordinate Analysis (PCoA)
+
+1. Reduz a dimensionalidade de dados multivariados.
+2. A PCoA se aplica à tabela de dados em que as linhas são os indivíduos e
+   as colunas, variáveis **quantitativas ou qualitativas**.
+   - Aceita qualquer tipo de dado: binário, quantitativo e qualitativo.
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## Passo a passo
+
+```{r}
+#| fig-alt: "Fluxograma da PCoA em seis caixas. Da matriz X, de objetos por descritores, a uma matriz de distâncias D, com qualquer coeficiente; de D à matriz A, com os elementos elevados ao quadrado e multiplicados por menos um meio; de A à matriz Delta, com centralização dupla; da autoanálise de Delta às coordenadas principais, os autovetores multiplicados pela raiz dos autovalores."
+#| fig-height: 4.4
+fig_pcoa_passos()
+```
+
+$$a_{hi} = -\tfrac{1}{2} D_{hi}^2 \qquad \delta_{hi} = a_{hi} - \bar{a}_h - \bar{a}_i + \bar{a}$$
+
+::: {.ref}
+Legendre & Legendre (2012), p. 492–5. Baseado em slides de Thiago
+Gonçalves-Souza.
+:::
+
+## Escalonamento dos autovetores {.smaller}
+
+Os autovetores de $\boldsymbol{\Delta}$ são escalonados para que o seu
+comprimento seja a raiz do autovalor correspondente:
+
+$$\sqrt{\textstyle\sum_i u_{ik}^2} = \sqrt{\lambda_k}$$
+
+Assim, as coordenadas principais reproduzem as distâncias euclidianas entre
+os objetos. A centralização faz a PCoA produzir pelo menos um autovalor
+igual a 0.
+
+::: {.codigo-compacto}
+```{r}
+#| echo: true
+comm.dist <- vegdist(doubs$fish[-8, ], method = "bray")
+pcoa <- cmdscale(comm.dist, k = 2, eig = TRUE)   # k: eixos que deseja manter
+head(pcoa$points, 3)
+```
+:::
+
+::: {.ref}
+Legendre & Legendre (2012), seção 9.3. Baseado em slides de Thiago
+Gonçalves-Souza.
+:::
+
+## Propriedades da PCoA
+
+- Também produz eixos que podem ser relacionados às variáveis originais.
+  - As coordenadas principais são os autovetores escalonados pela raiz
+    quadrada dos autovalores.
+  - Só a parte euclidiana dos coeficientes de distância é representada no
+    diagrama.
+- **Número de eixos: no máximo n − 1**, com n o número de **objetos**.
+  - A centralização e a representação no espaço euclidiano causam perda de
+    informação.
+
+## Propriedades da PCoA
+
+- A PCoA de uma matriz de distâncias euclidianas dá os mesmos resultados que
+  uma PCA.
+- Os sinais dos objetos ao longo dos eixos podem inverter, porque o objetivo
+  é mostrar a distância entre eles no espaço reduzido (posição relativa), e
+  não a sua posição absoluta.
+- A qualidade da representação no espaço reduzido pode ser avaliada com um
+  diagrama de Shepard.
+
+## Diagrama de Shepard
+
+```{r}
+#| fig-alt: "Dois diagramas de Shepard para os peixes do Doubs com distância de Bray-Curtis. À esquerda, na PCoA com dois eixos, as distâncias no espaço reduzido ficam abaixo da linha 1:1, mais perto dela nas distâncias grandes. À direita, no nMDS, os pontos seguem uma linha em degraus crescente."
+#| fig-height: 4.4
+fig_shepard()
+```
+
+Quanto mais pontos sobre a linha, melhor a representação gráfica no espaço
+reduzido. Na PCoA, os dois primeiros eixos representam
+`r num(r2_pco, 0)`% da variação (soma dos autovalores positivos).
+
+::: {.ref}
+Peixes do Doubs, distância de Bray-Curtis. Legendre & Legendre (2012), p. 427–8.
+:::
+
+## Propriedades da PCoA
+
+- A PCoA só representa as relações entre os objetos (modo Q) **ou** entre
+  os descritores (modo R), mas não os dois ao mesmo tempo.
+  - Isso tem implicações para a construção do biplot.
+- Solução: calcular os escores das variáveis depois de uma PCoA em modo Q,
+  usando correlações ou médias ponderadas.
+  - Implementado em `ape::biplot.pcoa`.
+
+## Autovetores com autovalores negativos
+
+São produzidos quando se usa um coeficiente não métrico ou semimétrico.
+
+```{r}
+#| fig-alt: "Três desenhos de quatro pontos. Em (a), um triângulo de lado 0,8 com segmentos de 0,377 partindo dos vértices em direção ao centro, sem se encontrar: o quarto ponto não tem lugar no plano. Em (b), somando 0,2 a todas as distâncias, os segmentos de 0,577 se encontram no centro de um triângulo de lado 1,0. Em (c), somando mais 0,2, o quarto ponto sai do plano e forma uma pirâmide: precisa de três dimensões."
+#| fig-height: 3.9
+fig_nao_euclidiano()
+```
+
+::: {.ref}
+Redesenhado de Legendre & Legendre (2012), Fig. 9.17.
+:::
+
+## Correções para autovalores negativos
+
+:::: {.columns}
+::: {.column width="40%"}
+Duas correções, que transformam as distâncias pequenas em grandes:
+
+- Lingoes: $\hat{D}_{hi} = \sqrt{D_{hi}^2 + 2c_1}$, para $h \neq i$
+- Cailliez: $\hat{D}_{hi} = D_{hi} + c_2$, para $h \neq i$
+
+Nos peixes do Doubs (Bray-Curtis), a PCoA sem correção tem
+`r sum(ev_pco < -1e-10)` autovalores negativos.
+:::
+::: {.column width="60%"}
+```{r}
+#| fig-alt: "Autovalores da PCoA dos peixes do Doubs em três painéis. Sem correção, os últimos autovalores são negativos, em vermelho. Com as correções de Lingoes e de Cailliez, todos são positivos."
+#| fig-width: 7
+#| fig-height: 4.6
+fig_autovalores_negativos()
+```
+:::
+::::
+
+::: {.ref}
+Legendre & Legendre (2012), seção 9.3. Calculado com `ape::pcoa()`.
+:::
+
+# 5. Escalonamento Multidimensional Não Métrico (nMDS) {.secao}
+
+[Ordenação irrestrita]{.familia .irrestrita}
+
+*Non-metric Multidimensional Scaling* (Kruskal 1964).
+
+::: {.ref}
+Kruskal (1964) *Psychometrika* 29: 1–27. Legendre & Legendre (2012), p. 512–9.
+:::
+
+## O que é um nMDS? {.smaller}
+
+- Procedimento iterativo de ordenação que representa os objetos num espaço
+  reduzido cujo número de eixos é escolhido *a priori* pelo usuário
+  (geralmente 2 ou 3 dimensões).
+- Também usa matrizes de distâncias construídas com qualquer coeficiente,
+  métrico ou não métrico.
+- Transforma as distâncias originais em postos.
+- Os postos das distâncias euclidianas entre os pontos na ordenação têm uma
+  relação monotônica com qualquer dissimilaridade original.
+- A função de transferência das dissimilaridades observadas para as
+  distâncias na ordenação é não métrica, mas a configuração resultante da
+  ordenação é métrica.
+
+## O que é um nMDS?
+
+- O nMDS comprime as distâncias entre os objetos em 2 ou 3 dimensões de
+  forma mais eficiente do que a PCoA.
+- Sempre obtém uma representação euclidiana, mesmo para distâncias não
+  euclidianas...
+- ...mas faz isso de forma não linear.
+- Requer mais tempo de computação do que a PCoA; por isso não é recomendado
+  para conjuntos de dados muito grandes.
+
+## Como o nMDS funciona
+
+```{r}
+#| fig-alt: "Fluxograma do nMDS. Da matriz X a uma matriz de distâncias D, com qualquer coeficiente; daí a uma configuração inicial em k dimensões. Então um ciclo: calcula o stress, modifica o arranjo dos objetos e repete até convergir; quando o stress não melhora mais, chega-se à solução final."
+#| fig-height: 4.4
+fig_nmds_fluxo()
+```
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## Como o nMDS funciona
+
+- Não é um método baseado na autoanálise de uma matriz.
+  - Os eixos são arbitrários.
+  - Por isso, não podemos usar os eixos depois em outras análises.
+  - Muito bom para a visualização de dados.
+  - Permite dados faltantes.
+- Cálculo do ***stress***
+  - Há várias fórmulas.
+  - Mede a qualidade da representação no diagrama: a distorção das
+    distâncias originais.
+
+## Stress: quão baixo é baixo o suficiente? {.smaller}
+
+:::: {.columns}
+::: {.column width="58%"}
+| Stress × 100 | Kruskal |
+|---|---|
+| 2,5 | Excelente |
+| 5 | Bom |
+| 10 | Razoável |
+| 20 | Pobre |
+
+| Stress × 100 | Clarke |
+|---|---|
+| < 5 | Representação excelente, sem risco de má interpretação; raramente obtida |
+| 5–10 | Boa ordenação, sem risco real de inferências falsas |
+| 10–20 | Ainda utilizável, mas os valores mais altos podem enganar; não confie nos detalhes |
+| > 20 | Perigosa de interpretar; com 35–40, os pontos estão praticamente ao acaso |
+:::
+::: {.column width="42%"}
+```{r}
+#| fig-alt: "nMDS dos 29 locais do Doubs com distância de Bray-Curtis. Uma linha liga os locais na ordem do rio; os da nascente e os da foz ficam em regiões diferentes do diagrama."
+#| fig-width: 5.4
+#| fig-height: 4.6
+fig_nmds_doubs()
+```
+
+A linha liga os locais na ordem do rio. Quanto mais baixo o stress,
+melhor. Nos peixes do Doubs: stress =
+`r num(nm$stress, 3)` (`r num(100 * nm$stress)` × 100).
+:::
+::::
+
+::: {.ref}
+Adaptado de McCune & Grace (2002), Tabela 16.4 (stress da fórmula 1 de
+Kruskal × 100).
+:::
+
+## Vantagens e desvantagens do nMDS
+
+:::: {.columns}
+::: {.column width="50%"}
+**Vantagens**
+
+- Não supõe que as variáveis estejam linearmente relacionadas.
+- O uso dos postos das distâncias tende a linearizar as relações entre as
+  distâncias de espécies e as variáveis.
+- Tende a diminuir o problema do truncamento em zero.
+- Permite usar qualquer coeficiente de distância.
+:::
+::: {.column width="50%"}
+**Desvantagens**
+
+- Pode falhar em encontrar a melhor solução (o arranjo dos objetos que
+  distorce o mínimo possível as distâncias originais).
+  - `vegan::metaMDS` contorna isso rodando o nMDS várias vezes, a partir
+    de pontos iniciais aleatórios diferentes.
+- Cálculo lento para conjuntos de dados grandes.
+:::
+::::
+
+## Diferenças entre PCoA e nMDS {.smaller}
+
+::: {.tabela-grande}
+| | nMDS | PCoA |
+|---|---|---|
+| Solução | Algoritmo iterativo de aproximação | Autoanálise da matriz de distâncias |
+| Estabilidade da solução | Pode variar a cada vez que o algoritmo roda, conforme o ponto de partida (aleatório) | Única; pode servir de ponto de partida para outras técnicas |
+| Tratamento das dissimilaridades | Distorcidas durante o cálculo, de modo que não refletem as distâncias originais | Não são distorcidas |
+| Construção da solução ótima | Pode depender do tipo de *stress* usado; impossível saber *a priori* qual usar | Os primeiros eixos maximizam a variância das observações |
+| Qualidade do espaço reduzido | Difícil escolher os parâmetros *a priori*; a solução depende do número de eixos escolhido | Todos os eixos juntos reconstroem exatamente as distâncias originais |
+| Medida de ajuste | O *stress* não indica a proporção da variância representada | O pseudo-R² (autovalores dos primeiros eixos / soma de todos) indica a fração da variância representada |
+:::
+
+::: {.definicao}
+O nMDS é útil, na maioria das vezes, só para representar graficamente as
+distâncias entre locais em poucas dimensões.
+:::
+
+::: {.ref}
+Adaptado de Borcard et al. (2018), p. 194–5.
+:::
+
+# Para saber mais {.secao}
+
+## Roteiro da PCA (para consulta): antes da análise {.smaller}
+
+::: {.tabela-grande}
+| Pergunta | Resposta | Páginas |
+|---|---|---|
+| Os descritores são apropriados? | Descritores quantitativos; multinormalidade; não muitos zeros | 450–452 |
+| Os descritores são dimensionalmente homogêneos? | Sim: matriz de dispersão. Não: matriz de correlação | 442–448 |
+| Objetivo: preservar as posições relativas dos objetos | Autovetores de comprimento 1 (**U**); biplot de distâncias (descritores: **U**; objetos: **F** = **YU**) | 432, 444 |
+| Objetivo: mostrar as correlações entre os descritores | Autovetores escalonados a √λ (**U**~sc2~); biplot de correlações (objetos: **G** = **FΛ**^−1/2^); as distâncias entre objetos não são preservadas | 436, 444 |
+:::
+
+::: {.ref}
+Adaptado de Legendre & Legendre (2012), Tabela 9.4.
+:::
+
+## Roteiro da PCA (para consulta): os resultados {.smaller}
+
+::: {.tabela-grande}
+| Pergunta | Resposta | Páginas |
+|---|---|---|
+| Quão informativo é o espaço reduzido de *m* dimensões? | Eq. 9.5 | 433 |
+| As distâncias entre os objetos estão bem preservadas? | Diagrama de Shepard | 427–428 |
+| Que autovalores são importantes? | λ~k~ maior que a média dos λ? Maior que o *broken stick*? | 448–449 |
+| Que descritores mais contribuem para o espaço reduzido? | Contribuição de equilíbrio e círculo; correlações com os eixos; ajuste acumulado por descritor | 437–448 |
+| Como representar os objetos? | Scaling 1: **F** = **Y**~c~**U**; scaling 2: **G** = **FΛ**^−1/2^; ajuste acumulado dos objetos | 433–435, 443–444 |
+:::
+
+::: {.ref}
+Adaptado de Legendre & Legendre (2012), Tabela 9.4.
+:::

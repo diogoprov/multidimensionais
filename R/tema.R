@@ -60,3 +60,28 @@ tema_aula <- function(base = 15, conceitual = FALSE) {
   }
   t
 }
+
+#' Afasta rótulos que se sobrepõem, empurrando-os na vertical
+#'
+#' Para os nomes nas pontas das setas de biplots, que se amontoam quando as
+#' setas são quase paralelas. Sem pacote extra (ggrepel).
+#'
+#' @param x,y posições dos rótulos
+#' @param dx,dy largura e altura aproximadas de um rótulo, nas unidades
+#'   dos dados
+#' @return y ajustado
+separa_rotulos <- function(x, y, dx, dy, iter = 100) {
+  for (k in seq_len(iter)) {
+    mexeu <- FALSE
+    for (i in seq_along(y)) for (j in seq_along(y)) {
+      if (i < j && abs(x[i] - x[j]) < dx && abs(y[i] - y[j]) < dy) {
+        d <- (dy - abs(y[i] - y[j])) / 2 + 1e-9
+        s <- if (y[i] >= y[j]) 1 else -1
+        y[i] <- y[i] + s * d; y[j] <- y[j] - s * d
+        mexeu <- TRUE
+      }
+    }
+    if (!mexeu) break
+  }
+  y
+}
