@@ -24,7 +24,7 @@ mite_dist <- function() {
 #' Anuros em campo e em coleções (da Silva et al. 2017), dados da aula prática
 anuros <- function() {
   a <- utils::read.csv(here::here("aula-06-matrizes-mantel-manova/anuros_permanova.csv"),
-                       row.names = 1, fileEncoding = "latin1")
+                       row.names = 1)
   list(sp = a[, -ncol(a)], grupo = factor(a[, ncol(a)], c("CAMPO", "COLECAO"),
                                           c("Campo", "Coleção")))
 }

@@ -1,0 +1,311 @@
+---
+title: "Walkthrough: testes com matrizes no R"
+subtitle: "Aula 6 · Mantel, Mantel parcial e espacial, MRM, Procrustes e PROTEST, PERMANOVA e betadisper"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Roteiro da aula prática. Os comandos **não são executados** nesta página:
+rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está em
+[`matrizes.R`](matrizes.R). As seções seguem os blocos dos
+[slides da Aula 6](../slides/a06.html). Os exemplos e os dados vêm do
+capítulo 9 de *Análises ecológicas no R* (da Silva et al. 2022), com
+algumas correções.
+:::
+
+## 0. Pacotes e dados
+
+Os dados estão no pacote `ecodados`, que acompanha o livro. Ele não está
+no CRAN: instale-o uma vez a partir do GitHub.
+
+```{r}
+# install.packages("remotes")
+# remotes::install_github("paternogbc/ecodados")
+library(vegan)
+library(ecodados)
+library(adespatial)   # msr()
+library(spdep)        # mst.nb(), nb2listw()
+```
+
+Todos os testes desta aula são por permutação. Fixe a semente antes de cada
+um e use sempre o mesmo número de permutações (aqui, 999).
+
+## 1. Teste de Mantel
+
+Girinos de 16 espécies em 13 corpos d'água (Provete et al. 2014): a
+composição das comunidades acompanha o ambiente? E a distância geográfica
+entre eles?
+
+### Alinhe as tabelas antes de tudo
+
+No `ecodados`, a tabela de espécies (`bocaina`, com os locais nas
+**colunas**), a ambiental (`bocaina.env`) e a de coordenadas
+(`bocaina.xy`) estão em **ordens diferentes**. Os testes com matrizes
+comparam a linha *i* de uma com a linha *i* da outra: se a ordem não bate,
+o teste compara locais trocados, sem dar nenhum erro.
+
+```{r}
+colnames(bocaina)
+rownames(bocaina.env)
+rownames(bocaina.xy)
+
+spe <- t(bocaina)                       # locais nas linhas
+env <- bocaina.env[rownames(spe), ]     # mesma ordem
+xy  <- bocaina.xy[rownames(spe), ]
+stopifnot(identical(rownames(spe), rownames(env)),
+          identical(rownames(spe), rownames(xy)))
+```
+
+Sempre confira a ordem com `stopifnot()` ou `identical()` antes de juntar
+tabelas.
+
+### As três matrizes de distâncias
+
+```{r}
+# composição: Bray-Curtis sobre os dados transformados por Hellinger
+d.spe <- vegdist(decostand(spe, "hellinger"), "bray")
+
+# ambiente: euclidiana das variáveis padronizadas (sem o hidroperíodo, categórico)
+d.env <- dist(decostand(env[, names(env) != "hydro"], "standardize"))
+
+# geografia: distância sobre a superfície da Terra (fórmula de haversine), em km
+dist_km <- function(xy, raio = 6371) {
+  lon <- xy[, 1] * pi / 180
+  lat <- xy[, 2] * pi / 180
+  n <- nrow(xy)
+  d <- matrix(0, n, n, dimnames = list(rownames(xy), rownames(xy)))
+  for (i in 1:n) for (j in 1:n) {
+    a <- sin((lat[j] - lat[i]) / 2)^2 +
+      cos(lat[i]) * cos(lat[j]) * sin((lon[j] - lon[i]) / 2)^2
+    d[i, j] <- 2 * raio * asin(sqrt(a))
+  }
+  as.dist(d)
+}
+d.geo <- dist_km(xy)   # colunas: longitude, latitude
+range(d.geo)
+```
+
+### Os testes
+
+```{r}
+set.seed(1)
+mantel(d.spe, d.env, permutations = 999)   # composição × ambiente
+set.seed(1)
+mantel(d.spe, d.geo, permutations = 999)   # composição × geografia
+set.seed(1)
+mantel(d.env, d.geo, permutations = 999)   # ambiente × geografia
+```
+
+Composição e ambiente se relacionam; a distância geográfica não se
+relaciona com nenhuma das duas. Com `method = "spearman"`, o teste é o
+mesmo, por permutação: só muda a estatística (a correlação dos postos).
+
+O *r* de Mantel é uma correlação entre **distâncias**, não entre os dados
+originais. Ele costuma ser bem menor que o R² de uma RDA com os mesmos
+dados (Aula 5) e não deve ser lido como "quanto da variação o ambiente
+explica".
+
+Um gráfico ajuda a ver a relação:
+
+```{r}
+plot(d.env, d.spe, xlab = "Distância ambiental",
+     ylab = "Dissimilaridade (Bray-Curtis)", pch = 19, col = "grey40")
+```
+
+### Mantel parcial
+
+A relação entre composição e ambiente se mantém se descontarmos a
+geografia?
+
+```{r}
+set.seed(1)
+mantel.partial(d.spe, d.env, d.geo, permutations = 999)
+```
+
+Aqui o *r* quase não muda, porque a geografia não se relaciona com o
+ambiente nestes locais.
+
+### Mantel espacial: um modelo nulo com autocorrelação
+
+O Mantel (e o Mantel parcial) supõe que os locais são trocáveis entre si
+nas permutações. Com autocorrelação espacial, isso não vale: locais
+próximos se parecem, e o teste comum dá *p* pequeno demais. A *Moran
+spectral randomization* (MSR) gera permutações que preservam a
+autocorrelação espacial, definida por uma rede de vizinhança entre os
+locais. Aqui, a árvore geradora mínima, a rede mais simples que liga todos
+os locais:
+
+```{r}
+viz <- mst.nb(d.geo)
+plot(viz, as.matrix(xy))
+lw <- nb2listw(viz)
+```
+
+O `msr()` trabalha com o Mantel do pacote `ade4` e precisa de distâncias
+euclidianas: por isso, usamos a raiz de Bray-Curtis.
+
+```{r}
+set.seed(1)
+(m.comum <- ade4::mantel.randtest(sqrt(d.spe), d.env, nrepet = 999))
+set.seed(1)
+(m.esp <- msr(m.comum, lw, method = "pair", nrepet = 999))
+```
+
+O *r* é o mesmo nos dois testes; o que muda é a distribuição nula. Compare
+os *p*: a relação que parecia significativa no Mantel comum deixa de ser
+quando o modelo nulo preserva a estrutura espacial. Os slides discutem por
+que o Mantel é criticado em perguntas espaciais.
+
+## 2. Regressão múltipla de matrizes (MRM)
+
+A MRM faz uma regressão do vetor de distâncias da resposta contra os
+vetores de várias matrizes preditoras, e testa o R² permutando os objetos
+da matriz resposta. A função abaixo é a mesma usada nos slides:
+
+```{r}
+mrm <- function(Dy, ..., nperm = 999, semente = 1) {
+  X <- sapply(list(...), as.vector)
+  y <- as.vector(Dy)
+  fit <- lm(y ~ X)
+  r2 <- summary(fit)$r.squared
+  n <- attr(Dy, "Size"); M <- as.matrix(Dy)
+  set.seed(semente)
+  r2p <- replicate(nperm, {
+    o <- sample(n)
+    summary(lm(as.vector(as.dist(M[o, o])) ~ X))$r.squared
+  })
+  list(coef = coef(fit)[-1], r2 = r2, p = (sum(r2p >= r2) + 1) / (nperm + 1))
+}
+
+mrm(d.spe, d.env, d.geo)
+```
+
+`coef` traz os coeficientes de cada matriz, na ordem em que entraram
+(ambiente, geografia), `r2` o R² e `p` o *p* do R². Quando a
+dissimilaridade satura (pares de locais sem nenhuma espécie em comum), a
+relação deixa de ser linear; o GDM, nos slides, lida com isso.
+
+## 3. Procrustes e PROTEST
+
+A análise de Procrustes compara duas ordenações dos mesmos objetos: ela
+gira, reflete e escala uma configuração para encaixá-la na outra, e mede o
+desajuste que sobra (*m*²). O PROTEST testa se a concordância é maior que
+a esperada ao acaso.
+
+Peixes e macroinvertebrados em 12 riachos com diferentes graus de poluição
+(dados simulados do livro): as duas comunidades se organizam da mesma
+forma?
+
+```{r}
+pcoa.peixes <- cmdscale(vegdist(fish_comm, "bray"))
+pcoa.macro  <- cmdscale(vegdist(macroinv, "bray"))
+
+set.seed(1)
+(conc <- protest(pcoa.macro, pcoa.peixes, permutations = 999))
+plot(conc, kind = 1)   # setas: de uma configuração à outra
+plot(conc, kind = 2)   # resíduo de cada riacho
+```
+
+Na saída, `Procrustes Sum of Squares (m12 squared)` é o desajuste (*m*²,
+de 0 a 1), `Correlation in a symmetric Procrustes rotation` é o
+*r* = √(1 − *m*²) e `Significance` é o *p*. Os riachos com resíduo maior
+são os que as duas comunidades "veem" de forma diferente.
+
+## 4. PERMANOVA
+
+### Um fator: campo × coleção
+
+Composição de anuros registrada em campo e em coleções científicas (da
+Silva et al. 2017): as duas fontes dão a mesma composição?
+
+```{r}
+sp.anu <- anuros_permanova[, names(anuros_permanova) != "GRUPOS"]
+fonte <- factor(anuros_permanova$GRUPOS)
+table(fonte)
+
+set.seed(1)
+adonis2(sp.anu ~ fonte, method = "bray", permutations = 999)                  # abundância
+set.seed(1)
+adonis2(sp.anu ~ fonte, method = "bray", binary = TRUE, permutations = 999)   # incidência (Sørensen)
+```
+
+O R² é a proporção da variação (na métrica escolhida) explicada pelos
+grupos.
+
+**Quantas permutações diferentes existem?** Com 9 locais divididos em 6 e
+3, há só `choose(9, 3)` = 84 maneiras distintas de rearranjar os rótulos.
+O menor *p* possível é cerca de 1/84 ≈ 0,012: pedir 999 permutações não dá
+mais resolução, só repete rearranjos.
+
+```{r}
+choose(9, 3)
+```
+
+### Vários preditores: aves e altitude
+
+Aves em 23 localidades: o clima e a altitude (três classes) afetam a
+composição? As variáveis climáticas são muito correlacionadas entre si;
+como no livro, ficamos com a temperatura mínima de janeiro, a chuva total
+e a classe de altitude.
+
+```{r}
+round(cor(env_birds[, sapply(env_birds, is.numeric)]), 2)
+
+aves.env <- env_birds[, c("mini.jan", "rain.tot", "altitude")]
+aves.env$altitude <- factor(aves.env$altitude)
+d.aves <- vegdist(decostand(com_birds, "hellinger"), "bray")
+
+set.seed(1)
+adonis2(d.aves ~ mini.jan + rain.tot + altitude, data = aves.env,
+        permutations = 999)
+set.seed(1)
+adonis2(d.aves ~ mini.jan + rain.tot + altitude, data = aves.env,
+        by = "margin", permutations = 999)
+```
+
+Por padrão, o `adonis2()` testa os termos em **sequência**: cada um
+descontado dos anteriores, então a ordem das variáveis muda o resultado.
+Com `by = "margin"`, cada termo é testado descontado de **todos** os outros,
+e a ordem deixa de importar.
+
+## 5. Dispersão multivariada: betadisper
+
+A PERMANOVA pode dar significativa porque os grupos diferem na **posição**
+(o centroide) ou na **dispersão** (o espalhamento), sobretudo com grupos de
+tamanhos diferentes, como nos anuros (6 × 3). O `betadisper()` compara as
+distâncias de cada objeto ao centroide do seu grupo.
+
+```{r}
+bd.anu <- betadisper(vegdist(sp.anu), fonte)
+set.seed(1)
+permutest(bd.anu, permutations = 999)
+boxplot(bd.anu)
+
+bd.aves <- betadisper(d.aves, aves.env$altitude)
+set.seed(1)
+permutest(bd.aves, permutations = 999)
+plot(bd.aves)
+```
+
+O `anova()` sobre o resultado do `betadisper` também funciona, mas usa um
+teste *F* paramétrico; o `permutest()` não depende da normalidade das
+distâncias ao centroide.
+
+Se a dispersão diferir entre os grupos, a PERMANOVA significativa não basta
+para dizer que os grupos diferem em posição: a diferença pode ser, em parte
+ou toda, de dispersão. Olhe o gráfico do `betadisper` antes de concluir.
+
+## Referências dos dados
+
+- da Silva, F.R., Gonçalves-Souza, T., Paterno, G.B., Provete, D.B. &
+  Vancine, M.H. (2022) *Análises ecológicas no R*. Nupeea, Recife; Canal 6,
+  São Paulo. Pacote de dados: `ecodados`.
+- Os dados dos girinos são de Provete et al. (2014) e os dos anuros, de da
+  Silva et al. (2017), como citados no capítulo 9 do livro.
