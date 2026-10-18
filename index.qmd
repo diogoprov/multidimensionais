@@ -109,7 +109,6 @@ os resultados em linguagem ecológica.
 
 - [Análises ecológicas no R — da Silva, Gonçalves-Souza, Paterno,
   Provete, Vancine](https://analises-ecologicas.com)
-- [Página do pacote `labdsv` (Dave Roberts) com várias aulas](http://ecology.msu.montana.edu/labdsv/R/)
 - [Numerical Ecology with R — código do livro](https://github.com/JoeyBernhardt/NumericalEcology)
 
 ## Edições anteriores
@@ -121,7 +120,6 @@ e códigos administrativos distintos:
 - **2025/2** — Mestrado em Biologia Animal. *Análises
   Multidimensionais* (201521415, 45 h).
 - **2023/1** — *Ecologia Quantitativa* (código antigo 20011043).
-  **Materiais desta edição estão arquivados abaixo.**
 - **2021/1** — modalidade remota durante a pandemia.
 - **2020/1** — UFMS.
 - **2019/1** — primeira oferta.
