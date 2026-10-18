@@ -1007,7 +1007,7 @@ dados não estão nele, é preciso transformá-los ou projetá-los.
 :::
 
 ::: {.ref}
-Baseado em slides de Antigoni Kaliantzoupolous (grafia do slide original).
+Baseado em slides de Antigoni Kaliontzopoulou.
 :::
 
 # 8. Rudimentos de álgebra de matrizes {.secao}
