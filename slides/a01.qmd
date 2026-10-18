@@ -113,12 +113,12 @@ fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
 ## Ao final do curso
 
 ```{r}
-#| fig-alt: "Três cartões numerados. 1, avaliação: duas questões para resolver por escrito em uma semana, com análise de dados multivariados e interpretação. 2, resumos e mapas mentais fornecidos ao fim da disciplina no Moodle. 3, feedback sobre a disciplina."
+#| fig-alt: "Três cartões numerados. 1, avaliação: um trabalho final, um relatório Quarto reproduzível com dados próprios ou de repositório aberto, com análise multivariada e interpretação. 2, resumos e mapas mentais fornecidos ao fim da disciplina no Moodle. 3, feedback sobre a disciplina."
 #| fig-width: 11
 #| fig-height: 4.4
 #| out-height: 440px
 fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
-  "1. Avaliação", "Duas questões para\nresolver por escrito,\nem uma semana:\nanálise de dados\nmultivariados e\ninterpretação", "#b5473f",
+  "1. Trabalho final", "Relatório Quarto\nreproduzível, com\ndados próprios ou de\nrepositório aberto:\nanálise multivariada\ne interpretação", "#b5473f",
   "2. Resumos", "Resumos e mapas\nmentais fornecidos\nao fim da disciplina,\nno Moodle", "#c0843d",
   "3. Feedback", "Sua avaliação\nda disciplina", "#6b8e23"),
   larg = 3.5, alt = 4.2, tam = 7)

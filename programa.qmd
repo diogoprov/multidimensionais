@@ -46,10 +46,23 @@ os resultados em linguagem ecológica.
 
 ## Avaliação
 
-- **Prova teórica** ao final da disciplina;
-- **Trabalho de análise** — relatório com análise de um conjunto de
-  dados multivariado escolhido pelo(a) aluno(a), incluindo
-  interpretação ecológica dos resultados (entrega posterior à prova).
+Um **trabalho final**, como na disciplina de Análise de Dados Univariados:
+um **relatório Quarto reproduzível** com dados multivariados próprios ou de
+repositório aberto, contendo:
+
+1. a pergunta, as matrizes (resposta e preditoras) e o método escolhido,
+   justificado pelo mapa dos métodos;
+2. a escolha do coeficiente de associação ou da transformação (Aula 2);
+3. a análise, com os diagnósticos que o método pede (*stress*, escolha do
+   número de eixos ou de grupos, R² ajustado, testes por permutação com
+   semente declarada);
+4. a interpretação em linguagem ecológica.
+
+Em trabalhos feitos em grupo, as iniciais dos autores nos Métodos seguem
+o [**MeRIT** (Nakagawa et al. 2023)](https://doi.org/10.1038/s41467-023-37039-1).
+
+O uso de modelos de linguagem deve ser declarado: modelo, versão, que
+porção do código foi gerada e quem responde por ela.
 
 ## Bibliografia
 

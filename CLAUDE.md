@@ -77,6 +77,8 @@ aula, na ordem 5 → 3 → 2 → 4 → 6 → 7 → 1, commit só com aprovação
   Os outros `.pptx`/`.ppt` da pasta são versões antigas. Os arquivos ficam
   só na nuvem: baixe com `cat "Aula N.pptx" > /dev/null` em segundo plano (o
   macOS não tem `timeout`). Extraia num diretório próprio do scratchpad.
+- **Avaliação**: um trabalho final (relatório Quarto reproduzível), como na
+  disciplina de univariada; não há prova.
 - **Fio condutor**: o mapa dos métodos (`mapa_plot(destaque = ...)`, em
   `R/mapa.R`), no lugar do ciclo PPDAC. Da matriz de dados saem a
   associação (Aula 2), e dela classificação (3), ordenação irrestrita (4),
