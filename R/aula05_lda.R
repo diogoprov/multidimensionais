@@ -139,7 +139,8 @@ doubs_lda <- function() {
   e <- new.env()
   utils::data("doubs", package = "ade4", envir = e)
   env <- e$doubs$env[-8, ]
-  X <- data.frame(ln_slo = log(env$slo), oxy = env$oxy, ln_bdo = log(env$bdo))
+  # altitude, como em Borcard et al.; no ade4, slo já é log(x + 1) e oxy, bdo vêm ×10
+  X <- data.frame(ln_alt = log(env$alt), oxy = env$oxy / 10, ln_bdo = log(env$bdo / 10))
   X <- as.data.frame(scale(X))
   g <- stats::cutree(doubs_hc()$Ward, 4)
   list(X = X, g = g, fit = lda_manual(X, g))
