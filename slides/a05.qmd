@@ -1290,7 +1290,7 @@ de 0 (máxima separação) a 1 (nenhuma separação entre os grupos).
 :::: {.columns}
 ::: {.column width="55%"}
 ```{r}
-#| fig-alt: "Os 29 locais do Doubs no espaço discriminante LD1 por LD2, coloridos pelos quatro grupos definidos pelos peixes. O grupo 1 fica à esquerda, os grupos 2 e 3 no centro, sobrepostos, e o grupo 4 à direita."
+#| fig-alt: "Os 29 locais do Doubs no espaço discriminante LD1 por LD2, coloridos pelos quatro grupos definidos pelos peixes. O grupo 1 fica à esquerda, o grupo 2 perto do centro, o grupo 3 à direita dele e o grupo 4 na extremidade direita."
 #| fig-width: 6.2
 #| fig-height: 5.6
 #| out-height: 560px
@@ -1299,7 +1299,7 @@ fig_lda_doubs()
 :::
 ::: {.column width="45%"}
 Os quatro grupos de locais do Ward (Aula 3) discriminados por três variáveis
-ambientais: ln(declividade), oxigênio e ln(DBO).
+ambientais: ln(altitude), oxigênio e ln(DBO).
 
 - Lambda de Wilks = `r num(ld$fit$wilks, 3)`.
 - LD1 responde por `r pct(ld$fit$autovalores[1] / sum(ld$fit$autovalores))` da
