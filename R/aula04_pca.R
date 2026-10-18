@@ -529,3 +529,60 @@ fig_normal_bivariada <- function() {
   topo + plot_spacer() + centro + lado +
     plot_layout(ncol = 2, widths = c(4, 1), heights = c(1, 4))
 }
+
+#' A PCA em 3D (plotly, interativo): altitude, nitrato e oxigênio do Doubs,
+#' padronizados, com os três eixos principais saindo do centroide
+#' (comprimento proporcional à raiz do autovalor), o plano do PC1 e do PC2 e
+#' a projeção de cada local nesse plano
+fig_pca_3d <- function(vars = c("alt", "nit", "oxy"), altura = 520) {
+  env <- dados_doubs()$env
+  z <- scale(env[, vars])
+  pc <- stats::prcomp(z)
+  u <- pc$rotation
+  u <- sweep(u, 2, sinais_eixos(u, c("nit", "nit", "alt")), `*`)
+  lam <- pc$sdev^2
+  rot <- c(alt = "altitude", nit = "nitrato", oxy = "oxigênio")
+  # projeção no plano do PC1 e do PC2
+  proj <- z %*% u[, 1:2] %*% t(u[, 1:2])
+  seg <- do.call(rbind, lapply(seq_len(nrow(z)), \(i) rbind(z[i, ], proj[i, ], NA)))
+  # o plano: um retângulo nos eixos 1 e 2
+  a <- 2.6 * sqrt(lam[1]); b <- 2.6 * sqrt(lam[2])
+  cantos <- rbind(-a * u[, 1] - b * u[, 2], a * u[, 1] - b * u[, 2],
+                  a * u[, 1] + b * u[, 2], -a * u[, 1] + b * u[, 2])
+  cor_pc <- c(cores[["accent"]], cores[["ferrugem"]], cores[["verde"]])
+  # câmera olhando o plano de frente, um pouco inclinada (a partir do PC3)
+  olho <- 0.75 * u[, 3] - 0.6 * u[, 2] + 0.3 * u[, 1]
+  olho <- 2.1 * olho / sqrt(sum(olho^2))
+  camera <- list(x = olho[[1]], y = olho[[2]], z = olho[[3]])
+  p <- plotly::plot_ly(height = altura) |>
+    plotly::add_trace(type = "mesh3d", x = cantos[, 1], y = cantos[, 2], z = cantos[, 3],
+                      i = c(0, 0), j = c(1, 2), k = c(2, 3), opacity = .18,
+                      color = I(cores[["accent"]]), hoverinfo = "skip", name = "plano PC1 × PC2") |>
+    plotly::add_trace(type = "scatter3d", mode = "lines", x = seg[, 1], y = seg[, 2], z = seg[, 3],
+                      line = list(color = "#9a9283", width = 2), hoverinfo = "skip",
+                      name = "projeção no plano") |>
+    plotly::add_trace(type = "scatter3d", mode = "markers", x = z[, 1], y = z[, 2], z = z[, 3],
+                      text = paste("Local", rownames(z)), hoverinfo = "text",
+                      marker = list(size = 4.5, color = cores[["texto"]]), name = "locais")
+  for (k in 1:3) {
+    e <- rbind(-2.4 * sqrt(lam[k]) * u[, k], 2.4 * sqrt(lam[k]) * u[, k])
+    p <- plotly::add_trace(p, type = "scatter3d", mode = "lines+text",
+                           x = e[, 1], y = e[, 2], z = e[, 3], text = c("", paste0("PC", k)),
+                           textfont = list(color = cor_pc[k], size = 15),
+                           line = list(color = cor_pc[k], width = 7), hoverinfo = "skip",
+                           name = paste0("PC", k))
+  }
+  plotly::layout(p, showlegend = FALSE, margin = list(l = 0, r = 0, b = 0, t = 0),
+                 paper_bgcolor = cores[["papel"]],
+                 scene = list(xaxis = list(title = rot[[vars[1]]]),
+                              yaxis = list(title = rot[[vars[2]]]),
+                              zaxis = list(title = rot[[vars[3]]]),
+                              aspectmode = "cube",
+                              camera = list(eye = camera)))
+}
+
+#' Proporção da variação em cada eixo da PCA em 3D
+pca_3d_var <- function(vars = c("alt", "nit", "oxy")) {
+  lam <- stats::prcomp(scale(dados_doubs()$env[, vars]))$sdev^2
+  lam / sum(lam)
+}

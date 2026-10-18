@@ -45,6 +45,7 @@ numm <- function(x, d = 1) sub(",", "{,}", num(x, d), fixed = TRUE)
 ll   <- pca_ll()
 pca  <- pca_doubs()
 pct  <- 100 * pca$CA$eig / pca$tot.chi
+pct3 <- trimws(num(100 * pca_3d_var()))   # PCA em 3D: altitude, nitrato e oxigênio
 r_eixo <- cor_eixos()                     # correlação das variáveis com PC1 e PC2
 sp2  <- escores(pca, "dfs", scaling = 2)$species
 ang  <- function(v) abs(angulo_seta(sp2, v))
@@ -220,6 +221,38 @@ centro da nuvem; a rotação encontra as dimensões com maior variação.
 
 ::: {.ref}
 Dados simulados. Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## A PCA em três dimensões {.medio}
+
+:::: {.columns}
+::: {.column width="36%"}
+Três variáveis do Doubs, padronizadas: cada ponto é um local. **Arraste para
+girar.**
+
+- **PC1** (azul): a direção de maior variação, com
+  `r pct3[1]`% do total.
+- **PC2** (vermelho): perpendicular ao PC1, com a maior variação que sobra
+  (`r pct3[2]`%).
+- **PC3** (verde): o resto (`r pct3[3]`%).
+
+::: {.fragment}
+A PCA **projeta** cada local no plano do PC1 e do PC2 (as linhas cinza): é
+esse plano que aparece no biplot. Como o PC3 tem pouca variação, quase nada
+se perde.
+:::
+:::
+::: {.column width="64%"}
+```{r}
+#| fig-alt: "Gráfico tridimensional interativo com os 29 locais do Doubs nos eixos de altitude, nitrato e oxigênio padronizados. Três segmentos coloridos saem do centro da nuvem: o PC1, longo, ao longo da maior dispersão; o PC2, perpendicular e mais curto; e o PC3, curto. Um plano translúcido contém o PC1 e o PC2, e linhas finas ligam cada local à sua projeção no plano."
+fig_pca_3d()
+```
+:::
+::::
+
+::: {.ref}
+Peixes e ambiente do Doubs (`ade4`): altitude, nitrato e oxigênio
+padronizados, PCA com `prcomp()`. Gráfico interativo com `plotly`.
 :::
 
 ## A PCA é a autoanálise da matriz de dispersão
