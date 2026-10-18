@@ -43,6 +43,7 @@ pct <- function(x) paste0(num(100 * x, 1), "%")
 LL11 <- "https://doi.org/10.1016/B978-0-444-53868-0.50011-3"
 LL10 <- "https://doi.org/10.1016/B978-0-444-53868-0.50010-1"
 LL9  <- "https://doi.org/10.1016/B978-0-444-53868-0.50009-5"
+LL7  <- "https://doi.org/10.1016/B978-0-444-53868-0.50007-1"
 LL14 <- "https://doi.org/10.1016/B978-0-444-53868-0.50014-9"
 LL13 <- "https://doi.org/10.1016/B978-0-444-53868-0.50013-7"
 BOR6 <- "https://doi.org/10.1007/978-3-319-71404-2_6"
@@ -54,6 +55,8 @@ set.seed(1); av_glob <- vegan::anova.cca(rda1, permutations = 999)
 set.seed(1); av_eixo <- vegan::anova.cca(rda1, by = "axis", permutations = 999)
 cca1 <- doubs_cca()
 r2c  <- vegan::RsquareAdj(cca1)
+rda_dune <- dune_rda()
+mh   <- mahal_ex()
 dca_comp <- diff(range(vegan::scores(vegan::decorana(dd$spe), display = "sites", choices = 1)))
 vif  <- vegan::vif.cca(rda1)
 set.seed(1)
@@ -233,6 +236,22 @@ Ilustração de [Provete et al. (2011)](https://doi.org/10.1590/S1676-0603201100
 *Biota Neotrop.* 11(2): 377–391. Baseado em slides de Thiago Gonçalves-Souza.
 :::
 
+## Girinos e poças: as duas matrizes
+
+```{r}
+#| fig-alt: "Esquema das duas matrizes do exemplo. Em cima, três variáveis ambientais (tipos de vegetação, densidade da vegetação e porcentagem da superfície da poça exposta), unidas por uma chave, formam a matriz X, com uma linha por poça. Embaixo, silhuetas de três anuros, unidas por outra chave, formam a matriz Y, de presença e ausência das espécies nas mesmas poças."
+#| fig-width: 10
+#| fig-height: 7.4
+#| out-height: 540px
+fig_girinos_matrizes()
+```
+
+::: {.ref}
+Valores ilustrativos. Redesenhado de slide de Thiago Gonçalves-Souza.
+Silhuetas do [PhyloPic](https://www.phylopic.org): Luca Leicht (CC BY 4.0),
+Dennis C. Murphy e plag665 (CC0 1.0).
+:::
+
 # 2. RDA passo a passo {.secao}
 
 [Ordenação restrita]{.familia .restrita}
@@ -294,22 +313,60 @@ Dados simulados. Baseado em slides de M. Collyer.
 
 ## Passo 2: a PCA dos valores ajustados
 
-- A PCA de $\hat{\mathbf{Y}}$ dá os **autovalores** (a variação explicada por
-  cada eixo canônico) e os **autovetores** $\mathbf{U}$.
-- Dois tipos de escores dos locais:
-  - $\mathbf{F} = \mathbf{Y}\mathbf{U}$: combinação linear dos dados
-    observados; no `vegan`, *site scores* (`"wa"`).
-  - $\mathbf{Z} = \hat{\mathbf{Y}}\mathbf{U}$: combinação linear dos valores
-    ajustados, a distribuição das espécies **predita pelo ambiente**; no
-    `vegan`, *site constraints* (`"lc"`).
+```{r}
+#| fig-alt: "Esquema do passo 2. A matriz Ŷ passa por uma PCA, que gera os autovalores (a variação de cada eixo canônico), os autovetores U (os pesos das espécies) e os escores de locais, espécies e preditoras. Uma seta vermelha indica a redução do espaço multidimensional aos poucos eixos que concentram a variação explicada por X."
+#| fig-width: 10
+#| fig-height: 4.6
+#| out-height: 470px
+fig_rda_passo2_pca()
+```
+
+A PCA do passo 2 só faz sentido se a relação entre X e Y for significativa
+(seção 3).
+
+::: {.ref}
+Redesenhado de slides de Thiago Gonçalves-Souza.
+:::
+
+## Passo 2: dois tipos de escores dos locais
+
+```{r}
+#| fig-alt: "Esquema com duas linhas. Em cima, a matriz Y multiplicada pelos autovetores U dá F = YU, a combinação linear dos dados observados, chamada no vegan de site scores (wa). Embaixo, a matriz Ŷ multiplicada pelos mesmos autovetores dá Z = ŶU, a combinação linear dos valores ajustados, chamada de site constraints (lc); uma chave sob Ŷ e U indica a distribuição das espécies predita pelo ambiente."
+#| fig-width: 10.5
+#| fig-height: 5.6
+#| out-height: 540px
+fig_rda_escores()
+```
+
+::: {.ref}
+Redesenhado de slides de Thiago Gonçalves-Souza;
+[Legendre & Legendre (2012), seção 11.1](`r LL11`).
+:::
+
+## Os dois escores nos peixes do Doubs {.medio}
+
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Locais da RDA dos peixes do Doubs nos dois primeiros eixos, cada um em duas posições: o escore wa (F = YU), em azul, e o escore lc (Z = ŶU), em verde, ligados por um segmento. Os escores lc ficam menos dispersos que os wa."
+#| fig-width: 6.6
+#| fig-height: 6
+#| out-height: 515px
+fig_wa_lc(rda1)
+```
+:::
+::: {.column width="42%"}
+- Cada segmento liga a composição **observada** de um local (wa) à
+  composição **predita pelas variáveis ambientais** (lc).
+- Segmentos longos: locais que o ambiente medido explica mal.
+- O `plot()` do `vegan` usa wa por padrão; `display = "lc"` mostra os
+  escores restritos.
+:::
+::::
 
 ::: {.definicao}
 RDA: combinações lineares entre Y e X. CCA: as mesmas operações, mas
 ponderadas.
-:::
-
-::: {.ref}
-Baseado em slides de Thiago Gonçalves-Souza.
 :::
 
 ## Diferença entre RDA e CCA {.medio}
@@ -421,6 +478,130 @@ Três eixos significativos.
 | Ângulos entre as setas | não | refletem correlações |
 :::
 
+## Montando um triplot {.medio}
+
+:::: {.columns}
+::: {.column width="38%"}
+**O segundo passo gera:**
+
+- os escores dos **locais**
+:::
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot esquemático de uma RDA, etapa 1 de 6: só os oito locais."
+#| fig-width: 6.4
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_camadas(1)
+```
+:::
+::::
+
+## Montando um triplot {.medio}
+
+:::: {.columns}
+::: {.column width="38%"}
+**O segundo passo gera:**
+
+- os escores dos **locais**
+- os escores das **espécies**
+:::
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot esquemático de uma RDA, etapa 2 de 6: os locais e seis espécies."
+#| fig-width: 6.4
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_camadas(2)
+```
+:::
+::::
+
+## Montando um triplot {.medio}
+
+:::: {.columns}
+::: {.column width="38%"}
+**O segundo passo gera:**
+
+- os escores dos **locais**
+- os escores das **espécies**
+- os escores das **preditoras** (setas)
+:::
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot esquemático de uma RDA, etapa 3 de 6: os locais, as espécies e quatro setas de variáveis ambientais (Temp, Umidade, Luminosidade e pH)."
+#| fig-width: 6.4
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_camadas(3)
+```
+:::
+::::
+
+## Montando um triplot {.medio}
+
+:::: {.columns}
+::: {.column width="38%"}
+**Scaling 2**
+
+
+O **ângulo** entre as setas reflete a **correlação** entre as variáveis: Luminosidade e pH, quase em ângulo reto, são pouco correlacionadas.
+:::
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot esquemático de uma RDA, etapa 4 de 6: o triplot completo, com um arco verde marcando o ângulo entre as setas de Luminosidade e de pH."
+#| fig-width: 6.4
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_camadas(4)
+```
+:::
+::::
+
+## Montando um triplot {.medio}
+
+:::: {.columns}
+::: {.column width="38%"}
+**Scaling 1**
+
+
+A **distância** entre os objetos aproxima a sua **distância euclidiana**: local 1 e local 8 têm composições bem diferentes.
+:::
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot esquemático de uma RDA, etapa 5 de 6: o triplot completo, com uma seta verde ligando o local 1 ao local 8."
+#| fig-width: 6.4
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_camadas(5)
+```
+:::
+::::
+
+## Montando um triplot {.medio}
+
+:::: {.columns}
+::: {.column width="38%"}
+**Scaling 1**
+
+
+**Projetar** uma espécie em ângulo reto sobre uma seta aproxima a **abundância** dela ao longo da variável: sp4 é mais abundante onde o pH é mais alto.
+:::
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot esquemático de uma RDA, etapa 6 de 6: o triplot completo, com a projeção perpendicular da espécie sp4 sobre a seta do pH marcada em verde."
+#| fig-width: 6.4
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_camadas(6)
+```
+:::
+::::
+
+::: {.ref}
+Esquema; redesenhado de slides de Thiago Gonçalves-Souza.
+:::
+
 ## Triplot da RDA: scaling 2 {.medio}
 
 :::: {.columns}
@@ -467,6 +648,33 @@ fig_triplot(rda1, 1)
 :::
 ::::
 
+## Preditoras categóricas no triplot {.medio}
+
+:::: {.columns}
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Triplot da RDA dos prados de dunas em scaling 1, com uma preditora quantitativa (A1, espessura do horizonte A, como seta verde) e uma categórica (o manejo, com quatro classes). Cada classe de manejo aparece como um losango no centroide dos locais daquela classe, ligado aos seus locais por segmentos da mesma cor; as espécies estão em vermelho."
+#| fig-width: 7
+#| fig-height: 6.2
+#| out-height: 580px
+fig_triplot_categorica(rda_dune, 1)
+```
+:::
+::: {.column width="38%"}
+- Uma preditora categórica entra como **variáveis indicadoras** (0/1).
+- No triplot, cada classe vira um **ponto**: o **centroide** dos locais
+  daquela classe, e não uma seta.
+- Quantitativas continuam como **setas**.
+- Com muitas categóricas, prefira o **scaling 1**, que preserva as
+  distâncias entre os objetos.
+:::
+::::
+
+::: {.ref}
+Dados `dune` e `dune.env` do `vegan`. Inspirado na Fig. 11.3 de
+[Legendre & Legendre (2012)](`r LL11`).
+:::
+
 ## Triplot da CCA {.medio}
 
 :::: {.columns}
@@ -490,6 +698,33 @@ Aqui, a truta (Satr) e o oxigênio dissolvido.
 
 ::: {.ref}
 [Legendre & Legendre (2012), seção 11.2](`r LL11`).
+:::
+
+## Abundância de espécies na RDA {.medio}
+
+:::: {.columns}
+::: {.column width="42%"}
+- Matrizes de abundância costumam ter **muitos zeros**.
+- A RDA preserva a **distância euclidiana**, que trata os duplos zeros como
+  semelhança (Aula 2).
+- **Solução**: transformar a matriz por **Hellinger** ou **chord** antes da
+  RDA (a **tb-RDA**).
+:::
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Duas PCoAs dos três locais do exemplo do duplo zero. Com a distância euclidiana nos dados brutos, x2 e x3, que não têm nenhuma espécie em comum, ficam próximos, e x1 fica longe. Com a Hellinger, x1 e x2, que compartilham todas as espécies, ficam juntos, e x3 fica longe."
+#| fig-width: 7.4
+#| fig-height: 4
+#| out-height: 390px
+fig_rda_hellinger()
+```
+
+x1 e x2 têm as mesmas espécies; x2 e x3, nenhuma em comum.
+:::
+::::
+
+::: {.ref}
+Exemplo de [Legendre & Legendre (2012), cap. 7](`r LL7`), visto na Aula 2.
 :::
 
 ## Num intendi nada...
@@ -530,28 +765,14 @@ Inspirado na Fig. 21.1 de McCune & Grace (2002) e em D. Zelený,
 [*Analysis of community ecology data in R*](https://www.davidzeleny.net/anadat-r/doku.php/en:ordination).
 :::
 
-## Abundâncias e gradientes {.medio}
+## Gradiente longo ou curto? {.medio}
 
-:::: {.columns}
-::: {.column width="50%"}
-**Abundância de espécies na RDA**
-
-- Matrizes de abundância costumam ter muitos zeros.
-- A RDA preserva distâncias euclidianas, que tratam os duplos zeros como
-  semelhança (Aula 2).
-- **Solução**: transformar a matriz por Hellinger ou chord antes da RDA (a
-  **tb-RDA**).
-:::
-::: {.column width="50%"}
-**Gradiente longo ou curto?**
-
-- Faça uma **DCA** (Aula 4): o comprimento do DCA1, em desvios-padrão (DP).
-  - Unimodal: mais de 4 DP (as espécies se substituem totalmente).
-  - Linear: de 1 a 3 DP (metade da composição muda em 1 a 1,4 DP).
-- No Doubs, o DCA1 tem `r num(dca_comp)` DP. $R^2_a$ da RDA (Hellinger) =
-  `r num(r2$adj.r.squared, 3)`; da CCA = `r num(r2c$adj.r.squared, 3)`.
-:::
-::::
+- Faça uma **DCA** (Aula 4) e veja o comprimento do DCA1, em desvios-padrão (DP).
+  - Unimodal (CCA): mais de 4 DP; as espécies se substituem totalmente.
+  - Linear (RDA): de 1 a 3 DP; metade da composição muda em 1 a 1,4 DP.
+- No Doubs, o DCA1 tem `r num(dca_comp)` DP.
+- O $R^2_a$ ajuda a escolher: RDA (Hellinger) = `r num(r2$adj.r.squared, 3)`;
+  CCA = `r num(r2c$adj.r.squared, 3)`.
 
 ::: {.ref}
 [Legendre & Legendre (2012), p. 486](`r LL9`).
@@ -705,38 +926,104 @@ fig_mite_mapa()
 Ácaros de `vegan::mite`.
 :::
 
-## Mapas de autovetores: PCNM e dbMEM
+## Mapas de autovetores: PCNM = dbMEM {.medio}
 
+:::: {.columns}
+::: {.column width="45%"}
+- *Principal coordinates of neighbour matrices* (PCNM), hoje chamados de
+  **dbMEM** (*distance-based Moran's eigenvector maps*).
+- Cada autovetor é uma **variável espacial**: um padrão em uma escala, das
+  mais amplas (PCNM 1) às mais finas.
+- Entram como preditoras (W) numa RDA.
+:::
+::: {.column width="55%"}
 ```{r}
-#| fig-alt: "Fluxograma do PCNM: 1, distâncias euclidianas entre os pontos; 2, truncamento, em que distâncias maiores que o limiar viram quatro vezes o limiar; 3, PCoA da matriz truncada; 4, os autovetores com autovalor positivo são os PCNMs. O limiar é a maior aresta da árvore geradora mínima."
-#| fig-height: 3.2
-#| out-height: 240px
-fig_pcnm_passos()
+#| fig-alt: "Dois mapas das 70 parcelas dos ácaros. Cada parcela é um quadrado preto (valor positivo) ou branco (negativo), com área proporcional ao valor do autovetor. O PCNM 1 separa a metade de cima da de baixo, um padrão amplo; o PCNM 8 alterna manchas menores."
+#| fig-width: 5.6
+#| fig-height: 6.6
+#| out-height: 580px
+fig_pcnm_mite()
 ```
-
-```{r}
-#| fig-alt: "Quatro autovetores PCNM num transecto de 35 pontos. O PCNM 1 e o PCNM 2 são ondas longas, de escala ampla; o PCNM 15 e o PCNM 16 oscilam rapidamente, em escala fina."
-#| fig-height: 3.2
-#| out-height: 265px
-fig_pcnm_transecto()
-```
+:::
+::::
 
 ::: {.ref}
 [Borcard & Legendre (2002)](https://doi.org/10.1016/S0304-3800(01)00501-4);
 [Borcard et al. (2004)](https://doi.org/10.1890/03-3111); [L&L (2012), cap. 14](`r LL14`).
+Parcelas de `vegan::mite.xy`.
 :::
 
-## Generalização: os MEMs
+## dbMEM passo a passo: as distâncias
 
-- PCNM = dbMEM (*distance-based Moran's eigenvector maps*).
-- Generalização para qualquer rede de conexões entre os pontos:
-  - Griffith & Peres-Neto (2006);
-  - Dray et al. (2006) unificam a abordagem dos filtros espaciais (Griffith
-    2000) e a de Borcard & Legendre (2002).
-- Passam a se chamar **MEMs**, *Moran's eigenvector maps*.
-- Redes de conexão regulares (grades) ou irregulares (triangulação de
-  Delaunay, grafo de Gabriel, vizinhança relativa, árvore geradora mínima),
-  escolhidas pelo contexto da paisagem.
+```{r}
+#| fig-alt: "Um transecto de 10 pontos igualmente espaçados e, abaixo, o triângulo inferior da matriz de distâncias euclidianas entre eles, com valores de 1 a 9."
+#| fig-width: 8
+#| fig-height: 6.2
+#| out-height: 560px
+fig_dbmem_dist()
+```
+
+**1º passo**: calcular a distância entre os pontos.
+
+## dbMEM passo a passo: o truncamento
+
+```{r}
+#| fig-alt: "Duas matrizes de distância do transecto lado a lado. Na primeira, as distâncias iguais a 1, na diagonal, estão em vermelho (pequenas) e as demais em azul (grandes). Uma seta leva à matriz truncada, em que todas as distâncias grandes viraram 4."
+#| fig-width: 11
+#| fig-height: 6.2
+#| out-height: 510px
+fig_dbmem_trunca()
+```
+
+**2º passo**: o limiar (*thresh*), tirado da árvore geradora mínima, separa as
+distâncias em pequenas e grandes.
+
+## dbMEM passo a passo: a PCoA {.medio}
+
+:::: {.columns}
+::: {.column width="42%"}
+**3º passo**: PCoA da matriz truncada.
+
+**4º passo**: os autovetores com autovalor **positivo** são os dbMEMs.
+
+```{r}
+#| fig-alt: "Autovalores da PCoA da matriz truncada do transecto de 10 pontos: seis positivos, em verde, um zero e três negativos, em vermelho."
+#| fig-width: 5.4
+#| fig-height: 4.4
+#| out-height: 380px
+fig_dbmem_pcoa()
+```
+:::
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Quatro dbMEMs num transecto de 35 pontos. O dbMEM 1 e o dbMEM 2 são ondas longas, de escala ampla; o dbMEM 15 e o dbMEM 16 oscilam rapidamente, em escala fina."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_pcnm_transecto()
+```
+:::
+::::
+
+::: {.ref}
+[Legendre & Legendre (2012), cap. 14](`r LL14`).
+:::
+
+## Generalização: os MEMs {.medio}
+
+- Generalização dos dbMEMs para **qualquer rede de conexões** entre os pontos
+  (Griffith & Peres-Neto 2006; Dray et al. 2006, que unificam os filtros
+  espaciais de Griffith 2000 e a abordagem de Borcard & Legendre 2002).
+- Passam a se chamar **MEMs**, *Moran's eigenvector maps*. A rede é escolhida
+  pelo contexto da paisagem:
+
+```{r}
+#| fig-alt: "Quatro redes de conexão entre as 70 parcelas dos ácaros, da mais conectada à menos: triangulação de Delaunay, grafo de Gabriel, vizinhança relativa e árvore geradora mínima."
+#| fig-width: 12
+#| fig-height: 6
+#| out-height: 400px
+fig_redes_mem()
+```
 
 ::: {.ref}
 [Griffith & Peres-Neto (2006)](https://doi.org/10.1890/0012-9658(2006)87[2603:SMIETF]2.0.CO;2);
@@ -818,10 +1105,62 @@ knitr::kable(tab_rda_parcial(vp), align = "lrr")
 
 [Ordenação restrita]{.familia .restrita}
 
-## Partição de variância
+## Partição de variância {.medio}
 
-Testa se dois conjuntos de variáveis (X e W) são **redundantes** ou se cada um
-explica aspectos **únicos** da composição de espécies.
+:::: {.columns}
+::: {.column width="48%"}
+```{r}
+#| fig-alt: "Esquema: a matriz Y recebe setas de duas matrizes explicativas, X, ambiental, e W, espacial."
+#| fig-width: 5.4
+#| fig-height: 4
+#| out-height: 380px
+fig_varpart_ideia()
+```
+:::
+::: {.column width="52%"}
+- Testa se dois conjuntos de preditoras (X e W) são **redundantes** ou se
+  cada um explica aspectos **únicos** da composição.
+- Cada fração é um $R^2$ canônico **parcial**:
+
+$$R^2_{\mathbf{Y}_{res|W}\,|\,\mathbf{X}_{res|W}} = \frac{SS(\hat{\mathbf{Y}})}{SS(\mathbf{Y}_{res|W})}$$
+:::
+::::
+
+::: {.ref}
+[Borcard, Legendre & Drapeau (1992)](https://doi.org/10.2307/1940179) *Ecology* 73: 1045–1055;
+[Peres-Neto et al. (2006)](https://doi.org/10.1890/0012-9658(2006)87[2614:VPOSDM]2.0.CO;2)
+*Ecology* 87: 2614–2625.
+:::
+
+## Passos 1 a 3: três regressões
+
+```{r}
+#| fig-alt: "Três linhas de matrizes. Passo 1: Y regredida em X dá o R² de Y em X, igual às frações a mais b. Passo 2: Y regredida em W dá b mais c. Passo 3: Y regredida em X mais W dá a mais b mais c. Os valores são os R² ajustados dos ácaros."
+#| fig-width: 11
+#| fig-height: 4.4
+#| out-height: 450px
+fig_varpart_regressoes(vp)
+```
+
+Valores: $R^2$ ajustados dos ácaros de `vegan::mite` (Hellinger); X = densidade do
+substrato e conteúdo de água; W = `r length(vp$sel)` PCNMs selecionados.
+
+## Passos 4 e 5: as frações
+
+```{r}
+#| fig-alt: "As frações individuais por diferença entre as regressões, desenhadas como pequenas matrizes. [a] é o R² de Y em X mais W menos o de Y em W; [b] é o de Y em X mais o de Y em W menos o de Y em X mais W; [c] é o de Y em X mais W menos o de Y em X. Passo 5: [d] é 1 menos a soma das três frações."
+#| fig-width: 10
+#| fig-height: 5
+#| out-height: 470px
+fig_varpart_fracoes(vp)
+```
+
+::: {.definicao}
+Use os $R^2$ **ajustados**. As frações [a] e [c] podem ser testadas com RDAs
+parciais; a [b] não tem teste.
+:::
+
+## A partição nos ácaros
 
 ```{r}
 #| fig-alt: "Barra da partição de variância dos ácaros: [a] só ambiente, 6%; [b] compartilhada, 25%; [c] só espaço, 20%; [d] não explicada, 50%. Uma linha acima marca a fração explicada pelo ambiente, [a] mais [b]; uma linha abaixo, a explicada pelo espaço, [b] mais [c]."
@@ -832,41 +1171,6 @@ fig_varpart(vp)
 
 [b] é a **variação ambiental espacialmente estruturada**: o ambiente e o
 espaço explicam a mesma parte da composição.
-
-::: {.ref}
-Ácaros de `vegan::mite` (Hellinger): ambiente = densidade do substrato e
-conteúdo de água; espaço = `r length(vp$sel)` PCNMs selecionados.
-[Borcard, Legendre & Drapeau (1992)](https://doi.org/10.2307/1940179) *Ecology* 73: 1045–1055.
-:::
-
-## Calculando as frações
-
-:::: {.columns}
-::: {.column width="50%"}
-1. $Y \sim X$: $R^2_{YX} = [a] + [b] = `r numm(vp$ab, 3)`$
-2. $Y \sim W$: $R^2_{YW} = [b] + [c] = `r numm(vp$bc, 3)`$
-3. $Y \sim X + W$: $R^2_{YXW} = [a] + [b] + [c] = `r numm(vp$abc, 3)`$
-:::
-::: {.column width="50%"}
-::: {.fragment}
-4. As frações individuais:
-   - $[a] = R^2_{YXW} - R^2_{YW} = `r numm(vp$a, 3)`$
-   - $[b] = R^2_{YX} + R^2_{YW} - R^2_{YXW} = `r numm(vp$b, 3)`$
-   - $[c] = R^2_{YXW} - R^2_{YX} = `r numm(vp$c, 3)`$
-5. Resíduos: $[d] = 1 - ([a] + [b] + [c]) = `r numm(vp$d, 3)`$
-:::
-:::
-::::
-
-::: {.definicao}
-Use os $R^2$ **ajustados**. As frações [a] e [c] podem ser testadas com RDAs
-parciais; a [b] não tem teste.
-:::
-
-::: {.ref}
-[Peres-Neto et al. (2006)](https://doi.org/10.1890/0012-9658(2006)87[2614:VPOSDM]2.0.CO;2)
-*Ecology* 87: 2614–2625.
-:::
 
 ## Partição de variância no R
 
@@ -937,6 +1241,35 @@ fig_lda_ideia()
 Dados simulados, inspirados na Fig. 11.11 de [Legendre & Legendre (2012)](`r LL11`), p. 673–90.
 :::
 
+## Distância de Mahalanobis {.medio}
+
+:::: {.columns}
+::: {.column width="48%"}
+$$D^2(\mathbf{x}_1, \mathbf{x}_2) = \mathbf{d}_{12}\,\mathbf{V}^{-1}\,\mathbf{d}_{12}'$$
+
+- $\mathbf{d}_{12}$: o vetor das diferenças entre as **médias** das variáveis
+  nos grupos 1 e 2.
+- $\mathbf{V}$: a matriz de **covariância conjunta** dentro dos dois grupos.
+- $\mathbf{V}^{-1}$ desconta a correlação entre as variáveis e as suas escalas.
+
+No exemplo: euclidiana entre as médias = `r num(mh$euc, 2)`; Mahalanobis
+$D$ = `r num(sqrt(mh$D2), 2)`.
+:::
+::: {.column width="52%"}
+```{r}
+#| fig-alt: "Os dois grupos simulados, A e B, com os losangos nas médias ligados por uma seta, d12, e elipses da covariância conjunta. As elipses são alongadas na diagonal, e a seta entre as médias é perpendicular a esse alongamento."
+#| fig-width: 6
+#| fig-height: 6
+#| out-height: 560px
+fig_mahal_grupos()
+```
+:::
+::::
+
+::: {.ref}
+[Legendre & Legendre (2012), seção 7.4](`r LL7`); Aula 2.
+:::
+
 ## O algoritmo
 
 1. Calcula a separação entre os grupos (a variância **entre** grupos, $\mathbf{B}$).
@@ -1005,61 +1338,120 @@ knitr::kable(data.frame(Grupo = rownames(tb), tb, check.names = FALSE), align = 
 :::
 ::::
 
+## A matriz de confusão {.medio}
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| fig-alt: "Matriz de confusão da LDA do Doubs: grupos observados nas linhas e atribuídos nas colunas. As células da diagonal, em verde, são os acertos; as de fora, em vermelho, os erros."
+#| fig-width: 5.6
+#| fig-height: 5.8
+#| out-height: 560px
+fig_confusao(ld$fit$tabela)
+```
+:::
+::: {.column width="50%"}
+- É a **tabela de classificação**: linhas = grupo **observado**; colunas =
+  grupo **atribuído** pela função discriminante.
+- A **diagonal** são os acertos; fora dela, os objetos classificados no
+  grupo errado.
+- Acurácia = soma da diagonal / total = `r pct(sum(diag(ld$fit$tabela)) / sum(ld$fit$tabela))`.
+- Classificar os mesmos objetos usados para ajustar a função
+  **superestima** o acerto: prefira validação cruzada (*leave-one-out*,
+  `MASS::lda(..., CV = TRUE)`).
+:::
+::::
+
 # 11. Métodos alternativos: um rápido comentário {.secao}
 
 [Ordenação restrita]{.familia .restrita}
 
 ## Análises simétricas {.medio}
 
+```{r}
+#| fig-alt: "Três colunas, cada uma com as matrizes Y e X. Todas maximizam o quadrado da covariância entre as combinações lineares de X e de Y, que é a correlação ao quadrado vezes as duas variâncias. Na correlação canônica, as duas variâncias são fixadas em 1, e só a correlação é maximizada. Na RDA e na CCA, só a variância de X é fixada, e Y aparece maior. Na co-inércia, não há restrição: maximiza-se a covariância."
+#| fig-width: 10
+#| fig-height: 5
+#| out-height: 380px
+fig_cancor_rda_coia()
+```
+
 :::: {.columns}
 ::: {.column width="50%"}
-**Análise de correlação canônica (CCorA)**
-
-- Requer poucas espécies e locais: o número de variáveis precisa ser menor
-  que o de locais.
-- Como isso raramente acontece em ecologia, é pouco usada.
+**Correlação canônica (CCorA)**: exige menos variáveis que locais nas duas
+matrizes, o que raramente acontece em ecologia.
 :::
 ::: {.column width="50%"}
-**Análise de co-inércia (CoIA)**
-
-- Mede a concordância entre duas matrizes, maximizando a **covariância**
-  entre as combinações lineares (a RDA maximiza a variância explicada).
-- Cada matriz pode ser ordenada pelo método mais adequado (PCA, CA, PCoA).
-- Funciona bem com variáveis muito correlacionadas; aceita variáveis *fuzzy*
-  e qualitativas e esquemas de peso para locais e espécies.
+**Co-inércia (CoIA)**: cada matriz ordenada pelo método mais adequado (PCA,
+CA, PCoA); funciona com variáveis muito correlacionadas, *fuzzy* e
+qualitativas.
 :::
 ::::
 
 ::: {.ref}
-[Dray, Chessel & Thioulouse (2003a)](https://doi.org/10.1890/03-0178) *Ecology* 84:
-3078–3089; [Dray, Chessel & Thioulouse (2003b)](https://doi.org/10.1080/11956860.2003.11682757)
+Redesenhado de [Dray, Chessel & Thioulouse (2003a)](https://doi.org/10.1890/03-0178) *Ecology* 84:
+3078–3089; veja também [Dray, Chessel & Thioulouse (2003b)](https://doi.org/10.1080/11956860.2003.11682757)
 *Écoscience* 10: 110–119 (co-inércia procrusteana).
 :::
 
-## Mais métodos {.medio}
+## A família da co-inércia {.medio}
 
-- **Derivados da co-inércia**: RLQ (atributos × ambiente × espécies), co-inércia
-  múltipla, STATICO, análise de concordância.
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Esquemas de matrizes das análises derivadas da co-inércia. Co-inércia: Y e X ligadas por uma seta dupla. RLQ: a matriz L, de locais por espécies, ligada a R, de locais por ambiente, e a Q, de atributos das espécies. Co-inércia múltipla: uma pilha de tabelas Yi. Análise de concordância: uma pilha de Yi ligada a X. Within e between class: Y e X divididas em grupos por linhas tracejadas. STATICO: uma pilha de Yi ligada a uma pilha de Xi, no tempo."
+#| fig-width: 8
+#| fig-height: 7
+#| out-height: 565px
+fig_coinercia_derivados()
+```
+:::
+::: {.column width="42%"}
 - **Outlying Mean Index (OMI)**: ordenação restrita que estima a posição, a
-  largura e a sobreposição de nicho num espaço multidimensional; aceita
-  relações lineares e unimodais. Útil para nicho climático e sua evolução.
+  largura e a sobreposição de nicho; aceita relações lineares e unimodais.
+  Útil para nicho climático e sua evolução.
 - **RDA de consenso**: combina as ordenações feitas com vários coeficientes
   de dissimilaridade.
-
-::: {.tabela-grande}
-| Método | Pergunta | No R |
-|---|---|---|
-| Co-inércia | duas tabelas covariam? | `ade4::coinertia()` |
-| RLQ | atributos ligados ao ambiente? | `ade4::rlq()` |
-| OMI | posição e largura do nicho? | `ade4::niche()` |
 :::
+::::
 
 ::: {.ref}
-[Dolédec et al. (1996)](https://doi.org/10.1007/BF02427859) *Environ. Ecol. Stat.* 3: 143–166 (RLQ);
-[Dolédec, Chessel & Gimaret-Carpentier (2000)](https://doi.org/10.2307/177351) *Ecology*
-81: 2914–2927 (OMI); [Karasiewicz et al. (2017)](https://doi.org/10.7717/peerj.3364)
-*PeerJ* 5: e3364; [Blanchet et al. (2014)](https://doi.org/10.1890/13-0648.1) *Ecol. Monogr.*
-84: 491–511 (RDA de consenso).
+Redesenhado de [Dray, Chessel & Thioulouse (2003a)](https://doi.org/10.1890/03-0178);
+[Dolédec, Chessel & Gimaret-Carpentier (2000)](https://doi.org/10.2307/177351) *Ecology* 81: 2914–2927 (OMI);
+[Karasiewicz et al. (2017)](https://doi.org/10.7717/peerj.3364) *PeerJ* 5: e3364;
+[Blanchet et al. (2014)](https://doi.org/10.1890/13-0648.1) *Ecol. Monogr.* 84: 491–511.
+:::
+
+## RLQ: atributos e ambiente {.medio}
+
+:::: {.columns}
+::: {.column width="50%"}
+![](../assets/terceiros/franco-belussi2017-rlq.png){fig-alt="Esquema da RLQ em duas partes. A: a matriz L, de locais por espécies, fica entre Q, de atributos por espécies, e R, de locais por variáveis ambientais. Uma PCoA ponderada de Q dá um eixo de atributos; uma PCA ponderada de R, um eixo ambiental; a RLQ cruza os dois, maximizando a covariância entre os escores dos locais e os dos atributos. B: extensão com uma matriz filogenética P, ligada aos atributos T, e uma matriz espacial S, ligada às variáveis ambientais E." height="540px"}
+:::
+::: {.column width="50%"}
+- Liga os **atributos** das espécies (Q) às **variáveis ambientais** (R)
+  por meio da matriz de ocorrência ou abundância (L).
+- Os escores dos locais são restritos pelo ambiente; os das espécies, pelos
+  seus atributos.
+- Pode ser estendida para descontar a autocorrelação filogenética e a
+  espacial (B).
+
+::: {.tabela-grande}
+| Método | No R |
+|---|---|
+| Co-inércia | `ade4::coinertia()` |
+| RLQ | `ade4::rlq()` |
+| OMI | `ade4::niche()` |
+:::
+:::
+::::
+
+::: {.ref}
+Figura do material suplementar de [Franco-Belussi, Provete & De Oliveira (2017)](https://doi.org/10.1002/ece3.3438)
+*Ecol. Evol.* 7: 9222–9233. [Dolédec et al. (1996)](https://doi.org/10.1007/BF02427859);
+veja também [Dray et al. (2014)](https://doi.org/10.1890/13-0196.1),
+[Peres-Neto et al. (2017)](https://doi.org/10.1111/ecog.02302) e
+[ter Braak et al. (2018)](https://doi.org/10.1007/s10651-017-0395-x).
 :::
 
 ## Sopa de letrinhas

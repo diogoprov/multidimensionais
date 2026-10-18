@@ -177,6 +177,14 @@ Quase 60 slides citam Legendre. Tratamento:
   ganha uma tabela ou figura que acrescente informação (como a tabela de
   propriedades em "Três tipos de coeficientes", na Aula 2). Meça a altura
   útil e mire em ~500–740 px.
+- **Preserve os esquemas e alterne visual e texto** (regra do Diogo, Aula 5):
+  todo esquema do original (matrizes, fluxos, triplots montados em camadas,
+  passos de um cálculo) vira figura em R; não resuma vários slides de
+  esquema num slide de texto. Evite sequências de slides só de texto.
+  Sequências construídas aos poucos no original (o triplot, o dbMEM, a
+  partição de variância) viram vários slides com a mesma figura crescendo.
+- **Silhuetas de organismos**: do PhyloPic (`rphylopic`), salvas em
+  `assets/phylopic/` com autor e licença em `assets/phylopic/FONTES.md`.
 - **Esquemas já feitos em outros cursos** (como as origens do zero, do
   curso de Análise de Dados Univariados) são reaproveitados de
   `assets/esquemas/`, com a origem em `assets/esquemas/FONTES.md`.
