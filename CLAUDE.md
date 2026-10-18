@@ -34,6 +34,11 @@ Lote 0 (infraestrutura e correções) e lote 1 (Aula 4, a aula-modelo) feitos
 em out/2026. O inventário de cada aula (ação por slide, erros do original)
 fica em `inventarios/aNN.md`. Próximo: a Aula 2.
 
+**Depois de todas as aulas** (pedido do Diogo, 17/out/2026): revisar as
+páginas de cada aula para retirar links e arquivos desnecessários, revisar
+os walkthroughs e propor melhorias para a parte prática da disciplina,
+incluindo desafios para os alunos. Mostrar a proposta antes de mexer.
+
 ## Como trabalhar com o Diogo
 
 - **Commit e push só com aprovação explícita de cada lote.** Mostre o
@@ -132,6 +137,15 @@ Quase 60 slides citam Legendre. Tratamento:
   semente e número de permutações fixos. *Scaling* sempre explícito no slide.
 - Um arquivo `R/aulaNN_bloco.R` por bloco, só com funções `fig_*()` (na
   Aula 4: `aula04_intro.R`, `_pca.R`, `_ca.R`, `_pcoa.R`, `_nmds.R`).
+- **Tamanho do texto** (pedido do Diogo): corpo em 32 px; nada abaixo de
+  ~26 px fora das `.ref`. Evite o `{.smaller}` do reveal (22 px). Para slide
+  denso, use `{.medio}` (~27 px, em `slides/theme.scss`); se ainda não
+  couber, divida o slide. Tabelas pequenas vão em `.tabela-grande`; tabela
+  alta e estreita pode ser transposta (como os loadings da Aula 4). Figuras
+  devem ocupar o espaço livre (`out-height`).
+- **Passo a passo de contas**: quando o original mostra de onde vem cada
+  número (centralizar, montar **S**, resolver a equação característica),
+  preserve esse detalhe, com um passo por fragmento.
 - **Números com vírgula dentro de LaTeX**: no modo matemático a vírgula
   vira pontuação e ganha espaço ("64, 3"). Escreva `8{,}2` e, para números
   calculados, use `numm()` (definida no `setup` da Aula 4) em vez de `num()`.
@@ -147,8 +161,13 @@ Quase 60 slides citam Legendre. Tratamento:
 - `docs/` não é versionado. Os PDFs antigos de `slides/` continuam em
   `resources`, para não quebrar links.
 - `README.md`, `CLAUDE.md` e `PLANO-conversao-qmd.md` ficam fora do render.
-- Teste de transbordamento: viewport 1250×750 no navegador embutido, script
-  da seção 3.7 do workflow da Bioestatística.
+- Teste de transbordamento: viewport 1250×750 no navegador embutido. Se o
+  painel for menor, o reveal escala o palco (`Reveal.getScale()` < 1) e o
+  teste em coordenadas absolutas do workflow da Bioestatística falha calado.
+  Meça em unidades de slide: `(rect.bottom - topo de .reveal .slides) /
+  Reveal.getScale()` > 745 é transbordamento. Antes de medir, recarregue as
+  imagens (`img.src += '?t=' + Date.now()`): o navegador guarda os PNGs
+  antigos, que têm o mesmo nome.
 
 ## Armadilhas encontradas
 

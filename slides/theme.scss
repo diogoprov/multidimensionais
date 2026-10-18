@@ -64,6 +64,10 @@ $code-block-font-size: 0.70em;
 // (4,38:1); passa a .68em em #4a5568, que da 7,03:1.
 .reveal .ref { font-size: .68em; color: #4a5568; font-style: italic; }
 
+// Slide denso, mas sem cair para o .smaller do reveal (.7em, ~22px):
+// .85em dá ~27px projetado. Use {.medio} no título do slide.
+.reveal .slides section.medio { font-size: .85em; }
+
 // Tabelas: .72em ficava pequeno demais projetado.
 .reveal table { font-size: .80em; }
 

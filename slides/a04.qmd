@@ -105,7 +105,7 @@ fig_arvore()
 
 <!-- TODO: referência. O slide original não dá a fonte desta árvore. -->
 
-## Onde cada método se aplica {.smaller}
+## Onde cada método se aplica {.medio}
 
 ::: {.tabela-grande}
 | Método | Distância preservada | Variáveis |
@@ -161,6 +161,7 @@ dissolvido. Baseado em slides de Thiago Gonçalves-Souza.
 #| fig-alt: "Uma reta num plano de eixos X e Y, com a equação Y = a + bX."
 #| fig-width: 5.5
 #| fig-height: 4.2
+#| out-height: 500px
 fig_regressao()
 ```
 :::
@@ -204,7 +205,8 @@ Baseado em slides de Thiago Gonçalves-Souza.
 ```{r}
 #| fig-alt: "Três painéis com a mesma nuvem de 70 localidades em um plano de temperatura por umidade. No primeiro, os dados brutos; no segundo, os dados centrados na média, com linhas tracejadas passando pela origem; no terceiro, dois eixos perpendiculares, PC1 ao longo da maior dispersão da nuvem e PC2 perpendicular a ele."
 #| fig-width: 11
-#| fig-height: 4.2
+#| fig-height: 4.5
+#| out-height: 470px
 fig_nuvem()
 ```
 
@@ -236,39 +238,142 @@ Vejamos o passo a passo.
 Legendre & Legendre (2012), seção 9.1.
 :::
 
-## Passo 1: centrar os dados
+## Passo 1: a média de cada variável
 
-$$\mathbf{Y} = \begin{bmatrix} 2 & 1\\ 3 & 4\\ 5 & 0\\ 7 & 6\\ 9 & 2 \end{bmatrix}
-\qquad \mathbf{Y}_c = [\,y - \bar{y}\,] =
-\begin{bmatrix} -3{,}2 & -1{,}6\\ -2{,}2 & 1{,}4\\ -0{,}2 & -2{,}6\\ 1{,}8 & 3{,}4\\ 3{,}8 & -0{,}6 \end{bmatrix}$$
+Um exemplo pequeno: 5 objetos (linhas) e 2 descritores (colunas).
 
-```{r}
-#| fig-alt: "Dois gráficos dos cinco objetos do exemplo. À esquerda, os dados brutos, com linhas tracejadas nas médias 5,2 e 2,6. À direita, os mesmos pontos centrados, com a origem no centro da nuvem."
-#| fig-height: 3.4
-fig_exemplo_ll()
-```
+:::: {.columns}
+::: {.column width="35%"}
+$$\mathbf{Y} = \begin{bmatrix} 2 & 1\\ 3 & 4\\ 5 & 0\\ 7 & 6\\ 9 & 2 \end{bmatrix}$$
+:::
+::: {.column width="65%"}
+::: {.fragment}
+$$\bar{y}_1 = \frac{2 + 3 + 5 + 7 + 9}{5} = \frac{26}{5} = 5{,}2$$
+:::
+
+::: {.fragment}
+$$\bar{y}_2 = \frac{1 + 4 + 0 + 6 + 2}{5} = \frac{13}{5} = 2{,}6$$
+:::
+:::
+::::
 
 ::: {.ref}
 Exemplo numérico de Legendre & Legendre (2012), seção 9.1, recalculado em R.
 :::
 
-## Passos 2 a 4: autovalores e autovetores {.smaller}
+## Passo 1: centrar, subtraindo a média
 
-1. Matriz de dispersão:
-   $\mathbf{S} = \frac{1}{n-1}\mathbf{Y}_c'\mathbf{Y}_c = \begin{bmatrix} `r numm(ll$s[1,1])` & `r numm(ll$s[1,2])`\\ `r numm(ll$s[2,1])` & `r numm(ll$s[2,2])` \end{bmatrix}$
-2. Equação característica:
-   $\left|\begin{bmatrix} 8{,}2 & 1{,}6\\ 1{,}6 & 5{,}8 \end{bmatrix} - \begin{bmatrix} \lambda_k & 0\\ 0 & \lambda_k \end{bmatrix}\right| = 0$
-   $\;\Rightarrow\; \lambda_1 = `r numm(ll$lambda[1], 0)`$ e $\lambda_2 = `r numm(ll$lambda[2], 0)`$
-3. Autovetores: $(\mathbf{S} - \lambda_k \mathbf{I})\,\mathbf{u}_k = \mathbf{0}$
-4. Depois de normalizados (comprimento 1), tornam-se os componentes
-   principais:
-   $\mathbf{U} = \begin{bmatrix} `r numm(ll$u[1,1], 4)` & `r numm(ll$u[1,2], 4)`\\ `r numm(ll$u[2,1], 4)` & `r numm(ll$u[2,2], 4)` \end{bmatrix}$
+$$\mathbf{Y}_c = [\,y - \bar{y}\,]$$
+
+:::: {.columns}
+::: {.column width="50%"}
+$$\begin{bmatrix}
+2 - 5{,}2 & 1 - 2{,}6\\
+3 - 5{,}2 & 4 - 2{,}6\\
+5 - 5{,}2 & 0 - 2{,}6\\
+7 - 5{,}2 & 6 - 2{,}6\\
+9 - 5{,}2 & 2 - 2{,}6
+\end{bmatrix}$$
+:::
+::: {.column width="50%"}
+::: {.fragment}
+$$\mathbf{Y}_c = \begin{bmatrix} -3{,}2 & -1{,}6\\ -2{,}2 & 1{,}4\\ -0{,}2 & -2{,}6\\ 1{,}8 & 3{,}4\\ 3{,}8 & -0{,}6 \end{bmatrix}$$
+:::
+:::
+::::
+
+::: {.fragment}
+Cada coluna de $\mathbf{Y}_c$ soma zero: a nuvem de pontos agora tem o
+centro na origem.
+:::
+
+## O que significa isso na prática?
+
+```{r}
+#| fig-alt: "Dois gráficos dos cinco objetos do exemplo. À esquerda, os dados brutos, com linhas tracejadas nas médias 5,2 e 2,6. À direita, os mesmos pontos centrados, com a origem no centro da nuvem."
+#| fig-height: 4.6
+#| out-height: 495px
+fig_exemplo_ll()
+```
+
+A centralização posiciona os eixos nas coordenadas (0, 0) e cria um novo
+sistema de coordenadas. As posições relativas dos objetos não mudam.
+
+## Passo 2: a matriz de dispersão
+
+$$\mathbf{S} = \frac{1}{n-1}\,\mathbf{Y}_c'\mathbf{Y}_c \qquad (n = 5)$$
+
+::: {.fragment}
+$$s_{11} = \frac{(-3{,}2)^2 + (-2{,}2)^2 + (-0{,}2)^2 + 1{,}8^2 + 3{,}8^2}{4} = \frac{32{,}8}{4} = 8{,}2$$
+:::
+
+::: {.fragment}
+$$s_{12} = \frac{(-3{,}2)(-1{,}6) + (-2{,}2)(1{,}4) + (-0{,}2)(-2{,}6) + (1{,}8)(3{,}4) + (3{,}8)(-0{,}6)}{4} = \frac{6{,}4}{4} = 1{,}6$$
+:::
+
+::: {.fragment}
+$$s_{22} = \frac{(-1{,}6)^2 + 1{,}4^2 + (-2{,}6)^2 + 3{,}4^2 + (-0{,}6)^2}{4} = \frac{23{,}2}{4} = 5{,}8$$
+:::
+
+::: {.fragment}
+$$\mathbf{S} = \begin{bmatrix} 8{,}2 & 1{,}6\\ 1{,}6 & 5{,}8 \end{bmatrix}
+\qquad \text{variâncias na diagonal, covariância fora dela}$$
+:::
+
+## Passo 3: os autovalores
+
+Input na equação característica: $|\mathbf{S} - \lambda \mathbf{I}| = 0$
+
+::: {.fragment}
+$$\left|\begin{matrix} 8{,}2 - \lambda & 1{,}6\\ 1{,}6 & 5{,}8 - \lambda \end{matrix}\right| = (8{,}2 - \lambda)(5{,}8 - \lambda) - 1{,}6^2 = 0$$
+:::
+
+::: {.fragment}
+$$\lambda^2 - 14\,\lambda + 45 = 0$$
+:::
+
+::: {.fragment}
+$$\lambda = \frac{14 \pm \sqrt{14^2 - 4 \times 45}}{2} = \frac{14 \pm 4}{2}
+\quad\Rightarrow\quad \lambda_1 = 9 \quad\text{e}\quad \lambda_2 = 5$$
+:::
+
+::: {.fragment .definicao}
+14 é o traço de $\mathbf{S}$ (8,2 + 5,8), e 45 é o seu determinante
+(8,2 × 5,8 − 1,6²). A soma dos autovalores é a variação total.
+:::
+
+## Passo 4: os autovetores
+
+Para cada $\lambda_k$, resolver $(\mathbf{S} - \lambda_k \mathbf{I})\,\mathbf{u}_k = \mathbf{0}$:
+
+::: {.fragment}
+$\lambda_1 = 9$: $\;(8{,}2 - 9)\,u_{11} + 1{,}6\,u_{21} = 0 \;\Rightarrow\; u_{21} = 0{,}5\,u_{11}
+\;\Rightarrow\; \mathbf{u}_1 \propto (1;\ 0{,}5)$
+:::
+
+::: {.fragment}
+$\lambda_2 = 5$: $\;(8{,}2 - 5)\,u_{12} + 1{,}6\,u_{22} = 0 \;\Rightarrow\; u_{22} = -2\,u_{12}
+\;\Rightarrow\; \mathbf{u}_2 \propto (-1;\ 2)$
+:::
+
+::: {.fragment}
+Depois de normalizados (comprimento 1), tornam-se os componentes principais
+(os eixos):
+
+$$\mathbf{u}_1 = \frac{(1;\ 0{,}5)}{\sqrt{1{,}25}} \qquad \mathbf{u}_2 = \frac{(-1;\ 2)}{\sqrt{5}}
+\qquad \mathbf{U} = \begin{bmatrix} `r numm(ll$u[1,1], 4)` & `r numm(ll$u[1,2], 4)`\\ `r numm(ll$u[2,1], 4)` & `r numm(ll$u[2,2], 4)` \end{bmatrix}$$
+:::
+
+## Quanto da variação cada eixo retém?
+
+$$\frac{\lambda_1}{\lambda_1 + \lambda_2} = \frac{9}{14} = `r numm(100 * ll$lambda[1] / sum(ll$lambda))`\%
+\qquad\qquad
+\frac{\lambda_2}{\lambda_1 + \lambda_2} = \frac{5}{14} = `r numm(100 * ll$lambda[2] / sum(ll$lambda))`\%$$
 
 ::: {.definicao}
-O PC1 retém $`r numm(ll$lambda[1], 0)`/14 = `r numm(100 * ll$lambda[1] / sum(ll$lambda))`$% da variação, e o PC2,
-$`r numm(ll$lambda[2], 0)`/14 = `r numm(100 * ll$lambda[2] / sum(ll$lambda))`$%. A soma dos autovalores
-(14) é igual à soma das variâncias (o traço de $\mathbf{S}$: 8,2 + 5,8), mas
-as porcentagens vêm dos autovalores, não das variâncias.
+A soma dos autovalores (14) é igual à soma das variâncias (o traço de
+$\mathbf{S}$: 8,2 + 5,8), mas as porcentagens vêm dos **autovalores**, não
+das variâncias: 8,2/14 = 58,6% seria a fração de $y_1$, não a do PC1.
 :::
 
 ::: {.ref}
@@ -284,7 +389,7 @@ $$f_{i1} = (y_{i1} - \bar{y}_1)\, u_{11} + \dots + (y_{ip} - \bar{y}_p)\, u_{p1}
 
 ```{r}
 #| fig-alt: "À esquerda, os cinco objetos centrados com os eixos PC1 e PC2 desenhados sobre eles. À direita, os mesmos objetos no novo sistema de coordenadas: PC1 na horizontal e PC2 na vertical."
-#| fig-height: 3.6
+#| fig-height: 3.2
 fig_exemplo_eixos()
 ```
 
@@ -302,7 +407,8 @@ Legendre & Legendre (2012), p. 432.
 ```{r}
 #| fig-alt: "Os cinco objetos centrados e o eixo PC1. Linhas tracejadas perpendiculares ligam cada objeto à sua projeção no eixo: são os resíduos que a PCA minimiza."
 #| fig-width: 6.5
-#| fig-height: 4.6
+#| fig-height: 5.2
+#| out-height: 540px
 fig_projecao()
 ```
 :::
@@ -341,7 +447,7 @@ O procedimento anterior implica que a posição relativa dos objetos no
 espaço multidimensional rotacionado (os componentes principais) é
 preservada, ou seja, equivale à **distância euclidiana** entre eles.
 
-## Como essas informações aparecem no R? {.smaller}
+## Como essas informações aparecem no R?
 
 ::: {.codigo-compacto}
 ```{r}
@@ -361,23 +467,20 @@ summary(eigenvals(env.pca))[, 1:4]
 - **Cumulative Proportion**: a soma dos primeiros eixos
   (PC1 + PC2: `r num(pct[1] + pct[2])`%).
 
-## Como interpretar os eixos? {.smaller}
+## Como interpretar os eixos? {.medio}
 
 **Loadings**: correlação de Pearson entre os PCs e as variáveis originais.
 
-:::: {.columns}
-::: {.column width="45%"}
+::: {.tabela-grande}
 ```{r}
-knitr::kable(tab_loadings(), align = "r")
+knitr::kable(t(tab_loadings()), align = "r")
 ```
 :::
-::: {.column width="55%"}
+
 - Não se pode testar a significância da correlação, já que os eixos são
   combinações lineares das próprias variáveis.
 - Alternativa: intervalo de confiança por um *bootstrap* modificado (Peres-Neto
   et al. 2003).
-:::
-::::
 
 ::: {.ref}
 Peres-Neto, Jackson & Somers (2003) *Ecology* 84: 2347–2363.
@@ -400,7 +503,8 @@ Veja Peres-Neto et al. (2005) para mais detalhes.
 ```{r}
 #| fig-alt: "Gráfico de barras com os 11 autovalores da PCA das variáveis ambientais do Doubs, do PC1 ao PC11, com uma linha de broken stick e uma linha tracejada na média dos autovalores. Os dois primeiros autovalores passam do broken stick e da média."
 #| fig-width: 6.8
-#| fig-height: 4.6
+#| fig-height: 4.9
+#| out-height: 530px
 fig_autovalores()
 ```
 :::
@@ -432,7 +536,7 @@ Legendre & Legendre (2012), p. 443–5. Para aprofundar: Gower, Lubbe & le Roux
 (2010) *Understanding Biplots*, Wiley.
 :::
 
-## No scaling 1
+## No scaling 1 {.medio}
 
 :::: {.columns}
 ::: {.column width="58%"}
@@ -440,7 +544,7 @@ Legendre & Legendre (2012), p. 443–5. Para aprofundar: Gower, Lubbe & le Roux
 #| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 1. Os locais aparecem como números e as variáveis como setas. Locais da nascente (1 a 10) ficam à esquerda; os da foz (23 a 30), à direita."
 #| fig-width: 6.6
 #| fig-height: 5.6
-#| out-height: 560px
+#| out-height: 500px
 fig_biplot(1)
 ```
 :::
@@ -463,7 +567,7 @@ fig_biplot(1)
 Baseado em slides de Thiago Gonçalves-Souza.
 :::
 
-## No scaling 2 {.smaller}
+## No scaling 2 {.medio}
 
 :::: {.columns}
 ::: {.column width="58%"}
@@ -496,19 +600,19 @@ fig_biplot(2, projecao = "29", variavel = "nit")
 :::
 ::::
 
-## Leia o biplot {.smaller}
+## Leia o biplot {.medio}
 
 :::: {.columns}
-::: {.column width="55%"}
+::: {.column width="48%"}
 ```{r}
 #| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2, sem destaques, para a atividade de leitura."
 #| fig-width: 6.4
 #| fig-height: 5.4
-#| out-height: 540px
+#| out-height: 505px
 fig_biplot(2)
 ```
 :::
-::: {.column width="45%"}
+::: {.column width="52%"}
 ::: {.atividade}
 Em duplas, três minutos:
 
@@ -556,7 +660,7 @@ Legendre & Legendre (2012), p. 437–9. Mesma análise da Fig. 5.4 de Borcard
 et al. (2018).
 :::
 
-## Pressupostos da PCA {.smaller}
+## Pressupostos da PCA
 
 1. **Independência** dos componentes entre si, de modo a não invalidar a
    ortogonalidade. Útil para gerar variáveis combinadas.
@@ -594,7 +698,8 @@ Dados simulados. Baseado em slides de Thiago Gonçalves-Souza.
 ```{r}
 #| fig-alt: "Duas PCAs das variáveis ambientais do Doubs. À esquerda, sobre a matriz de covariância: as setas da distância da nascente e da vazão dominam a figura e as demais quase não aparecem. À direita, sobre a matriz de correlação: todas as setas têm comprimentos comparáveis."
 #| fig-width: 11
-#| fig-height: 4.8
+#| fig-height: 5
+#| out-height: 510px
 fig_cov_cor()
 ```
 
@@ -672,13 +777,15 @@ Legendre & Legendre (2012), p. 464–82.
 - Espécies (pontos) próximas de um local indicam que aquele local tem alta
   abundância, ou presença, da espécie.
 
-## Ordenação de locais e de espécies {.smaller}
+## Ordenação de locais e de espécies {.medio}
 
 :::: {.columns}
 ::: {.column width="28%"}
+::: {.tabela-grande}
 ```{r}
 knitr::kable(ca_ex1())
 ```
+:::
 :::
 ::: {.column width="36%"}
 ```{r}
@@ -720,31 +827,33 @@ recalculado em R: λ₁ = `r num(vegan::cca(ca_ex1())$CA$eig[1], 4)` e λ₂ = `
   - Nos extremos do gradiente, a série de *turnover* é distorcida.
   - A distância de qui-quadrado tem um limite superior.
 
-## Espécies raras em scaling 1 {.smaller}
+## Espécies raras em scaling 1 {.medio}
 
 :::: {.columns}
-::: {.column width="40%"}
+::: {.column width="45%"}
+::: {.tabela-grande}
 ```{r}
 x <- ca_ex2()
 knitr::kable(rbind(x, Soma = colSums(x), Ocorr. = colSums(x > 0)))
 ```
+:::
 
 As espécies 6 e 7 têm o menor número de ocorrências; a espécie 5 tem
 abundância total baixa, mas ocorre em todos os locais.
 :::
-::: {.column width="60%"}
+::: {.column width="55%"}
 ```{r}
 #| fig-alt: "Biplot da CA do exemplo de 6 locais e 7 espécies em scaling 1. Os locais e as espécies comuns ficam amontoados perto do centro; as espécies raras 6 e 7, em destaque, ficam muito longe, em cantos opostos."
-#| fig-width: 6.4
-#| fig-height: 5.2
-#| out-height: 520px
+#| fig-width: 6
+#| fig-height: 5
+#| out-height: 430px
 fig_ca(ca_ex2(), scaling = 1, ref = "Sp.7", destaque = c("Sp.6", "Sp.7"))
 ```
+
+A Sp.6 ocorre nos locais 1, 2, 4 e 5 e os puxa para o seu lado; a Sp.7,
+nos locais 3 e 6.
 :::
 ::::
-
-A Sp.6 ocorre nos locais 1, 2, 4 e 5 e os puxa para o seu lado; a Sp.7, nos
-locais 3 e 6.
 
 ::: {.ref}
 Exemplo numérico de P. Legendre (material do curso de Ecologia Numérica),
@@ -755,7 +864,8 @@ recalculado em R.
 
 ```{r}
 #| fig-alt: "Dezenove curvas de abundância em forma de sino, uma por espécie, distribuídas ao longo de um gradiente ecológico de 0 a 100, cada uma com o máximo de 20 indivíduos e ótimos igualmente espaçados."
-#| fig-height: 4.2
+#| fig-height: 4.6
+#| out-height: 470px
 fig_coenoclina()
 ```
 
@@ -790,7 +900,7 @@ Ecologia Numérica).
 ```{r}
 #| fig-alt: "Três ordenações da mesma coenoclina simulada. A CA forma um arco; a PCA forma uma ferradura, com as pontas do gradiente dobradas para dentro; a DCA, desenhada com a mesma escala nos dois eixos, mostra o primeiro eixo esticado e o arco achatado, com ondulações residuais."
 #| fig-height: 5.4
-#| out-height: 580px
+#| out-height: 550px
 fig_arco()
 ```
 
@@ -865,7 +975,8 @@ Baseado em slides de Thiago Gonçalves-Souza.
 
 ```{r}
 #| fig-alt: "Fluxograma da PCoA em seis caixas. Da matriz X, de objetos por descritores, a uma matriz de distâncias D, com qualquer coeficiente; de D à matriz A, com os elementos elevados ao quadrado e multiplicados por menos um meio; de A à matriz Delta, com centralização dupla; da autoanálise de Delta às coordenadas principais, os autovetores multiplicados pela raiz dos autovalores."
-#| fig-height: 4.4
+#| fig-height: 4.6
+#| out-height: 470px
 fig_pcoa_passos()
 ```
 
@@ -876,7 +987,7 @@ Legendre & Legendre (2012), p. 492–5. Baseado em slides de Thiago
 Gonçalves-Souza.
 :::
 
-## Escalonamento dos autovetores {.smaller}
+## Escalonamento dos autovetores
 
 Os autovetores de $\boldsymbol{\Delta}$ são escalonados para que o seu
 comprimento seja a raiz do autovalor correspondente:
@@ -953,7 +1064,8 @@ São produzidos quando se usa um coeficiente não métrico ou semimétrico.
 
 ```{r}
 #| fig-alt: "Três desenhos de quatro pontos. Em (a), um triângulo de lado 0,8 com segmentos de 0,377 partindo dos vértices em direção ao centro, sem se encontrar: o quarto ponto não tem lugar no plano. Em (b), somando 0,2 a todas as distâncias, os segmentos de 0,577 se encontram no centro de um triângulo de lado 1,0. Em (c), somando mais 0,2, o quarto ponto sai do plano e forma uma pirâmide: precisa de três dimensões."
-#| fig-height: 3.9
+#| fig-height: 4.3
+#| out-height: 450px
 fig_nao_euclidiano()
 ```
 
@@ -997,7 +1109,7 @@ Legendre & Legendre (2012), seção 9.3. Calculado com `ape::pcoa()`.
 Kruskal (1964) *Psychometrika* 29: 1–27. Legendre & Legendre (2012), p. 512–9.
 :::
 
-## O que é um nMDS? {.smaller}
+## O que é um nMDS?
 
 - Procedimento iterativo de ordenação que representa os objetos num espaço
   reduzido cujo número de eixos é escolhido *a priori* pelo usuário
@@ -1025,7 +1137,8 @@ Kruskal (1964) *Psychometrika* 29: 1–27. Legendre & Legendre (2012), p. 512–
 
 ```{r}
 #| fig-alt: "Fluxograma do nMDS. Da matriz X a uma matriz de distâncias D, com qualquer coeficiente; daí a uma configuração inicial em k dimensões. Então um ciclo: calcula o stress, modifica o arranjo dos objetos e repete até convergir; quando o stress não melhora mais, chega-se à solução final."
-#| fig-height: 4.4
+#| fig-height: 4.8
+#| out-height: 540px
 fig_nmds_fluxo()
 ```
 
@@ -1045,17 +1158,24 @@ Baseado em slides de Thiago Gonçalves-Souza.
   - Mede a qualidade da representação no diagrama: a distorção das
     distâncias originais.
 
-## Stress: quão baixo é baixo o suficiente? {.smaller}
+## Stress: quão baixo é baixo o suficiente? {.medio}
+
+Quanto mais baixo, melhor. Mas quão baixo é baixo o suficiente? Algumas
+regras de dedo:
 
 :::: {.columns}
-::: {.column width="58%"}
+::: {.column width="30%"}
+::: {.tabela-grande}
 | Stress × 100 | Kruskal |
 |---|---|
 | 2,5 | Excelente |
 | 5 | Bom |
 | 10 | Razoável |
 | 20 | Pobre |
-
+:::
+:::
+::: {.column width="70%"}
+::: {.tabela-grande}
 | Stress × 100 | Clarke |
 |---|---|
 | < 5 | Representação excelente, sem risco de má interpretação; raramente obtida |
@@ -1063,17 +1183,6 @@ Baseado em slides de Thiago Gonçalves-Souza.
 | 10–20 | Ainda utilizável, mas os valores mais altos podem enganar; não confie nos detalhes |
 | > 20 | Perigosa de interpretar; com 35–40, os pontos estão praticamente ao acaso |
 :::
-::: {.column width="42%"}
-```{r}
-#| fig-alt: "nMDS dos 29 locais do Doubs com distância de Bray-Curtis. Uma linha liga os locais na ordem do rio; os da nascente e os da foz ficam em regiões diferentes do diagrama."
-#| fig-width: 5.4
-#| fig-height: 4.6
-fig_nmds_doubs()
-```
-
-A linha liga os locais na ordem do rio. Quanto mais baixo o stress,
-melhor. Nos peixes do Doubs: stress =
-`r num(nm$stress, 3)` (`r num(100 * nm$stress)` × 100).
 :::
 ::::
 
@@ -1081,6 +1190,27 @@ melhor. Nos peixes do Doubs: stress =
 Adaptado de McCune & Grace (2002), Tabela 16.4 (stress da fórmula 1 de
 Kruskal × 100).
 :::
+
+## O nMDS dos peixes do Doubs
+
+:::: {.columns}
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "nMDS dos 29 locais do Doubs com distância de Bray-Curtis. Uma linha liga os locais na ordem do rio; os da nascente e os da foz ficam em regiões diferentes do diagrama."
+#| fig-width: 6.6
+#| fig-height: 5.8
+#| out-height: 600px
+fig_nmds_doubs()
+```
+:::
+::: {.column width="38%"}
+- Distância de Bray-Curtis, 2 dimensões.
+- A linha liga os locais na ordem do rio.
+- Stress = `r num(nm$stress, 3)`, ou `r num(100 * nm$stress)` × 100: entre
+  "bom" e "razoável" pela regra de Kruskal, e uma boa ordenação pela de
+  Clarke.
+:::
+::::
 
 ## Vantagens e desvantagens do nMDS
 
@@ -1105,7 +1235,7 @@ Kruskal × 100).
 :::
 ::::
 
-## Diferenças entre PCoA e nMDS {.smaller}
+## Diferenças entre PCoA e nMDS (1/2) {.medio}
 
 ::: {.tabela-grande}
 | | nMDS | PCoA |
@@ -1113,6 +1243,17 @@ Kruskal × 100).
 | Solução | Algoritmo iterativo de aproximação | Autoanálise da matriz de distâncias |
 | Estabilidade da solução | Pode variar a cada vez que o algoritmo roda, conforme o ponto de partida (aleatório) | Única; pode servir de ponto de partida para outras técnicas |
 | Tratamento das dissimilaridades | Distorcidas durante o cálculo, de modo que não refletem as distâncias originais | Não são distorcidas |
+:::
+
+::: {.ref}
+Adaptado de Borcard et al. (2018), p. 194–5.
+:::
+
+## Diferenças entre PCoA e nMDS (2/2) {.medio}
+
+::: {.tabela-grande}
+| | nMDS | PCoA |
+|---|---|---|
 | Construção da solução ótima | Pode depender do tipo de *stress* usado; impossível saber *a priori* qual usar | Os primeiros eixos maximizam a variância das observações |
 | Qualidade do espaço reduzido | Difícil escolher os parâmetros *a priori*; a solução depende do número de eixos escolhido | Todos os eixos juntos reconstroem exatamente as distâncias originais |
 | Medida de ajuste | O *stress* não indica a proporção da variância representada | O pseudo-R² (autovalores dos primeiros eixos / soma de todos) indica a fração da variância representada |
@@ -1129,7 +1270,7 @@ Adaptado de Borcard et al. (2018), p. 194–5.
 
 # Para saber mais {.secao}
 
-## Roteiro da PCA (para consulta): antes da análise {.smaller}
+## Roteiro da PCA (para consulta): antes da análise {.medio}
 
 ::: {.tabela-grande}
 | Pergunta | Resposta | Páginas |
@@ -1144,7 +1285,7 @@ Adaptado de Borcard et al. (2018), p. 194–5.
 Adaptado de Legendre & Legendre (2012), Tabela 9.4.
 :::
 
-## Roteiro da PCA (para consulta): os resultados {.smaller}
+## Roteiro da PCA (para consulta): os resultados {.medio}
 
 ::: {.tabela-grande}
 | Pergunta | Resposta | Páginas |

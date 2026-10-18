@@ -256,6 +256,7 @@ Esta disciplina é mais pesada:
 | 6 | Aula 1 (104 slides, álgebra de matrizes e figuras geométricas) | 2,5–3,5 h |
 | 7 | Aula 7 (62 slides, 15 notas, figuras de artigos) | 2–2,5 h |
 | 8 | Acabamento: fidelidade aos originais, licenças, página inicial e páginas das aulas | 3–5 h |
+| 9 | Revisão da parte prática (pedido do Diogo, 17/out/2026): limpar as páginas das aulas (links e arquivos desnecessários), revisar os walkthroughs e propor melhorias para as aulas práticas, com desafios para os alunos | a estimar |
 | | **Total** | **~21–28 h de sessão** |
 
 Isso equivale a **3 a 4 dias de trabalho concentrado**, ou cerca de duas
@@ -275,6 +276,7 @@ Aula 4 vai calibrar o resto.
 | 1 | Diogo aprova tema, estrutura, tom, mapa dos métodos e o tratamento do Legendre (4.1–4.3) |
 | 2–7 | Cada deck passa no teste de transbordamento e nas conferências da seção 6 |
 | 8 | Combinar o escopo antes (remodelação do site em PR separado, como na Bioestatística) |
+| 9 | Proposta mostrada e aprovada antes de mexer nos scripts e walkthroughs |
 
 Ordem 4 → 2 → 3 → 5 → 6 → 1 → 7: depois da modelo, segue as dependências de
 conteúdo. A Aula 1 fica para depois, quando o estilo das figuras
