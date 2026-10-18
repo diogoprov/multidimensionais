@@ -2,6 +2,7 @@ library(vegan)
 library(ade4)
 library(adespatial)   # dist.ldc()
 library(cluster)      # daisy()
+library(ecodados)     # dados do livro Análises ecológicas no R
 
 data(doubs, package = "ade4")
 spe <- doubs$fish[-8, ]
@@ -63,14 +64,12 @@ is.euclid(spe.bc)
 is.euclid(sqrt(spe.bc))
 is.euclid(spe.hel)
 
-env.mix <- env[, c("alt", "oxy", "bdo")]
-env.mix$decliv <- cut(env$slo, breaks = quantile(env$slo), include.lowest = TRUE,
-                      labels = c("baixa", "moderada", "alta", "muito alta"),
-                      ordered_result = TRUE)
-str(env.mix)
+amb <- bocaina.env
+amb$hydro <- factor(amb$hydro, labels = c("permanente", "temporário"))
+str(amb)
 
-env.gow <- daisy(env.mix, metric = "gower")
-summary(env.gow)
+amb.gow <- daisy(amb, metric = "gower")
+summary(amb.gow)
 
 spe.tot <- decostand(spe, "total")       # perfil: proporção de cada espécie no local
 spe.nrm <- decostand(spe, "normalize")   # chord
@@ -94,4 +93,10 @@ pairs(env[, c("dfs", "alt", "flo", "oxy", "bdo")])
 
 spe.t.chi <- dist.ldc(t(spe), method = "chisquare", silent = TRUE)
 heatmap(as.matrix(spe.t.chi), symm = TRUE, scale = "none",
-        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Espécies (qui-quadrado)")
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Peixes (qui-quadrado)")
+
+gir.pa <- decostand(bocaina, "pa")
+gir.jac <- vegdist(gir.pa, method = "jaccard", binary = TRUE)
+round(1 - as.matrix(gir.jac), 2)[1:6, 1:6]   # similaridade entre as seis primeiras espécies
+heatmap(as.matrix(gir.jac), symm = TRUE, scale = "none",
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Girinos (Jaccard)")

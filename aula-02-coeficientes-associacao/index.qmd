@@ -43,13 +43,18 @@ As figuras dos slides foram geradas em R; o código está em
   Doubs.*  
   [{{< fa solid file-code >}} baixar `associacao.R`](associacao.R)
 
-Pacotes: `vegan`, `ade4`, `adespatial` e `cluster`.
+Pacotes: `vegan`, `ade4`, `adespatial`, `cluster` e `ecodados`.
 
 ## Dados utilizados
 
-Os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`
-(`data(doubs, package = "ade4")`), os mesmos dos slides. Não é preciso
-baixar nenhum arquivo.
+- Os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`
+  (`data(doubs, package = "ade4")`), os mesmos dos slides.
+- Os girinos de 13 corpos d'água (`bocaina`, `bocaina.env`) e as aves de
+  23 localidades (`com_birds`), do pacote `ecodados`, que acompanha o livro
+  *Análises ecológicas no R* (da Silva et al. 2022). Instale-o uma vez:
+  `remotes::install_github("paternogbc/ecodados")`.
+
+Não é preciso baixar nenhum arquivo.
 
 ## Desafios
 
@@ -70,11 +75,15 @@ figuras pedidas e até uma página de interpretação. Critério: o script roda
    ordered = FALSE)`). Compare as duas matrizes. *Avaliação:* identifica os
    pares que mais mudam e explica a diferença entre a contribuição de uma
    variável ordinal e a de uma nominal.
-3. **A transformação muda a história?** Com `varespec` (`vegan`): compare
+3. **A transformação muda a história?** Com as aves do livro
+   (`ecodados::com_birds`): compare
    Bray-Curtis nos dados brutos e em `log1p()`, Hellinger e chord, pela
    correlação de Spearman entre os vetores de distâncias e por mapas de
-   calor. *Avaliação:* reconhece o peso das espécies dominantes nos dados
-   brutos e recomenda um coeficiente com argumentos da seção 7 dos slides.
+   calor. Repita com as coberturas de liquens e plantas de `varespec`
+   (`vegan`). *Avaliação:* explica por que as transformações mudam pouco
+   nas aves (abundâncias em classes de 0 a 3) e bem mais em `varespec`
+   (coberturas contínuas, com espécies dominantes), e recomenda um
+   coeficiente para cada caso com argumentos da seção 7 dos slides.
 
 As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
@@ -84,6 +93,9 @@ As respostas comentadas serão publicadas aqui depois do prazo de entrega.
   R*, 2ª ed., [cap. 3](https://doi.org/10.1007/978-3-319-71404-2_3).
 - Legendre, P. & Legendre, L. (2012) *Numerical Ecology*, 3ª ed.,
   [cap. 7](https://doi.org/10.1016/B978-0-444-53868-0.50007-1).
+- da Silva, F.R., Gonçalves-Souza, T., Paterno, G.B., Provete, D.B. &
+  Vancine, M.H. (2022) *Análises ecológicas no R*. Nupeea, Recife; Canal 6,
+  São Paulo. Cap. 9, seção "Coeficientes de associação".
 
 ## Recursos externos
 

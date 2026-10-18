@@ -1,6 +1,6 @@
 ---
 title: "Walkthrough: coeficientes de associação no R"
-subtitle: "Aula 2 · Distâncias quantitativas, duplo zero, coeficientes binários e assimétricos, Gower, transformações e modo R"
+subtitle: "Aula 2 · Distâncias quantitativas, duplo zero, coeficientes binários e assimétricos, Gower, transformações e modo R, com os peixes do Doubs e os girinos do livro Análises ecológicas no R"
 format:
   html:
     toc: true
@@ -28,11 +28,17 @@ library(vegan)
 library(ade4)
 library(adespatial)   # dist.ldc()
 library(cluster)      # daisy()
+library(ecodados)     # dados do livro Análises ecológicas no R
 
 data(doubs, package = "ade4")
 spe <- doubs$fish[-8, ]
 env <- doubs$env[-8, ]
 ```
+
+Nas seções de Gower e de modo R, usamos também os girinos de 13 corpos
+d'água (Provete et al. 2014) do pacote `ecodados`, que acompanha o livro
+*Análises ecológicas no R* (da Silva et al. 2022). Ele se instala uma vez a
+partir do GitHub: `remotes::install_github("paternogbc/ecodados")`.
 
 ## 1. Um primeiro olhar nos dados de espécies
 
@@ -177,21 +183,25 @@ is.euclid(spe.hel)
 ### Gower: variáveis de tipos diferentes
 
 O coeficiente de Gower combina variáveis quantitativas, ordinais e
-nominais. Para ver isso, transformamos a declividade numa variável
-ordinal de quatro classes:
+nominais. As variáveis dos corpos d'água dos girinos são um bom exemplo:
+pH, turbidez, oxigênio, profundidade, área e outras são quantitativas, e o
+hidroperíodo (`hydro`: permanente ou temporário) é nominal.
 
 ```{r}
-env.mix <- env[, c("alt", "oxy", "bdo")]
-env.mix$decliv <- cut(env$slo, breaks = quantile(env$slo), include.lowest = TRUE,
-                      labels = c("baixa", "moderada", "alta", "muito alta"),
-                      ordered_result = TRUE)
-str(env.mix)
+amb <- bocaina.env
+amb$hydro <- factor(amb$hydro, labels = c("permanente", "temporário"))
+str(amb)
 
-env.gow <- daisy(env.mix, metric = "gower")
-summary(env.gow)
+amb.gow <- daisy(amb, metric = "gower")
+summary(amb.gow)
 ```
 
-O `daisy()` reconhece o fator ordenado e trata a declividade pelos postos.
+Na distância euclidiana, seria preciso padronizar as variáveis
+quantitativas e não haveria como incluir o hidroperíodo. No Gower, cada
+variável contribui com uma parcela entre 0 e 1: as quantitativas, pela
+diferença dividida pela amplitude; a nominal, com 0 se os dois locais têm o
+mesmo hidroperíodo e 1 se não têm. Variáveis ordinais (fatores ordenados)
+entram pelos postos.
 
 ## 6. Padronizações e transformações
 
@@ -253,10 +263,26 @@ de um rio não são independentes (autocorrelação espacial), o que deixa os
 *p* otimistas.
 
 Entre espécies, use um coeficiente que ignore os duplos zeros, como o
-qui-quadrado sobre a matriz transposta (espécies nas linhas):
+qui-quadrado. No Doubs, as espécies estão nas colunas, então transpomos a
+matriz:
 
 ```{r}
 spe.t.chi <- dist.ldc(t(spe), method = "chisquare", silent = TRUE)
 heatmap(as.matrix(spe.t.chi), symm = TRUE, scale = "none",
-        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Espécies (qui-quadrado)")
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Peixes (qui-quadrado)")
 ```
+
+Nos girinos, as espécies já estão nas linhas (`bocaina`). Com dados de
+presença e ausência, o Jaccard entre espécies mede o quanto elas
+co-ocorrem nos mesmos corpos d'água:
+
+```{r}
+gir.pa <- decostand(bocaina, "pa")
+gir.jac <- vegdist(gir.pa, method = "jaccard", binary = TRUE)
+round(1 - as.matrix(gir.jac), 2)[1:6, 1:6]   # similaridade entre as seis primeiras espécies
+heatmap(as.matrix(gir.jac), symm = TRUE, scale = "none",
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Girinos (Jaccard)")
+```
+
+Co-ocorrer não é o mesmo que interagir: duas espécies podem aparecer juntas
+porque respondem ao mesmo ambiente.
