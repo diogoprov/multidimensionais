@@ -220,7 +220,7 @@ dados multivariados:
 #| fig-alt: "Dois gráficos de resíduos de Dunn-Smyth contra o preditor linear, para as 12 espécies de aranhas. No modelo de Poisson, os resíduos se abrem em leque e chegam a mais de 4. No binomial negativo, ficam em torno de zero, sem padrão."
 #| fig-width: 12
 #| fig-height: 4.6
-#| out-height: 450px
+#| out-height: 430px
 fig_residuos_po_nb(md)
 ```
 
@@ -275,21 +275,25 @@ fig_arquetipos()
 [Hui et al. (2013)](https://doi.org/10.1890/12-1322.1) *Ecology* 94: 1913–1919. Dados simulados.
 :::
 
-## Biorregiões de anuros
+## Biorregiões de anuros {.medio}
 
-- Na Mata Atlântica, a composição de anuros forma biorregiões ligadas ao
-  clima e à topografia ([Vasconcelos et al. 2014](https://doi.org/10.1371/journal.pone.0104130)).
-- No Brasil, rios, clima e topografia delimitam as regiões biogeográficas de
-  anuros ([Godinho & da Silva 2018](https://doi.org/10.1038/s41598-018-21879-9)).
-
-::: {.definicao}
-A pergunta de regionalização pode ser respondida agrupando os locais (como
-na Aula 3) ou modelando a resposta das espécies ao ambiente.
+:::: {.columns}
+::: {.column width="40%"}
+![](../assets/terceiros/vasconcelos2014-biorregioes.jpg){height="520px" fig-alt="Dois mapas da Mata Atlântica divididos em biorregiões de anuros, com siglas para cada região, ao longo da costa do Brasil."}
 :::
+::: {.column width="60%"}
+![](../assets/terceiros/godinho2018-biorregioes.png){height="300px" fig-alt="Mapa do Brasil dividido em regiões biogeográficas de anuros, cada uma de uma cor, ao lado do dendrograma de agrupamento que as define."}
+
+- Mata Atlântica: biorregiões ligadas ao clima e à topografia (à esquerda).
+- Brasil: rios, clima e topografia delimitam as regiões (acima).
+- Os dois agrupam os locais (como na Aula 3); um SAM agruparia as espécies
+  pela resposta ao ambiente.
+:::
+::::
 
 ::: {.ref}
-[Vasconcelos et al. (2014)](https://doi.org/10.1371/journal.pone.0104130) *PLoS ONE* 9: e104130;
-[Godinho & da Silva (2018)](https://doi.org/10.1038/s41598-018-21879-9) *Sci. Rep.* 8: 3427.
+Figuras de [Vasconcelos et al. (2014)](https://doi.org/10.1371/journal.pone.0104130) *PLoS ONE* 9: e104130
+e de [Godinho & da Silva (2018)](https://doi.org/10.1038/s41598-018-21879-9) *Sci. Rep.* 8: 3427, ambas CC BY 4.0.
 :::
 
 ## Três estratégias para regionalizar
@@ -432,6 +436,25 @@ fig_larguras_nicho()
 [van der Veen et al. (2021)](https://doi.org/10.1111/2041-210X.13595) *Methods Ecol. Evol.* 12: 1288–1300.
 :::
 
+## Ordenação com larguras de nicho {.medio}
+
+:::: {.columns}
+::: {.column width="60%"}
+![](../assets/terceiros/vanderveen2021-ordenacao.jpg){height="540px" fig-alt="Ordenação de um GLLVM quadrático das aranhas nas duas primeiras variáveis latentes: os ótimos das espécies como letras, cada um com uma elipse de largura do nicho, e as curvas de resposta quadráticas com bandas de confiança nas margens."}
+:::
+::: {.column width="40%"}
+- Cada letra é o **ótimo** de uma espécie; a elipse, a **precisão** do nicho.
+- Elipses grandes = curvas de resposta estreitas.
+- Nas margens, as curvas quadráticas de cada espécie, com intervalos de
+  confiança de 95%.
+:::
+::::
+
+::: {.ref}
+Figura de [van der Veen et al. (2021)](https://doi.org/10.1111/2041-210X.13595) *Methods Ecol. Evol.* 12: 1288–1300, CC BY 4.0.
+Aranhas caçadoras.
+:::
+
 ## Ordenação concorrente {.medio}
 
 :::: {.columns}
@@ -489,6 +512,63 @@ da cópula.
 ::: {.ref}
 [Popovic, Hui & Warton (2018)](https://doi.org/10.1016/j.jmva.2017.12.002) *J. Multivar. Anal.* 165: 86–100;
 [Anderson et al. (2019)](https://doi.org/10.1002/ece3.4948) *Ecol. Evol.* 9: 3276–3294. Dados simulados.
+:::
+
+## Cópulas na prática
+
+:::: {.columns}
+::: {.column width="55%"}
+![](../assets/terceiros/anderson2019-copula.jpg){height="540px" fig-alt="Modelo de cópula gaussiana bivariada para duas espécies de peixes: no centro, a densidade da normal bivariada; nas margens, as distribuições discretas das contagens de cada espécie, uma binomial negativa e outra binomial negativa inflada de zeros, e as setas que levam um ponto da cópula a um par de contagens."}
+:::
+::: {.column width="45%"}
+- Duas espécies de peixes, cada uma com a sua distribuição: binomial negativa
+  e binomial negativa inflada de zeros.
+- As duas são combinadas pela cópula para dar a distribuição **conjunta**.
+- Permite calcular um índice de **associação interespecífica** (*I*).
+:::
+::::
+
+::: {.ref}
+Figura de [Anderson et al. (2019)](https://doi.org/10.1002/ece3.4948) *Ecol. Evol.* 9: 3276–3294, CC BY 4.0.
+:::
+
+## Um caminho para analisar comunidades com cópulas
+
+:::: {.columns}
+::: {.column width="50%"}
+![](../assets/terceiros/anderson2019-caminho.jpg){height="520px" fig-alt="Fluxograma em seis etapas para analisar comunidades com cópulas: caracterizar a distribuição marginal de cada espécie, identificar as associações a modelar, ajustar a cópula, simular dados sob o modelo, visualizar as dissimilaridades por ordenação e calcular o poder dos testes."}
+:::
+::: {.column width="50%"}
+1. Caracterizar a distribuição marginal de cada espécie.
+2. Identificar as associações a modelar.
+3. Ajustar a cópula.
+4. Simular dados sob o modelo, para previsões sob hipóteses nulas ou
+   alternativas.
+5. Visualizar as dissimilaridades (ordenação).
+6. Calcular o poder dos testes.
+:::
+::::
+
+::: {.ref}
+Figura de [Anderson et al. (2019)](https://doi.org/10.1002/ece3.4948), CC BY 4.0.
+:::
+
+## Correlações estimadas pela cópula {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+![](../assets/terceiros/anderson2019-correlacoes.jpg){height="550px" fig-alt="Mapas de calor das correlações estimadas pela cópula entre espécies de peixes das ilhas Poor Knights, em três datas de amostragem, com correlações positivas em azul e negativas em vermelho."}
+:::
+::: {.column width="45%"}
+- Também estima a **estrutura de correlação** entre as espécies.
+- As correlações são estimadas separadamente da relação com as variáveis,
+  diferente das abordagens com variáveis latentes (`gllvm`, `boral`).
+- Aqui, peixes em três datas: as associações mudam no tempo.
+:::
+::::
+
+::: {.ref}
+Figura de [Anderson et al. (2019)](https://doi.org/10.1002/ece3.4948), CC BY 4.0.
 :::
 
 ## Ordenação rápida com cópulas {.medio}
@@ -567,6 +647,19 @@ anova(m, nBoot = 999, p.uni = "adjusted")
 [Warton, Thibaut & Wang (2017)](https://doi.org/10.1371/journal.pone.0181790) *PLoS ONE* 12: e0181790.
 :::
 
+## Resíduos PIT {.medio}
+
+![](../assets/terceiros/warton2017-pittrap.png){fig-align="center" height="330px" fig-alt="Dois gráficos de resíduos contra os valores ajustados, em escala log, para dados de contagem. À esquerda, os resíduos de Pearson formam faixas e se acumulam em valores baixos. À direita, os resíduos PIT se espalham de forma homogênea em torno de zero."}
+
+- Com dados discretos, os resíduos de Pearson formam **faixas** (a) e não
+  servem para reamostrar.
+- Os resíduos **PIT** (*probability integral transform*, os de Dunn-Smyth)
+  são contínuos e bem comportados (b): o *PIT-trap* reamostra esses resíduos.
+
+::: {.ref}
+Figura de [Warton, Thibaut & Wang (2017)](https://doi.org/10.1371/journal.pone.0181790) *PLoS ONE* 12: e0181790, CC BY 4.0.
+:::
+
 ## O teste multivariado {.medio}
 
 :::: {.columns}
@@ -638,52 +731,88 @@ Cambridge University Press.
 
 ## Os dados de um JSDM
 
-```{r}
-#| fig-alt: "Esquema com a matriz Y, de espécies nos locais, no centro. À direita, a matriz X do ambiente; em cima, T, dos atributos das espécies; embaixo, C, da filogenia; à esquerda, S, do espaço e do tempo. Setas ligam todas a Y."
-#| fig-width: 10
-#| fig-height: 6.4
-#| out-height: 560px
-fig_hmsc_matrizes()
-```
+![](../assets/terceiros/ovaskainen2017-dados.jpg){fig-align="center" height="480px" fig-alt="Esquema dos dados de comunidades: a matriz Y de ocorrências das espécies nas unidades amostrais, a matriz X das covariáveis ambientais, a matriz T dos atributos das espécies, a matriz C das correlações filogenéticas e o contexto espaço-temporal das amostras."}
+
+**Y**: ocorrências; **X**: ambiente; **T**: atributos; **C**: filogenia; e o
+contexto espaço-temporal.
 
 ::: {.ref}
-Adaptado de [Ovaskainen et al. (2017)](https://doi.org/10.1111/ele.12757) *Ecol. Lett.* 20: 561–576.
+Figura de [Ovaskainen et al. (2017)](https://doi.org/10.1111/ele.12757) *Ecol. Lett.* 20: 561–576, CC BY 4.0.
 :::
 
-## O modelo HMSC
+## O modelo HMSC {.medio}
 
-```{r}
-#| fig-alt: "Grafo do HMSC. Os atributos T e a filogenia C informam os parâmetros gama e rô; estes informam beta, a resposta de cada espécie ao ambiente X. Beta e as variáveis latentes eta e lambda, informadas pelo espaço e pelo tempo S, geram as ocorrências Y."
-#| fig-width: 11
-#| fig-height: 5
-#| out-height: 470px
-fig_hmsc_dag()
-```
-
-Dados em caixas; parâmetros estimados (bayesianos) em vinho.
+:::: {.columns}
+::: {.column width="58%"}
+![](../assets/terceiros/ovaskainen2017-dag.jpg){height="540px" fig-alt="Grafo acíclico dirigido do HMSC: em laranja, os dados (ambiente X, atributos T, filogenia C, contexto espaço-temporal e ocorrência Y); em azul, os parâmetros (nichos das espécies beta, influência dos atributos gama e da filogenia rô, variação aleatória ômega, preditores lineares L e o modelo dos dados sigma)."}
+:::
+::: {.column width="42%"}
+- Dados em laranja; parâmetros estimados (bayesianos) em azul.
+- Os atributos (**T**) e a filogenia (**C**) informam os nichos das espécies
+  (**β**).
+- O contexto espaço-temporal entra pelos efeitos aleatórios (**Ω**): as
+  associações residuais.
+:::
+::::
 
 ::: {.ref}
-Adaptado de [Ovaskainen et al. (2017)](https://doi.org/10.1111/ele.12757).
+Figura de [Ovaskainen et al. (2017)](https://doi.org/10.1111/ele.12757), CC BY 4.0.
 [Tikhonov et al. (2020)](https://doi.org/10.1111/2041-210X.13345) *Methods Ecol. Evol.* 11: 442–447 (pacote `Hmsc`).
+:::
+
+## Um exemplo de HMSC {.medio}
+
+![](../assets/terceiros/lammel2018-hmsc.png){fig-align="center" height="380px" fig-alt="Quatro painéis de um HMSC para comunidades de procariotos ao longo de um gradiente de pH: as respostas das espécies às covariáveis ambientais, a partição de variância entre os preditores, e as associações residuais entre espécies, ordenadas por agrupamento, com blocos de associações positivas e negativas."}
+
+Comunidades de procariotos ao longo de um gradiente de pH: respostas das
+espécies ao ambiente (a), partição de variância (b) e associações residuais
+entre as espécies (c, d).
+
+::: {.ref}
+Figura de [Lammel et al. (2018)](https://doi.org/10.1186/s40168-018-0482-8) *Microbiome* 6: 106, CC BY 4.0.
 :::
 
 ## JSDMs na prática {.medio}
 
+:::: {.columns}
+::: {.column width="62%"}
 - `Hmsc` (bayesiano): o mais completo, com atributos, filogenia, espaço e
   tempo ([Tikhonov et al. 2020](https://doi.org/10.1111/2041-210X.13345)).
 - `sjSDM`: eficiente com conjuntos grandes de dados; troca as variáveis
-  latentes por uma aproximação de Monte Carlo
-  ([Pichler & Hartig 2021](https://doi.org/10.1111/2041-210X.13687)).
+  latentes por uma aproximação de Monte Carlo. Particiona a variação de cada
+  espécie entre ambiente, espaço e associações (à direita).
 - Comparações: [Wilkinson et al. (2019)](https://doi.org/10.1111/2041-210X.13106),
-  para presença e ausência; [Norberg et al. (2019)](https://doi.org/10.1002/ecm.1370),
-  33 modelos; [Zurell, Zimmermann & Gross (2020)](https://doi.org/10.1111/jbi.13608),
-  SDMs empilhados × JSDMs na previsão de assembleias.
+  [Norberg et al. (2019)](https://doi.org/10.1002/ecm.1370) e
+  [Zurell, Zimmermann & Gross (2020)](https://doi.org/10.1111/jbi.13608).
+:::
+::: {.column width="38%"}
+![](../assets/terceiros/pichler2021-ternario.png){height="380px" fig-alt="Diagrama ternário com os vértices ambiental, espacial e biótico; os pontos das espécies se alinham perto do lado entre o ambiental e o biótico."}
+:::
+::::
 
 ::: {.ref}
-[Pichler & Hartig (2021)](https://doi.org/10.1111/2041-210X.13687) *Methods Ecol. Evol.* 12: 2159–2173;
-[Wilkinson et al. (2019)](https://doi.org/10.1111/2041-210X.13106) *Methods Ecol. Evol.* 10: 198–211;
-[Norberg et al. (2019)](https://doi.org/10.1002/ecm.1370) *Ecol. Monogr.* 89: e01370;
-[Zurell et al. (2020)](https://doi.org/10.1111/jbi.13608) *J. Biogeogr.* 47: 101–113.
+Figura de [Pichler & Hartig (2021)](https://doi.org/10.1111/2041-210X.13687) *Methods Ecol. Evol.* 12: 2159–2173, CC BY 4.0;
+[Wilkinson et al. (2019)](https://doi.org/10.1111/2041-210X.13106); [Norberg et al. (2019)](https://doi.org/10.1002/ecm.1370);
+[Zurell et al. (2020)](https://doi.org/10.1111/jbi.13608).
+:::
+
+## O que os dados observacionais revelam? {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+![](../assets/terceiros/ovaskainen2019-tabela.png){height="540px" fig-alt="Tabela do poder preditivo de cinco abordagens estatísticas para distinguir dez cenários de metacomunidades simulados: análise de hábitat, diversidade beta, partição de variância, db-RDA e JSDM. A coluna dos JSDMs tem os valores mais altos na maioria dos cenários."}
+:::
+::: {.column width="45%"}
+- Simulação de **10 cenários** de metacomunidades (gradientes, dispersão,
+  especialistas e generalistas, covariáveis ausentes).
+- Os **JSDMs** foram os que melhor capturaram os processos que geraram as
+  comunidades, melhor que a diversidade beta, a partição de variância e a
+  db-RDA.
+:::
+::::
+
+::: {.ref}
+Tabela de [Ovaskainen, Rybicki & Abrego (2019)](https://doi.org/10.1111/ecog.04444) *Ecography* 42: 1877–1886, CC BY 3.0.
 :::
 
 ## JSDM e metacomunidades
@@ -716,16 +845,23 @@ Adaptado de [Ovaskainen et al. (2017)](https://doi.org/10.1111/ele.12757).
 
 ## Os JSDMs detectam interações? {.medio}
 
+:::: {.columns}
+::: {.column width="45%"}
 - Detectam bem competição e facilitação/mutualismo, mas não relações
   predador-presa.
 - O valor da correlação não reflete a força da interação: depende da
   prevalência das espécies.
-- E a detecção depende da **escala espacial**: as associações mudam com o
-  tamanho do grão e com o período amostrado.
+- E depende da **escala espacial**: as matrizes de associação mudam com o
+  tamanho do grão (colunas) e com o período (linhas).
+:::
+::: {.column width="55%"}
+![](../assets/terceiros/konig2021-escala.jpg){height="380px" fig-alt="Oito matrizes de associação entre espécies estimadas por JSDMs, em quatro tamanhos de grão, de 125 a 1000 metros, e dois períodos de amostragem; o padrão de associações positivas e negativas muda com a escala."}
+:::
+::::
 
 ::: {.ref}
 [Zurell, Pollock & Thuiller (2018)](https://doi.org/10.1111/ecog.03315) *Ecography* 41: 1812–1819;
-[König et al. (2021)](https://doi.org/10.1111/jbi.14106) *J. Biogeogr.* 48: 1541–1551.
+figura de [König et al. (2021)](https://doi.org/10.1111/jbi.14106) *J. Biogeogr.* 48: 1541–1551, CC BY-NC 4.0.
 :::
 
 ## Associação direta ou indireta?

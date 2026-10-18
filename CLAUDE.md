@@ -28,7 +28,7 @@ prática e os walkthroughs continuam nas pastas das aulas.
 | 4 | `aula-04-ordenacoes-irrestritas` | **`slides/a04.qmd` ✔** (73 slides) | `Aula 4.pptx` (97) | **1 (modelo)** |
 | 5 | `aula-05-ordenacoes-restritas` | **`slides/a05.qmd` ✔** (57 slides; aguarda revisão do Diogo) | `Aula 5.pptx` (138) | 4 |
 | 6 | `aula-06-matrizes-mantel-manova` | **`slides/a06.qmd` ✔** (29 slides; aguarda revisão do Diogo) | `Aula 6.pptx` (63) | 5 |
-| 7 | `aula-07-metodos-baseados-modelos` | **`slides/a07.qmd` ✔** (45 slides; com a atualização da literatura até 2024; aguarda revisão do Diogo) | `Aula 7.pptx` (62) | 7 |
+| 7 | `aula-07-metodos-baseados-modelos` | **`slides/a07.qmd` ✔** (52 slides, com as figuras CC BY dos artigos; com a atualização da literatura até 2024; aguarda revisão do Diogo) | `Aula 7.pptx` (62) | 7 |
 
 Lote 0 (infraestrutura e correções) e lote 1 (Aula 4, a aula-modelo) feitos
 em out/2026. O inventário de cada aula (ação por slide, erros do original)
