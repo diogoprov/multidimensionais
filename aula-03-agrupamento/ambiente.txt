@@ -1,4 +1,4 @@
-	Tágua(ºC)	PH	CD(ms)	Turbidez	Transp(cm)	Profund(m)	Ptotal(microg/L)	Ntotal(microg/L)	Clorofilaa(microg/L)
+	TÃ¡gua(ÂºC)	PH	CD(ms)	Turbidez	Transp(cm)	Profund(m)	Ptotal(microg/L)	Ntotal(microg/L)	Clorofilaa(microg/L)
 LRV-1	26.4	6.58	57.1	20.5	79	5.2	72.39	592.408	0.853
 LRV-2	27	6.48	55	17.6	80	5.5	75.33	650.564	2.560
 LRV-3	27.7	6.45	56	15.42	85	5.3	73.32	614.413	2.686

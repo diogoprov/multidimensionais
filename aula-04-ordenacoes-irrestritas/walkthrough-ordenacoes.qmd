@@ -1,0 +1,260 @@
+---
+title: "Walkthrough: ordenações irrestritas no R"
+subtitle: "Aula 4 · PCA, CA e DCA, PCoA e nMDS"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Roteiro da aula prática. Os comandos **não são executados** nesta página:
+rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está em
+[`ordenacoes.R`](ordenacoes.R). As seções seguem os blocos dos
+[slides da Aula 4](../slides/a04.html).
+:::
+
+## 0. Pacotes e dados
+
+Usamos os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`,
+os mesmos dos slides. O local 8 não tem peixes e sai.
+
+```{r}
+library(vegan)
+library(ape)      # pcoa()
+
+data(doubs, package = "ade4")
+spe <- doubs$fish[-8, ]
+env <- doubs$env[-8, ]
+```
+
+Se o `labdsv` estiver carregado (Aula 3), reinicie o R: ele esconde a
+função `scores()` do `vegan`.
+
+## 1. PCA das variáveis ambientais
+
+As variáveis estão em unidades diferentes, então a PCA é feita sobre a
+**matriz de correlação** (`scale = TRUE`): cada variável é padronizada antes.
+
+```{r}
+env.pca <- rda(env, scale = TRUE)
+env.pca
+summary(env.pca)
+```
+
+Na saída, *Inertia* é a variação total. Com variáveis padronizadas, ela é
+igual ao número de variáveis (11). *Importance of components* mostra o
+autovalor de cada eixo e a proporção da variação que ele explica.
+
+### Quantos eixos interpretar?
+
+```{r}
+ev <- eigenvals(env.pca)
+ev[ev > mean(ev)]   # Kaiser-Guttman: autovalores acima da média
+```
+
+Com a matriz de correlação, a média dos autovalores é 1: o critério de
+Kaiser-Guttman fica com os eixos de autovalor maior que 1.
+
+O modelo de *broken stick* compara cada autovalor com o que se esperaria se
+a variação fosse dividida ao acaso entre os eixos:
+
+```{r}
+bs <- bstick(env.pca)
+cbind(autovalor = ev, broken_stick = bs)
+screeplot(env.pca, bstick = TRUE, type = "lines", main = "PCA do ambiente")
+```
+
+Interprete os eixos cujo autovalor passa a linha do *broken stick*.
+
+### Biplots
+
+Diga sempre qual *scaling* está no gráfico:
+
+```{r}
+par(mfrow = c(1, 2))
+biplot(env.pca, scaling = 1, main = "PCA, scaling 1")
+biplot(env.pca, scaling = 2, main = "PCA, scaling 2")
+par(mfrow = c(1, 1))
+```
+
+- **Scaling 1** (distâncias): as distâncias entre os locais aproximam as
+  suas distâncias euclidianas; quanto maior a seta, mais a variável
+  contribui para o plano; os ângulos entre as setas **não** são
+  correlações.
+- **Scaling 2** (correlações): os ângulos entre as setas aproximam as
+  correlações entre as variáveis; as distâncias entre os locais não são
+  euclidianas.
+- Nos dois: projetar um local em ângulo reto sobre uma seta dá a posição
+  aproximada do local ao longo daquela variável.
+
+Os slides mostram a leitura passo a passo de cada elemento do biplot.
+
+### Correlação das variáveis com os eixos
+
+```{r}
+sit <- scores(env.pca, display = "sites", choices = 1:2, scaling = 1)
+round(cor(env, sit), 2)
+```
+
+Essas correlações (às vezes chamadas de *loadings* ou coeficientes de
+estrutura) dizem o que cada eixo representa: aqui, o PC1 é o gradiente
+nascente–foz.
+
+### PCA com dados de espécies
+
+Nunca faça uma PCA com abundâncias brutas de espécies: a distância
+euclidiana trata os duplos zeros como semelhança (Aula 2). Transforme antes,
+por exemplo com Hellinger (tb-PCA):
+
+```{r}
+spe.hel <- decostand(spe, "hellinger")
+spe.pca <- rda(spe.hel)
+biplot(spe.pca, scaling = 1, main = "tb-PCA (Hellinger), scaling 1")
+```
+
+## 2. Análise de correspondência (CA)
+
+A CA trabalha com as abundâncias brutas e com a distância de qui-quadrado,
+que ignora os duplos zeros.
+
+```{r}
+spe.ca <- cca(spe)
+spe.ca
+summary(spe.ca)
+```
+
+Os autovalores são os mesmos em qualquer *scaling*; o que muda são os
+**escores** de locais e espécies.
+
+```{r}
+par(mfrow = c(1, 2))
+plot(spe.ca, scaling = 1, main = "CA, scaling 1")
+plot(spe.ca, scaling = 2, main = "CA, scaling 2")
+par(mfrow = c(1, 1))
+```
+
+- **Scaling 1**: os locais ficam no centroide das espécies que ocorrem
+  neles. Bom para comparar locais.
+- **Scaling 2**: as espécies ficam no centroide dos locais onde ocorrem.
+  Bom para comparar espécies.
+
+Espécies raras têm muito peso na CA e costumam aparecer nas extremidades do
+diagrama.
+
+### DCA e o comprimento do gradiente
+
+A DCA corrige o efeito de arco da CA e mede o comprimento do gradiente em
+unidades de desvio-padrão (DP):
+
+```{r}
+spe.dca <- decorana(spe)
+spe.dca
+diff(range(scores(spe.dca, display = "sites", choices = 1)))   # comprimento do DCA1
+plot(spe.dca, display = "sites", type = "text")
+```
+
+Um gradiente de mais de 4 DP indica uma substituição quase completa de
+espécies de um extremo ao outro (resposta unimodal); abaixo de ~3 DP, as
+respostas são aproximadamente lineares.
+
+## 3. Análise de coordenadas principais (PCoA)
+
+A PCoA aceita qualquer matriz de distâncias. Com Bray-Curtis:
+
+```{r}
+spe.bray <- vegdist(spe)
+spe.pcoa <- cmdscale(spe.bray, k = nrow(spe) - 1, eig = TRUE)
+round(spe.pcoa$eig, 3)
+```
+
+Bray-Curtis não é euclidiana, e a PCoA dela tem **autovalores negativos**
+(o R avisa). Eles não têm interpretação geométrica. Há três saídas:
+
+```{r}
+# 1. raiz quadrada de Bray-Curtis, que é euclidiana
+spe.pcoa.sq <- cmdscale(sqrt(spe.bray), k = nrow(spe) - 1, eig = TRUE)
+min(spe.pcoa.sq$eig)   # praticamente zero: só erro numérico
+
+# 2. correção de Lingoes e 3. correção de Cailliez
+spe.pcoa.lin <- pcoa(spe.bray, correction = "lingoes")
+spe.pcoa.cai <- pcoa(spe.bray, correction = "cailliez")
+head(spe.pcoa.lin$values)
+```
+
+### Quantos eixos? *Broken stick* com os autovalores positivos
+
+O *broken stick* usa o número de autovalores positivos e a soma deles:
+
+```{r}
+ev.pos <- spe.pcoa$eig[spe.pcoa$eig > 0]
+bs.pcoa <- bstick(length(ev.pos), tot.var = sum(ev.pos))
+which(ev.pos > bs.pcoa)   # eixos acima do broken stick
+round(100 * ev.pos[1:2] / sum(ev.pos), 1)   # % da variação nos eixos 1 e 2
+```
+
+### O diagrama, com as espécies
+
+A PCoA não tem escores de espécies. Para mostrá-las, use a média dos
+escores dos locais ponderada pelas abundâncias (`wascores()`):
+
+```{r}
+coord <- spe.pcoa$points[, 1:2]
+plot(coord, type = "n", asp = 1, xlab = "PCoA 1", ylab = "PCoA 2",
+     main = "PCoA (Bray-Curtis)")
+abline(h = 0, v = 0, lty = 3)
+text(coord, labels = rownames(spe))
+spe.wa <- wascores(coord, spe)
+text(spe.wa, labels = rownames(spe.wa), cex = 0.7, col = "red")
+```
+
+## 4. Escalonamento multidimensional não métrico (nMDS)
+
+O nMDS busca uma configuração em *k* dimensões em que a **ordem** das
+distâncias seja a mais parecida possível com a da matriz original. O
+algoritmo começa de configurações aleatórias, então fixe a semente:
+
+```{r}
+set.seed(1)
+spe.nmds <- metaMDS(spe, distance = "bray", k = 2, trymax = 100, trace = FALSE)
+spe.nmds
+spe.nmds$stress
+```
+
+O ***stress*** mede o desajuste entre as distâncias no diagrama e as
+originais. Como referência grosseira: abaixo de 0,1 é bom, acima de 0,2 o
+diagrama é pouco confiável.
+
+```{r}
+plot(spe.nmds, type = "t", main = paste("nMDS (Bray-Curtis), stress =",
+                                        round(spe.nmds$stress, 3)))
+```
+
+O diagrama de Shepard compara as distâncias originais com as do diagrama. A
+linha em degraus é a regressão monotônica que o nMDS ajusta:
+
+```{r}
+stressplot(spe.nmds, main = "Diagrama de Shepard")
+```
+
+Diferente da PCA e da PCoA, os eixos do nMDS **não** são ordenados por
+variação explicada: o eixo 1 não é necessariamente o mais importante, e a
+solução pode ser girada à vontade (o `metaMDS` já a gira para que o eixo 1
+siga a maior variação dos escores).
+
+### nMDS e PCoA contam a mesma história?
+
+A análise de Procrustes compara duas configurações, girando e escalando uma
+sobre a outra:
+
+```{r}
+set.seed(1)
+protest(spe.nmds, spe.pcoa$points[, 1:2], permutations = 999)
+```
+
+Um *r* de Procrustes alto indica que as duas ordenações dispõem os locais
+de forma parecida (Aula 6).

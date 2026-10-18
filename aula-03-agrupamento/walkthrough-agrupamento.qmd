@@ -1,0 +1,276 @@
+---
+title: "Walkthrough: agrupamento no R"
+subtitle: "Aula 3 · Métodos de ligação, correlação cofenética, pvclust, k-means e IndVal"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Roteiro da aula prática. Os comandos **não são executados** nesta página:
+rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está em
+[`agrupamento.R`](agrupamento.R). As seções seguem os blocos dos
+[slides da Aula 3](../slides/a03.html). No fim há dois exercícios para fazer
+em sala.
+:::
+
+## 0. Pacotes, dados e distância
+
+Usamos os peixes do rio Doubs, do pacote `ade4`, os mesmos dos slides. O
+local 8 não tem peixes e sai.
+
+```{r}
+library(vegan)
+library(ade4)
+library(pvclust)
+library(labdsv)    # indval(); carregue-o depois do vegan
+
+data(doubs, package = "ade4")
+spe <- doubs$fish[-8, ]
+env <- doubs$env[-8, ]
+```
+
+O `labdsv` também tem funções chamadas `scores()` e `calibrate()`, que
+escondem as do `vegan`. Se for fazer ordenações na mesma sessão (Aula 4),
+use `vegan::scores()` ou reinicie o R.
+
+Agrupamos os locais com a **distância de corda**: a distância euclidiana
+depois de normalizar cada local (vetor de comprimento 1). Ela ignora os
+duplos zeros e varia de 0 a √2 (Aula 2).
+
+```{r}
+spe.norm <- decostand(spe, "normalize")
+spe.ch <- dist(spe.norm)
+```
+
+## 1. Os métodos de ligação
+
+O `hclust()` recebe a matriz de distâncias e o método de ligação:
+
+```{r}
+spe.single   <- hclust(spe.ch, method = "single")
+spe.complete <- hclust(spe.ch, method = "complete")
+spe.upgma    <- hclust(spe.ch, method = "average")
+spe.ward     <- hclust(spe.ch, method = "ward.D2")
+
+par(mfrow = c(2, 2))
+plot(spe.single,   main = "Ligação simples", hang = -1)
+plot(spe.complete, main = "Ligação completa", hang = -1)
+plot(spe.upgma,    main = "UPGMA", hang = -1)
+plot(spe.ward,     main = "Ward", hang = -1)
+par(mfrow = c(1, 1))
+```
+
+- **Ligação simples**: um objeto entra no grupo se estiver perto de
+  **qualquer** membro. Produz "encadeamento": grupos alongados, que vão
+  crescendo um objeto por vez.
+- **Ligação completa**: precisa estar perto de **todos** os membros. Grupos
+  compactos.
+- **UPGMA**: usa a média das distâncias; fica entre as duas.
+- **Ward**: junta os grupos que menos aumentam a soma de quadrados dentro
+  dos grupos. Grupos de tamanhos parecidos.
+
+Use `"ward.D2"`, que aplica o critério de Ward às distâncias ao quadrado,
+como no algoritmo original. O antigo `"ward"` virou `"ward.D"` e não faz
+isso. O método de Ward pressupõe distâncias euclidianas: a de corda é.
+
+## 2. O dendrograma representa bem as distâncias?
+
+A **distância cofenética** entre dois objetos é o nível do dendrograma em
+que eles se juntam. A correlação entre as distâncias originais e as
+cofenéticas mede o quanto o dendrograma preserva as distâncias:
+
+```{r}
+coph <- list(single = cophenetic(spe.single), complete = cophenetic(spe.complete),
+             UPGMA = cophenetic(spe.upgma), Ward = cophenetic(spe.ward))
+sapply(coph, \(x) cor(spe.ch, x))
+```
+
+O UPGMA tende a ter a maior correlação cofenética, porque ele é construído
+justamente com as médias das distâncias. Uma correlação alta não quer dizer
+que os grupos sejam os mais úteis: escolha o método pela pergunta, e use a
+correlação cofenética para comparar.
+
+O diagrama de Shepard mostra a mesma coisa num gráfico:
+
+```{r}
+plot(spe.ch, coph$UPGMA, asp = 1, xlim = c(0, sqrt(2)), ylim = c(0, sqrt(2)),
+     xlab = "Distância de corda", ylab = "Distância cofenética",
+     main = paste("UPGMA, r cofenética =", round(cor(spe.ch, coph$UPGMA), 3)))
+abline(0, 1)
+lines(lowess(spe.ch, coph$UPGMA), col = "red")
+```
+
+Uma alternativa é a **distância de Gower** entre as duas matrizes, a soma
+dos quadrados das diferenças: quanto menor, melhor.
+
+```{r}
+sapply(coph, \(x) sum((spe.ch - x)^2))
+```
+
+Cuidado ao comparar o Ward por esse critério: os níveis de fusão do Ward
+não estão na escala das distâncias originais (crescem com o tamanho dos
+grupos), então a sua distância de Gower sai grande por construção. A
+correlação, que não depende da escala, é a comparação justa.
+
+## 3. Quantos grupos?
+
+### Níveis de fusão
+
+O gráfico dos níveis de fusão mostra onde há saltos grandes: um salto indica
+que dois grupos bem distintos acabaram de ser unidos, e cortar logo abaixo
+dele é uma boa escolha.
+
+```{r}
+k <- (nrow(spe) - 1):1   # número de grupos depois de cada fusão
+plot(spe.ward$height, k, type = "S", xlab = "Nível de fusão",
+     ylab = "Número de grupos", main = "Ward")
+text(spe.ward$height, k, k, pos = 4, cex = 0.7, col = "red")
+```
+
+Cortando o Ward em quatro grupos:
+
+```{r}
+gr.ward <- cutree(spe.ward, k = 4)
+table(gr.ward)
+plot(spe.ward, hang = -1)
+rect.hclust(spe.ward, k = 4)
+```
+
+### Bootstrap multiescala: pvclust
+
+O `pvclust()` reamostra os descritores (as espécies) com *bootstrap* em
+várias escalas e dá dois valores de suporte para cada grupo: **AU**
+(*approximately unbiased*) e **BP** (*bootstrap probability*). Ele agrupa
+as **colunas** da matriz, por isso transpomos a matriz normalizada.
+
+```{r}
+set.seed(1)
+spe.pv <- pvclust(t(spe.norm), method.hclust = "ward.D2",
+                  method.dist = "euclidean", nboot = 1000)
+plot(spe.pv, hang = -1)
+pvrect(spe.pv, alpha = 0.95)
+```
+
+Os grupos nas caixas têm AU > 0,95: forte suporte. Grupos grandes costumam
+ter BP baixo; o AU corrige esse viés do *bootstrap* comum. O `pvclust`
+calcula a distância euclidiana dos dados que recebe: por isso os dados vão
+já normalizados (corda).
+
+## 4. K-means
+
+O k-means procura a partição em *k* grupos com a menor soma de quadrados
+dentro dos grupos. O resultado depende dos centroides iniciais, por isso
+rodamos com muitos pontos de partida (`nstart`) e semente fixa. Ele trabalha
+com os **dados** (aqui, os normalizados), não com a matriz de distâncias.
+
+```{r}
+set.seed(1)
+spe.km <- kmeans(spe.norm, centers = 4, nstart = 100)
+spe.km$cluster
+table(Ward = gr.ward, kmeans = spe.km$cluster)
+```
+
+Os números dos grupos são arbitrários: compare a tabela procurando a
+correspondência entre os grupos, não a diagonal.
+
+### Quantos grupos no k-means?
+
+O `cascadeKM()` roda o k-means para vários valores de *k* e calcula um
+critério para cada um. Com o de Calinski-Harabasz, o melhor *k* é o de maior
+valor:
+
+```{r}
+set.seed(1)
+spe.cascade <- cascadeKM(spe.norm, inf.gr = 2, sup.gr = 10, iter = 100,
+                         criterion = "calinski")
+plot(spe.cascade, sortg = TRUE)
+spe.cascade$results
+```
+
+A linha `SSE` é a soma de quadrados dentro dos grupos: ela **sempre** cai
+com mais grupos, por isso não serve para escolher *k*. A linha `calinski`
+(ou `ssi`, com `criterion = "ssi"`) é a que serve.
+
+## 5. Espécies indicadoras: IndVal
+
+O IndVal mede o quanto uma espécie é **específica** de um grupo de locais
+(A: está concentrada nele) e **fiel** a ele (B: ocorre em todos os seus
+locais). IndVal = A × B, de 0 a 1, testado por permutação.
+
+Os grupos precisam vir de fora dos dados de espécies: se os locais forem
+agrupados pelas próprias espécies, as indicadoras encontradas são, em parte,
+as que criaram os grupos, e o teste fica viciado. Aqui, dividimos o rio em
+quatro trechos pela distância da nascente (`dfs`), com k-means sobre essa
+única variável:
+
+```{r}
+set.seed(1)
+trecho <- kmeans(env$dfs, centers = 4, nstart = 100)$cluster
+tapply(env$dfs / 10, trecho, range)   # km da nascente em cada trecho
+```
+
+```{r}
+set.seed(1)
+iva <- indval(spe, trecho, numitr = 999)
+sig <- iva$pval <= 0.05
+tab.iv <- data.frame(grupo = iva$maxcls[sig], indval = round(iva$indcls[sig], 2),
+                     p = iva$pval[sig], freq = colSums(spe > 0)[sig])
+tab.iv[order(tab.iv$grupo, -tab.iv$indval), ]
+```
+
+- `maxcls`: o grupo em que a espécie tem o maior IndVal.
+- `indcls`: esse IndVal.
+- `pval`: o *p* do teste por permutação.
+
+As espécies com *p* ≤ 0,05 são as indicadoras daquele trecho do rio. Com
+muitas espécies, alguns *p* pequenos aparecem por acaso: interprete com
+cautela as espécies raras (coluna `freq`).
+
+## Exercícios em sala
+
+### Exercício 1: lagoas
+
+O arquivo [`ambiente.txt`](ambiente.txt) tem nove variáveis limnológicas de
+nove lagoas (três de cada sistema: LRV, LRA e RA). Salve-o na pasta do seu
+projeto e leia:
+
+```{r}
+lagoas <- read.table("ambiente.txt", header = TRUE, check.names = FALSE)
+lagoas
+```
+
+1. As variáveis estão em unidades diferentes. Padronize-as
+   (`decostand(lagoas, "standardize")`) e calcule a distância euclidiana.
+2. Agrupe as lagoas com ligação simples, completa, UPGMA e Ward.
+3. Calcule a correlação cofenética de cada método e faça o diagrama de
+   Shepard do melhor.
+4. As lagoas do mesmo sistema ficam juntas? Em que método?
+
+### Exercício 2: girinos da Bocaina
+
+O arquivo [`bocaina.txt`](bocaina.txt) tem a abundância de 16 espécies de
+girinos (nas **linhas**) em 13 corpos d'água (nas colunas). O prefixo do
+nome de cada local é o tipo de ambiente: AP = açude permanente, BP = brejo
+permanente, PP = poça permanente, PT = poça temporária.
+
+```{r}
+girinos <- read.table("bocaina.txt", header = TRUE)
+habitat <- substr(colnames(girinos), 1, 2)
+table(habitat)
+```
+
+1. Quais espécies indicam cada tipo de ambiente? Use
+   `indval(t(girinos), as.integer(factor(habitat)), numitr = 999)` (o
+   `indval()` quer os locais nas linhas e os grupos como números).
+2. Agrupe as **espécies** (modo R) pela co-ocorrência nos locais: normalize
+   as espécies (as linhas de `girinos`) e rode o `pvclust()` sobre a matriz
+   transposta, para que as espécies fiquem nas colunas. Quais grupos de
+   espécies têm AU > 0,95?
+3. As espécies de um mesmo grupo do item 2 são indicadoras do mesmo tipo
+   de ambiente?

@@ -1,0 +1,156 @@
+---
+title: "Walkthrough: álgebra de matrizes no R"
+subtitle: "Aula 1 · Combinações lineares, correlação, autovalores e autovetores, SVD"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Roteiro opcional da Aula 1. Os comandos **não são executados** nesta
+página: rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está
+em [`algebra.R`](algebra.R). Ele segue a seção 8 dos
+[slides da Aula 1](../slides/a01.html) e prepara a PCA da Aula 4.
+:::
+
+## 0. Pacotes e dados
+
+Usamos as variáveis ambientais de 13 corpos d'água onde foram amostrados
+girinos (Provete et al. 2014), do pacote `ecodados`, que acompanha o livro
+*Análises ecológicas no R* (da Silva et al. 2022). O pacote se instala uma
+vez a partir do GitHub.
+
+```{r}
+# install.packages("remotes")
+# remotes::install_github("paternogbc/ecodados")
+library(ecodados)
+
+amb <- bocaina.env[, names(bocaina.env) != "hydro"]   # só as quantitativas
+dim(amb)
+head(amb)
+```
+
+São 13 objetos (corpos d'água, nas linhas) e 9 descritores (variáveis, nas
+colunas). Analisar a relação entre os objetos é o **modo Q**; entre os
+descritores, o **modo R**.
+
+## 1. Padronizar: média 0 e desvio-padrão 1
+
+As variáveis estão em unidades muito diferentes (pH, °C, metros, m²...).
+Para combiná-las, padronizamos cada uma (escore *z*):
+
+```{r}
+Z <- scale(amb)
+round(colMeans(Z), 10)   # médias: 0
+apply(Z, 2, sd)          # desvios-padrão: 1
+n <- nrow(Z)
+p <- ncol(Z)
+```
+
+## 2. A matriz de correlação à mão
+
+Com variáveis padronizadas, a matriz de correlação é o produto da matriz
+transposta pela própria matriz, dividido por *n* − 1:
+
+```{r}
+R <- t(Z) %*% Z / (n - 1)    # crossprod(Z) / (n - 1) faz o mesmo
+round(R, 2)
+all.equal(R, cor(amb), check.attributes = FALSE)
+```
+
+`%*%` é a multiplicação de matrizes: cada elemento do resultado é a soma
+dos produtos de uma linha da primeira matriz por uma coluna da segunda.
+
+## 3. Autovalores e autovetores
+
+A autoanálise decompõe **R** em autovetores (direções) e autovalores
+(quanta variação há em cada direção):
+
+```{r}
+ea <- eigen(R)
+lambda <- ea$values    # autovalores, em ordem decrescente
+U <- ea$vectors        # autovetores, um por coluna
+round(lambda, 3)
+```
+
+Três propriedades para conferir:
+
+```{r}
+# (a) a soma dos autovalores é o traço de R (soma da diagonal), que é p
+sum(lambda)
+sum(diag(R))
+
+# (b) os autovetores têm comprimento 1 e são ortogonais entre si: U'U = I
+round(t(U) %*% U, 10)
+
+# (c) R pode ser reconstruída a partir deles: R = U Λ U'
+all.equal(R, U %*% diag(lambda) %*% t(U), check.attributes = FALSE)
+```
+
+A proporção da variação em cada eixo é o autovalor dividido pela soma:
+
+```{r}
+round(100 * lambda / sum(lambda), 1)
+```
+
+## 4. Combinações lineares: os escores
+
+Cada autovetor traz os pesos de uma **combinação linear** das variáveis.
+Multiplicando os dados padronizados pelos autovetores, obtemos a posição de
+cada objeto em cada eixo (os escores):
+
+```{r}
+F <- Z %*% U
+round(F[, 1:2], 2)
+
+# a variância dos escores de cada eixo é o seu autovalor
+round(apply(F, 2, var), 3)
+round(lambda, 3)
+```
+
+A correlação de cada variável com cada eixo é o autovetor multiplicado pela
+raiz do autovalor:
+
+```{r}
+round(cor(amb, F[, 1:2]), 2)
+round(U[, 1:2] %*% diag(sqrt(lambda[1:2])), 2)
+```
+
+O sinal de um autovetor é arbitrário: se a coluna inteira trocar de sinal,
+a solução é a mesma. Por isso, programas diferentes podem dar eixos
+espelhados.
+
+## 5. Outra decomposição: a SVD
+
+A decomposição em valores singulares (SVD) decompõe diretamente a matriz de
+dados, sem calcular **R**: **Z** = **V D W'**.
+
+```{r}
+sv <- svd(Z)
+round(sv$d^2 / (n - 1), 3)   # valores singulares ao quadrado / (n - 1)
+round(lambda, 3)             # = autovalores de R
+round(abs(sv$v) - abs(U), 10)   # W = U, a menos do sinal
+```
+
+O número de valores singulares diferentes de zero é o **posto** da matriz:
+o número de dimensões que os dados realmente ocupam.
+
+```{r}
+sum(sv$d > 1e-10)
+```
+
+## 6. Isso é uma PCA
+
+Tudo o que fizemos é uma análise de componentes principais da matriz de
+correlação, que veremos na Aula 4:
+
+```{r}
+pca <- prcomp(amb, scale. = TRUE)
+round(pca$sdev^2, 3)                       # autovalores
+round(abs(pca$rotation) - abs(U), 10)      # autovetores (a menos do sinal)
+```

@@ -39,21 +39,53 @@ As figuras dos slides foram geradas em R; o código está em
 ## Código R (aula prática)
 
 - {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-quinta.html)**  
-  *Walkthrough — CCA, RDA, pRDA, db-RDA, LDA com vegan.*  
+  *CCA, RDA, seleção de variáveis, db-RDA, RDA parcial, dbMEM, partição de
+  variância e LDA, com os peixes do Doubs.*  
   [{{< fa solid file-code >}} baixar `quinta.R`](quinta.R)
+
+Pacotes: `vegan`, `ade4`, `adespatial` e `MASS`.
 
 ## Dados utilizados
 
-- [`DoubsSpe.csv`](../aula-03-agrupamento/DoubsSpe.csv) e [`DoubsEnv.csv`](../aula-03-agrupamento/DoubsEnv.csv), os mesmos da Aula 3. Salve-os na mesma pasta do script.
-- As coordenadas dos locais vêm do conjunto `doubs` do pacote `ade4` (`data(doubs)`).
+Os peixes, as variáveis ambientais e as coordenadas do rio Doubs, do pacote
+`ade4` (`data(doubs, package = "ade4")`), os mesmos dos slides. Não é
+preciso baixar nenhum arquivo.
+
+## Desafios
+
+Entregue um script `.R` que rode do zero numa sessão limpa (com sementes e
+número de permutações declarados), as figuras pedidas e até uma página de
+interpretação. Critério: o script roda (30 %); as escolhas (transformação,
+distância, *scaling*) estão justificadas (30 %); a interpretação está
+correta e usa o R² ajustado (40 %).
+
+1. **Quais variáveis do solo explicam a vegetação?** Com `varespec` e
+   `varechem` (`vegan`): meça o comprimento do gradiente com `decorana()` e
+   escolha entre RDA (com Hellinger) e CCA. Selecione as variáveis com
+   `ordiR2step()` e faça os testes global, por eixo e por variável. Mostre o
+   triplot em *scaling* 2. *Avaliação:* aplica o duplo critério de parada e
+   relata o R² ajustado do modelo final, não o bruto.
+2. **Ambiente ou espaço?** Com `mite`, `mite.env` e `mite.xy` (`vegan`):
+   gere os dbMEMs, selecione-os e selecione as variáveis ambientais (as
+   categóricas entram como fatores). Faça a partição de variância e teste
+   as frações testáveis. *Avaliação:* explica por que a fração compartilhada
+   não tem teste e o que significaria uma fração negativa.
+3. **O manejo importa, descontada a umidade?** Com `dune` e `dune.env`
+   (`vegan`): db-RDA com Bray-Curtis e `Management + A1`; depois, a versão
+   parcial com `Condition(Moisture)`. *Avaliação:* distingue o efeito do
+   manejo com e sem a covariável e explica por que ele muda.
+
+As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 ## Leituras recomendadas
 
-*Bibliografia listada nos slides.*
+- Borcard, D., Gillet, F. & Legendre, P. (2018) *Numerical Ecology with
+  R*, 2ª ed., [cap. 6](https://doi.org/10.1007/978-3-319-71404-2_6).
+- Legendre, P. & Legendre, L. (2012) *Numerical Ecology*, 3ª ed.,
+  [cap. 11](https://doi.org/10.1016/B978-0-444-53868-0.50011-3).
 
 ## Recursos externos
 
-- [Legendre explicando CCA e RDA (vídeo)](https://www.youtube.com/results?search_query=legendre+cca+rda)
 - [História da CCA — Cajo ter Braak](https://www.cajotbraak.nl/)
 - [RDA passo a passo no R](https://www.davidzeleny.net/anadat-r/doku.php/en:rda_examples)
 
