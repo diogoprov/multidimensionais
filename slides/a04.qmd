@@ -45,6 +45,12 @@ numm <- function(x, d = 1) sub(",", "{,}", num(x, d), fixed = TRUE)
 ll   <- pca_ll()
 pca  <- pca_doubs()
 pct  <- 100 * pca$CA$eig / pca$tot.chi
+pct3 <- trimws(num(100 * pca_3d_var()))   # PCA em 3D: altitude, nitrato e oxigênio
+r_eixo <- cor_eixos()                     # correlação das variáveis com PC1 e PC2
+sp2  <- escores(pca, "dfs", scaling = 2)$species
+ang  <- function(v) abs(angulo_seta(sp2, v))
+ang2 <- function(a, b) { d <- abs(angulo_seta(sp2, a) - angulo_seta(sp2, b)); min(d, 360 - d) }
+z_env <- scale(dados_doubs()$env)
 cc   <- coenoclina()
 dca_cc <- vegan::decorana(cc$m)
 comp_dca <- diff(range(vegan::scores(dca_cc, display = "sites", choices = 1)))
@@ -215,6 +221,38 @@ centro da nuvem; a rotação encontra as dimensões com maior variação.
 
 ::: {.ref}
 Dados simulados. Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## Rotacionar para achar as dimensões de maior variação {.medio}
+
+:::: {.columns}
+::: {.column width="36%"}
+Três variáveis do Doubs, padronizadas: cada ponto é um local. **Arraste para
+girar.**
+
+- **PC1** (azul): a direção de maior variação, com
+  `r pct3[1]`% do total.
+- **PC2** (vermelho): perpendicular ao PC1, com a maior variação que sobra
+  (`r pct3[2]`%).
+- **PC3** (verde): o resto (`r pct3[3]`%).
+
+::: {.fragment}
+A PCA **projeta** cada local no plano do PC1 e do PC2 (as linhas cinza): é
+esse plano que aparece no biplot. Como o PC3 tem pouca variação, quase nada
+se perde.
+:::
+:::
+::: {.column width="64%"}
+```{r}
+#| fig-alt: "Gráfico tridimensional interativo com os 29 locais do Doubs nos eixos de altitude, nitrato e oxigênio padronizados. Três segmentos coloridos saem do centro da nuvem: o PC1, longo, ao longo da maior dispersão; o PC2, perpendicular e mais curto; e o PC3, curto. Um plano translúcido contém o PC1 e o PC2, e linhas finas ligam cada local à sua projeção no plano."
+fig_pca_3d()
+```
+:::
+::::
+
+::: {.ref}
+Peixes e ambiente do Doubs (`ade4`): altitude, nitrato e oxigênio
+padronizados, PCA com `prcomp()`. Gráfico interativo com `plotly`.
 :::
 
 ## A PCA é a autoanálise da matriz de dispersão
@@ -536,29 +574,77 @@ Dois tipos:
 (2010)](https://doi.org/10.1002/9780470973196) *Understanding Biplots*, Wiley.
 :::
 
-## No scaling 1 {.medio}
+## No scaling 1: os objetos {.medio}
 
 :::: {.columns}
 ::: {.column width="58%"}
+::: {.r-stack}
 ```{r}
-#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 1. Os locais aparecem como números e as variáveis como setas. Locais da nascente (1 a 10) ficam à esquerda; os da foz (23 a 30), à direita."
+#| fig-alt: "Plano de ordenação vazio da PCA das variáveis ambientais do Doubs, em scaling 1, com o eixo horizontal (1º componente principal, PC1) e o vertical (2º componente principal, PC2) em destaque."
 #| fig-width: 6.6
 #| fig-height: 5.6
-#| out-height: 500px
-fig_biplot(1)
+#| out-height: 540px
+fig_biplot(1, camadas = character(0), destaque = "eixos", quadro = "locais")
+```
+
+::: {.fragment fragment-index=1}
+```{r}
+#| fig-alt: "O mesmo plano, com os quatro quadrantes marcados nos cantos pelos sinais do PC1 e do PC2."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(1, camadas = "quadrantes")
 ```
 :::
-::: {.column width="42%"}
-- O diagrama se divide em quatro quadrantes, pelos sinais do PC1 e do PC2.
-- Os escores dos locais dão a sua posição.
 
-::: {.fragment}
-- A distância entre os objetos aproxima a sua **distância euclidiana**. O
-  mesmo não ocorre no scaling 2.
+::: {.fragment fragment-index=2}
+```{r}
+#| fig-alt: "Os 29 locais do Doubs entram no plano, como números: os da nascente à esquerda, os da foz à direita."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(1, camadas = c("quadrantes", "locais"))
+```
 :::
 
-::: {.fragment}
-- Quanto maior a seta, maior a contribuição do descritor para os eixos.
+::: {.fragment fragment-index=3}
+```{r}
+#| fig-alt: "O local 15 está circulado, com linhas tracejadas até os eixos: escore negativo no PC1 e positivo no PC2."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(1, camadas = c("quadrantes", "locais"), destaque = "escore")
+```
+:::
+
+::: {.fragment fragment-index=4}
+```{r}
+#| fig-alt: "Uma linha liga os locais 1 e 30, marcando a distância entre eles no plano."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(1, camadas = c("quadrantes", "locais"), destaque = "distancia")
+```
+:::
+:::
+:::
+::: {.column width="42%"}
+- Os eixos são o 1º e o 2º componentes principais, com `r num(pct[1])`% e `r num(pct[2])`% da variação.
+
+::: {.fragment fragment-index=1}
+- Os sinais do PC1 e do PC2 dividem o diagrama em quatro quadrantes.
+:::
+
+::: {.fragment fragment-index=2}
+- Cada local entra como um ponto, na posição dada pelos seus **escores**.
+:::
+
+::: {.fragment fragment-index=3}
+- O local 15: escore `r num(escores(pca, "dfs", scaling = 1)$sites |> dplyr::filter(rotulo == "15") |> dplyr::pull(PC1), 2)` no PC1 e `r num(escores(pca, "dfs", scaling = 1)$sites |> dplyr::filter(rotulo == "15") |> dplyr::pull(PC2), 2)` no PC2.
+:::
+
+::: {.fragment fragment-index=4}
+- A distância entre os locais aproxima a sua **distância euclidiana**. O mesmo não ocorre no scaling 2.
 :::
 :::
 ::::
@@ -567,38 +653,203 @@ fig_biplot(1)
 Baseado em slides de Thiago Gonçalves-Souza.
 :::
 
-## No scaling 2 {.medio}
+## No scaling 1: os descritores {.medio}
 
 :::: {.columns}
 ::: {.column width="58%"}
+::: {.r-stack}
 ```{r}
-#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2. O local 29 está circulado, com uma linha tracejada perpendicular até a seta do nitrato, marcando a sua projeção sobre essa variável."
+#| fig-alt: "Os locais do Doubs no plano da PCA em scaling 1, já no enquadramento que vai receber as setas."
 #| fig-width: 6.6
 #| fig-height: 5.6
-#| out-height: 560px
-fig_biplot(2, projecao = "29", variavel = "nit")
+#| out-height: 540px
+fig_biplot(1, camadas = "locais")
+```
+
+::: {.fragment fragment-index=1}
+```{r}
+#| fig-alt: "As variáveis ambientais entram como setas que partem da origem, sobre os locais."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(1)
 ```
 :::
+
+::: {.fragment fragment-index=2}
+```{r}
+#| fig-alt: "Todas as setas ficam em cinza, menos a do amônio, a mais longa, e a do pH, a mais curta."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(1, destaque = "comprimento")
+```
+:::
+:::
+:::
 ::: {.column width="42%"}
-- O ângulo entre a seta e o eixo indica o quanto o descritor se correlaciona
-  com aquele PC.
+- Os mesmos locais, agora com espaço para os descritores.
 
-::: {.fragment}
-- O ângulo entre os descritores indica as suas correlações (ângulo agudo:
-  correlação positiva; reto: nula; obtuso: negativa).
+::: {.fragment fragment-index=1}
+- Os descritores entram como **setas**, que partem da origem, para diferenciá-los dos objetos, que são pontos.
 :::
 
-::: {.fragment}
-- Ao projetar um objeto em 90° sobre a seta de um descritor, obtém-se a
-  posição aproximada do objeto ao longo dele (aqui, o local 29 e o nitrato).
-:::
+::: {.fragment fragment-index=2}
+- Quanto maior a seta, maior a contribuição do descritor para o plano do PC1 e do PC2: aqui, o amônio (a mais longa) e o pH (a mais curta).
 
-::: {.fragment}
-- Descritores e objetos no centro do diagrama contribuíram pouco tanto para
-  o PC1 quanto para o PC2.
+- No scaling 1, os ângulos entre as setas **não** representam as correlações entre os descritores.
 :::
 :::
 ::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza. [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 443–5.
+:::
+
+## No scaling 2: o ângulo com o eixo {.medio}
+
+:::: {.columns}
+::: {.column width="58%"}
+::: {.r-stack}
+```{r}
+#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2, com os locais e as setas."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(2)
+```
+
+::: {.fragment fragment-index=1}
+```{r}
+#| fig-alt: "O mesmo biplot, com um arco marcando o ângulo pequeno entre a seta do nitrato e o PC1 e outro marcando o ângulo de quase 90 graus entre a seta do pH e o PC1."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(2, destaque = "angulo_eixo")
+```
+:::
+:::
+:::
+::: {.column width="42%"}
+- No scaling 2, as setas mostram as **correlações**; as distâncias entre os locais deixam de ser euclidianas.
+
+::: {.fragment fragment-index=1}
+- O ângulo entre a seta e o eixo indica o quanto o descritor se correlaciona com aquele PC.
+
+- O nitrato faz `r round(ang("nit"))`° com o PC1: r = `r num(r_eixo["nit", "PC1"], 2)`.
+
+- O pH faz `r round(ang("pH"))`° com o PC1: r = `r num(r_eixo["pH", "PC1"], 2)` com o PC1, mas `r num(r_eixo["pH", "PC2"], 2)` com o PC2.
+:::
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## No scaling 2: o ângulo entre as setas {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2, com três arcos: um ângulo agudo entre fósforo e nitrato, um ângulo perto de 90 graus entre nitrato e pH e um ângulo obtuso entre oxigênio e DBO."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 530px
+fig_biplot(2, destaque = "angulo_vars")
+```
+:::
+::: {.column width="45%"}
+O ângulo entre dois descritores indica a sua correlação: agudo, positiva;
+reto, nula; obtuso, negativa.
+
+::: {.fragment .tabela-grande}
+| Par | Ângulo | *r* |
+|:----|-------:|----:|
+| fósforo × nitrato | `r round(ang2("pho", "nit"))`° | `r num(cor(dados_doubs()$env)["pho", "nit"], 2)` |
+| nitrato × pH | `r round(ang2("nit", "pH"))`° | `r num(cor(dados_doubs()$env)["nit", "pH"], 2)` |
+| oxigênio × DBO | `r round(ang2("oxy", "bdo"))`° | `r num(cor(dados_doubs()$env)["oxy", "bdo"], 2)` |
+:::
+
+::: {.fragment}
+É uma aproximação: os dois eixos têm `r num(pct[1] + pct[2])`% da variação.
+:::
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## No scaling 2: os objetos sobre as setas {.medio}
+
+:::: {.columns}
+::: {.column width="58%"}
+::: {.r-stack}
+```{r}
+#| fig-alt: "Biplot da PCA das variáveis ambientais do Doubs em scaling 2. O local 23 está circulado, com uma linha tracejada perpendicular até a seta do fósforo, que ele encontra perto da ponta."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(2, destaque = "projecao", local = "23", variavel = "pho")
+```
+
+::: {.fragment fragment-index=1}
+```{r}
+#| fig-alt: "O mesmo biplot, com um círculo em volta da origem que contém os locais 16, 17, 18, 20 e 21."
+#| fig-width: 6.6
+#| fig-height: 5.6
+#| out-height: 540px
+fig_biplot(2, destaque = "centro")
+```
+:::
+:::
+:::
+::: {.column width="42%"}
+- Ao projetar um objeto em 90° sobre a seta de um descritor, obtém-se a posição aproximada do objeto ao longo dele: o local 23 cai perto da ponta da seta do fósforo, a `r num(z_env["23", "pho"])` desvios-padrão acima da média.
+
+::: {.fragment fragment-index=1}
+- Descritores e objetos no centro do diagrama contribuíram pouco tanto para o PC1 quanto para o PC2: aqui, os locais `r paste(head(locais_centro(), -1), collapse = ", ")` e `r tail(locais_centro(), 1)`, no meio do rio.
+:::
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza.
+:::
+
+## No scaling 2: só os descritores {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Só as setas das variáveis ambientais do Doubs, com os eixos em unidades de correlação com o PC1 e o PC2. A ponta da seta do fósforo está circulada, com linhas tracejadas até os eixos, marcando 0,81 no PC1 e −0,51 no PC2."
+#| fig-width: 6.6
+#| fig-height: 5.2
+#| out-height: 520px
+fig_biplot_setas("pho")
+```
+:::
+::: {.column width="45%"}
+- Descritores aparecem como setas, para diferenciá-los dos objetos, que são
+  pontos.
+
+::: {.fragment}
+- A ponta da seta é o **escore do descritor**. No scaling 2, ele é
+  proporcional ao autovetor × √λ, que, com variáveis padronizadas, é a
+  correlação do descritor com o eixo.
+:::
+
+::: {.fragment}
+- O fósforo: r = `r num(r_eixo["pho", "PC1"], 2)` com o PC1 e
+  `r num(r_eixo["pho", "PC2"], 2)` com o PC2.
+:::
+:::
+::::
+
+::: {.ref}
+Baseado em slides de Thiago Gonçalves-Souza. [Legendre & Legendre (2012)](https://doi.org/10.1016/B978-0-444-53868-0.50009-5), p. 443–5.
+:::
 
 ## Leia o biplot {.medio}
 
