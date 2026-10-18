@@ -1378,8 +1378,9 @@ fig_cancor_rda_coia()
 
 :::: {.columns}
 ::: {.column width="50%"}
-**Correlação canônica (CCorA)**: exige menos variáveis que locais nas duas
-matrizes, o que raramente acontece em ecologia.
+**Correlação canônica (CCorA)**: sinônimo de CVA (*canonical variate
+analysis*), nome usado no `geomorph`. Exige menos variáveis que locais nas
+duas matrizes, o que raramente acontece em ecologia.
 :::
 ::: {.column width="50%"}
 **Co-inércia (CoIA)**: cada matriz ordenada pelo método mais adequado (PCA,

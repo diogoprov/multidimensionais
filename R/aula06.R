@@ -245,3 +245,34 @@ fig_betadisper <- function(bd) {
     labs(x = NULL, y = "Distância ao centroide do grupo") +
     tema_aula(base = 15)
 }
+
+# ---- Mantel com a diferença simples (Somers & Jackson 2022) -------------------
+
+#' Duas variáveis simuladas com correlação moderada e as três correlações:
+#' Pearson entre as variáveis, Mantel com a distância euclidiana |xi − xj| e
+#' Mantel com a diferença simples xi − xj (todos os pares ordenados)
+mantel_diff_ex <- function(n = 40, rho = .4) {
+  set.seed(7)
+  x <- rnorm(n); y <- rho * x + sqrt(1 - rho^2) * rnorm(n)
+  pares <- expand.grid(i = seq_len(n), j = seq_len(n)) |> subset(i != j)
+  dx <- x[pares$i] - x[pares$j]; dy <- y[pares$i] - y[pares$j]
+  low <- pares$i > pares$j
+  list(x = x, y = y, dx = dx, dy = dy, low = low,
+       r = cor(x, y), r_euc = cor(abs(dx[low]), abs(dy[low])), r_diff = cor(dx, dy))
+}
+
+fig_mantel_diff <- function(ex = mantel_diff_ex()) {
+  f <- function(z) format(round(z, 2), nsmall = 2, decimal.mark = ",")
+  pt <- function(d, titulo, xl, yl) ggplot(d, aes(a, b)) +
+    geom_point(colour = cores[["accent"]], alpha = .35, size = 1.2) +
+    geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = "#c0392b", linewidth = 1) +
+    labs(title = titulo, x = xl, y = yl) + tema_aula(base = 14) +
+    theme(plot.title = element_text(size = 15))
+  p1 <- pt(tibble(a = ex$x, b = ex$y), paste0("Pearson: r = ", f(ex$r)), "x", "y") +
+    geom_point(colour = cores[["accent"]], size = 2.2)
+  p2 <- pt(tibble(a = abs(ex$dx[ex$low]), b = abs(ex$dy[ex$low])),
+           paste0("Euclidiana: rM = ", f(ex$r_euc)), "|xi − xj|", "|yi − yj|")
+  p3 <- pt(tibble(a = ex$dx, b = ex$dy), paste0("Diferença simples: rM = ", f(ex$r_diff)),
+           "xi − xj", "yi − yj")
+  p1 + p2 + p3
+}

@@ -232,6 +232,27 @@ respondidas com os dados brutos.
 [Legendre, Borcard & Peres-Neto (2005)](https://doi.org/10.1890/05-0549). Baseado em slides de P. Legendre.
 :::
 
+## Reabilitando o Mantel: a diferença simples {.medio}
+
+```{r}
+#| fig-alt: "Três gráficos com as mesmas duas variáveis simuladas. À esquerda, y contra x, com correlação de Pearson moderada. No centro, as distâncias euclidianas entre os pares, |yi − yj| contra |xi − xj|: a correlação de Mantel é bem menor que a de Pearson. À direita, as diferenças simples com sinal, yi − yj contra xi − xj, em todos os pares ordenados: a correlação de Mantel é igual à de Pearson."
+#| fig-width: 12
+#| fig-height: 4.2
+#| out-height: 380px
+fig_mantel_diff()
+```
+
+- Parte das críticas ao Mantel (erros dos tipos I e II, $r_M$ diferente do
+  $r$ de Pearson) vem da **medida de proximidade**: a distância euclidiana
+  joga fora o **sinal** da diferença.
+- Com a **diferença simples** ($x_i - x_j$, nos pares ordenados), $r_M = r$.
+  Os autores mostram que isso também corrige o Mantel parcial e a MANOVA
+  baseada em distâncias.
+
+::: {.ref}
+[Somers & Jackson (2022)](https://doi.org/10.1002/ecy.3780) *Ecology* 103(10): e3780. Dados simulados.
+:::
+
 ## Mantel com distâncias geográficas
 
 :::: {.columns}
