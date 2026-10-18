@@ -94,7 +94,8 @@ As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 - da Silva, F.R., Gonçalves-Souza, T., Paterno, G.B., Provete, D.B. &
   Vancine, M.H. (2022) *Análises ecológicas no R*. Nupeea, Recife; Canal 6,
-  São Paulo. Cap. 9, seção "Métodos multivariados baseados em modelos".
+  São Paulo. [Cap. 9, seção 9.10, "Métodos multivariados baseados em
+  modelos"](https://analises-ecologicas.com/cap9).
 - As demais referências estão nos slides.
 
 ---
