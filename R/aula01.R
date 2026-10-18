@@ -256,8 +256,8 @@ fig_autovetor <- function() {
       coord_equal(xlim = c(-lim, lim), ylim = c(-lim, lim), clip = "off") +
       labs(title = titulo, x = NULL, y = NULL) + tema_aula(base = 14)
   }
-  painel(v, Av, "Autovetor: mesma direção, 5 vezes maior", cores[["verde"]]) +
-    painel(w, Aw, "Outro vetor: muda de direção", "#c0392b")
+  painel(v, Av, "Autovetor: mesma direção,\n5 vezes maior", cores[["verde"]]) +
+    painel(w, Aw, "Outro vetor:\nmuda de direção", "#c0392b")
 }
 
 # ---- morfometria -------------------------------------------------------------

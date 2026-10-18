@@ -134,7 +134,7 @@ Quase 60 slides citam Legendre. Tratamento:
   (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3), *Sísifo*
   (Ticiano), *A lição de anatomia* (Rembrandt), *A cartomante* (La Tour) e
   *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6), *A parábola dos cegos* (Bruegel),
-  *O comedor de feijão* (Carracci), *A aula de dança* (Degas),
+  *O comedor de feijão* (Carracci), *A Liberdade guiando o povo* (Delacroix, a pintura favorita do Diogo),
   *A infância de Raleigh* (Millais), *Tédio* (Sickert), *Filósofo em meditação*
   (Rembrandt), *A escola da aldeia* (Steen) e *O almoço dos barqueiros* (Renoir) (1).
 - `R/mapa.R`: `mapa_plot(destaque = NULL, perguntas = TRUE)`.

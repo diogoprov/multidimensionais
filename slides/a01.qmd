@@ -162,13 +162,14 @@ fig_cartoes(tibble::tribble(~titulo, ~texto, ~cor,
 ## Todos prontos?
 
 ::: {.meme}
-![](../assets/memes/aula-danca.jpg){fig-alt="Pintura A aula de dança, de Edgar Degas: numa sala de ensaio, bailarinas de tutu se arrumam e esperam, enquanto o velho mestre de dança, apoiado num bastão, observa. Legenda: todos prontos? Então vamos lá." height="520px"}
+![](../assets/memes/liberdade.jpg){fig-alt="Pintura A Liberdade guiando o povo, de Eugène Delacroix: uma mulher com a bandeira francesa erguida avança sobre uma barricada, à frente de um povo armado, de trabalhadores e estudantes a um menino. Legenda: todos prontos? Então vamos lá." height="520px"}
 
-[Todos prontos?]{.meme-topo} [Então vamos lá]{.meme-base}
+[Todos prontos?]{.meme-topo} [Então vamos lá!]{.meme-base}
 :::
 
 ::: {.ref}
-Edgar Degas, *A aula de dança* (1874), The Metropolitan Museum of Art, CC0, via Wikimedia Commons.
+Eugène Delacroix, *A Liberdade guiando o povo* (1830), Museu do Louvre, domínio
+público, via Wikimedia Commons.
 :::
 
 # 2. Tudo começa com uma boa pergunta {.secao}
@@ -1101,9 +1102,11 @@ correlação é a de covariância das variáveis padronizadas.
 #| fig-alt: "Dois gráficos de vetores. À esquerda, um vetor v e o vetor 2v, na mesma direção e com o dobro do tamanho. À direita, a soma de dois vetores, u e v, pela regra do paralelogramo."
 #| fig-width: 9
 #| fig-height: 3.6
-#| out-height: 300px
+#| out-height: 250px
 fig_vetores()
 ```
+
+Para ver autovetores e autovalores em ação: [visualização interativa do Setosa](https://setosa.io/ev/eigenvectors-and-eigenvalues/).
 
 ::: {.ref}
 [Legendre & Legendre (2012), cap. 2](`r LL2`).
@@ -1164,7 +1167,7 @@ Walter Sickert, *Tédio* (c. 1914), domínio público, via Wikimedia Commons.
 - Ortogonais (90°) = variam em **direções independentes**: por isso os eixos
   de uma PCA não são correlacionados.
 - Para mais detalhes, veja [Legendre & Legendre (2012), p. 92–4](`r LL2`), e a
-  [visualização interativa do Setosa](http://setosa.io/ev/eigenvectors-and-eigenvalues/).
+  [visualização interativa do Setosa](https://setosa.io/ev/eigenvectors-and-eigenvalues/).
 
 ## Entendeu?
 
@@ -1196,25 +1199,30 @@ $$= \begin{bmatrix} 7 + 16 + 27\\ 28 + 40 + 54 \end{bmatrix} = \begin{pmatrix} 5
 
 ## Um exemplo ajuda? {.medio}
 
-$$\mathbf{A} = \begin{bmatrix} 1 & 4\\ 2 & 3 \end{bmatrix} \qquad \mathbf{v} = \begin{pmatrix} 2\\ 2 \end{pmatrix}$$
+$$\Large \mathbf{A} = \begin{bmatrix} 1 & 4\\ 2 & 3 \end{bmatrix} \qquad \mathbf{v} = \begin{pmatrix} 2\\ 2 \end{pmatrix}$$
 
 ::: {.fragment}
-$$\mathbf{A}\mathbf{v} = \begin{bmatrix} 1 \times 2 + 4 \times 2\\ 2 \times 2 + 3 \times 2 \end{bmatrix} = \begin{pmatrix} 10\\ 10 \end{pmatrix} = 5 \begin{pmatrix} 2\\ 2 \end{pmatrix}$$
+$$\Large \mathbf{A}\mathbf{v} = \begin{bmatrix} \color{#1c6e8c}{1 \times 2 + 4 \times 2}\\ \color{#c0392b}{2 \times 2 + 3 \times 2} \end{bmatrix} = \begin{pmatrix} 10\\ 10 \end{pmatrix}$$
 :::
 
 ::: {.fragment}
+$$\Large \begin{pmatrix} 10\\ 10 \end{pmatrix} = \boxed{5} \begin{pmatrix} 2\\ 2 \end{pmatrix}$$
+
+O vetor final é o inicial multiplicado por um escalar: 5 é um **autovalor**, e
+(2; 2), um **autovetor** de **A**.
+:::
+
+## O autovetor no plano
+
 ```{r}
 #| fig-alt: "Dois gráficos. À esquerda, o vetor v = (2; 2) e A·v = (10; 10), na mesma direção, cinco vezes maior: v é um autovetor, com autovalor 5. À direita, o vetor (2; −1) e A·v = (−2; 1), que aponta em outra direção: não é autovetor."
 #| fig-width: 10
-#| fig-height: 3.6
-#| out-height: 300px
+#| fig-height: 4.4
+#| out-height: 470px
 fig_autovetor()
 ```
-:::
 
-::: {.fragment .definicao}
-O vetor (2; 2) é um **autovetor** de **A**, e 5 é o seu **autovalor**.
-:::
+O vetor (2; −1) não é autovetor de **A**: depois da multiplicação, aponta em outra direção.
 
 ## Autoanálise
 
