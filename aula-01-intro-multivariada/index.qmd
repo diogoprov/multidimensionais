@@ -10,9 +10,27 @@ description: "Por que dados multivariados exigem ferramentas diferentes. Álgebr
 
 Por que dados multivariados exigem ferramentas diferentes. Álgebra de matrizes essencial para o resto do curso: combinações lineares, autovalores e autovetores.
 
+A aula apresenta o mapa dos métodos da disciplina, a lógica de uma boa
+pergunta de pesquisa e os conceitos de álgebra de matrizes que sustentam as
+análises das aulas seguintes.
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-01.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a01.html){.btn .btn-outline-primary}
+
+As figuras dos slides foram geradas em R; o código está em
+[`R/aula01.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Conteúdo
+
+1. O curso: cronograma, avaliação e bibliografia
+2. Tudo começa com uma boa pergunta
+3. Estudos observacionais e experimentais
+4. Por que métodos multidimensionais
+5. Um pouco de história, da eugenia à ecologia
+6. Como os métodos funcionam: modos R e Q, espaço euclidiano
+7. Álgebra de matrizes: combinações lineares, correlação, autovetores e
+   autovalores, SVD
 
 ## Código R (aula prática)
 

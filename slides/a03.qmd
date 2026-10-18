@@ -111,19 +111,26 @@ fig_tipos_agrupamento()
 :::
 ::::
 
-## Como os métodos funcionam?
+## Como os métodos funcionam? {.medio}
 
+:::: {.columns}
+::: {.column width="64%"}
 ```{r}
-#| fig-alt: "Fluxograma. Da matriz de dados de locais por espécies, um coeficiente gera a matriz de dissimilaridades, e um algoritmo de agrupamento gera o dendrograma. Alternativamente, o k-means parte direto da matriz de dados e forma grupos ao redor de centroides."
-#| fig-height: 4.2
-#| out-height: 370px
+#| fig-alt: "Esquema: a matriz de espécies por locais vira, com um coeficiente de dissimilaridade, uma matriz triangular de distâncias entre os locais; um algoritmo de agrupamento transforma essa matriz num dendrograma. Alternativamente, o k-means parte direto da matriz de dados e forma grupos de pontos ao redor de centroides, num gráfico de dois descritores."
+#| fig-width: 7.2
+#| fig-height: 6
+#| out-height: 590px
 fig_fluxo()
 ```
-
-- Os **coeficientes de (dis)similaridade** foram o tema da aula passada: devem
-  ser escolhidos de acordo com o tipo de dado e o objetivo da análise.
+:::
+::: {.column width="36%"}
+- Os **coeficientes de (dis)similaridade** foram o tema da aula passada:
+  devem ser escolhidos de acordo com o tipo de dado e o objetivo da análise.
 - Os **algoritmos aglomerativos** que veremos: single linkage, complete
   linkage, UPGMA e Ward.
+- O **k-means** trabalha direto na matriz de dados.
+:::
+::::
 
 # 2. Single linkage, passo a passo {.secao}
 
@@ -451,33 +458,72 @@ fig_corte_doubs()
 :::
 ::::
 
-## Bootstrap multiescala: pvclust {.medio}
+## Bootstrap multiescala: pvclust
 
-- Reamostra os descritores com bootstrap em várias escalas (tamanhos de
+:::: {.columns}
+::: {.column width="50%"}
+- Reamostra os descritores com bootstrap em **várias escalas** (tamanhos de
   amostra).
-- Dois valores de suporte para cada grupo: **AU** (*approximately unbiased*) e
-  **BP** (*bootstrap probability*).
-- Verifica se os grupos se manteriam se o tamanho amostral aumentasse.
-- `pvrect()` destaca os grupos com AU > 0,95: forte suporte.
-- Desvantagem: só aceita alguns coeficientes de distância. Alternativa:
-  transformar os dados (por exemplo, chord) e usar a distância euclidiana.
-
+- Dois valores de suporte para cada grupo: **AU** (*approximately
+  unbiased*) e **BP** (*bootstrap probability*).
+- Verifica se os grupos se manteriam com um tamanho amostral maior.
+- `pvrect()` destaca os grupos com **AU > 0,95**: forte suporte.
+:::
+::: {.column width="50%"}
 ::: {.codigo-compacto}
 ```{r}
 #| echo: true
 #| eval: false
 library(pvclust)
-spe.ch <- vegan::decostand(spe, "normalize")        # transformação de chord
-fit <- pvclust(t(spe.ch), method.hclust = "ward.D2",
-               method.dist = "euclidean", nboot = 1000)
-plot(fit); pvrect(fit, alpha = 0.95)
+# transformação de chord
+spe.ch <- vegan::decostand(spe,
+                           "normalize")
+fit <- pvclust(t(spe.ch),
+               method.hclust = "ward.D2",
+               method.dist = "euclidean",
+               nboot = 1000)
+plot(fit)
+pvrect(fit, alpha = 0.95)
 ```
 :::
+
+::: {.definicao}
+Desvantagem: só aceita algumas distâncias. Alternativa: transformar os dados
+(por exemplo, chord) e usar a distância euclidiana, como acima.
+:::
+:::
+::::
 
 ::: {.ref}
 [Shimodaira (2004)](https://doi.org/10.1214/009053604000000823) *Ann. Stat.* 32:
 2616–2641; [Suzuki & Shimodaira (2006)](https://doi.org/10.1093/bioinformatics/btl117)
 *Bioinformatics* 22: 1540–1542.
+:::
+
+## pvclust nos peixes do Doubs
+
+:::: {.columns}
+::: {.column width="62%"}
+```{r}
+#| fig-alt: "Dendrograma de Ward dos 29 locais do Doubs com distância de chord, com os valores AU em vermelho e BP em verde em cada nó. Caixas tracejadas marcam os cinco grupos com AU acima de 95%: os locais 21 e 22; 23, 24 e 25; 17 e 18; 2, 3 e 7; e 4, 6 e 10."
+#| fig-width: 7
+#| fig-height: 6.2
+#| out-height: 560px
+pv <- doubs_pvclust()
+fig_pvclust(pv)
+```
+:::
+::: {.column width="38%"}
+- 1000 reamostragens *bootstrap* em cada escala.
+- `r length(pvclust::pvpick(pv)$clusters)` grupos com **AU > 95%** (caixas): são os
+  que `pvrect()` destacaria.
+- Grupos maiores, como a divisão entre o alto e o baixo rio, têm BP baixo:
+  o *bootstrap* comum subestima o suporte, e o AU corrige esse viés.
+:::
+::::
+
+::: {.ref}
+Peixes do Doubs, Ward com distância de chord, `pvclust` (Suzuki & Shimodaira 2006).
 :::
 
 ## Níveis de fusão
@@ -509,22 +555,18 @@ fig_fusao()
 
 [Classificação]{.familia .classificacao}
 
-## Correlação cofenética {.medio}
-
-- **Distância cofenética**: a distância entre dois objetos lida no
-  dendrograma (o nível em que eles se unem).
-- **Correlação cofenética**: correlação de Pearson entre a matriz de
-  distâncias original e a matriz cofenética.
-  - Escolha os métodos com a maior correlação possível.
-  - Mostra que o dendrograma não distorceu muito as distâncias originais.
-  - Regra prática: acima de 0,8.
+## Correlação cofenética
 
 ```{r}
-#| fig-alt: "Esquema: da matriz de distâncias original, o algoritmo gera o dendrograma; do dendrograma, o nível em que cada par se une dá a matriz de distâncias cofenéticas; a correlação de Pearson compara as duas matrizes."
-#| fig-height: 3.2
-#| out-height: 270px
+#| fig-alt: "Esquema com o exemplo das lagoas. A matriz de distâncias originais passa pelo algoritmo de agrupamento (UPGMA) e vira um dendrograma; a distância em que cada par se une no dendrograma forma a matriz de distâncias cofenéticas. Um gráfico de dispersão compara as distâncias originais e as cofenéticas: a correlação de Pearson é 0,951."
+#| fig-width: 11
+#| fig-height: 5.6
+#| out-height: 500px
 fig_cofenetica_esquema()
 ```
+
+Escolha os métodos com a maior correlação: mostra que o dendrograma não
+distorceu muito as distâncias originais (regra prática: acima de 0,8).
 
 ## Correlação cofenética: quatro métodos
 

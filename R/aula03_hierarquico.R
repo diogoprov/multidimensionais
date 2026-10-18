@@ -185,46 +185,70 @@ fig_flexivel <- function() {
 fig_tipos_agrupamento <- function() {
   ne <- cores[["accent_dark"]]
   cx <- tribble(
-    ~x,    ~y,   ~w,   ~h,  ~rotulo,                       ~cor, ~face,
-    5,     3,    4.2,  .7,  "Análise de agrupamento",      ne,   "bold",
-    1.2,   1.7,  2.2,  .8,  "Particional\n(não hierárquica)", ne, "bold",
-    6.8,   1.7,  2.8,  .8,  "Hierárquica\naglomerativa",   ne,   "bold",
-    1.2,   .3,   1.6,  .7,  "k-means",                     lar,  "plain",
-    3.6,   .3,   1.6,  .9,  "Single\nlinkage",             lar,  "plain",
-    5.4,   .3,   1.6,  .9,  "Complete\nlinkage",           lar,  "plain",
-    7.2,   .3,   1.6,  .7,  "UPGMA",                       lar,  "plain",
-    9,     .3,   1.6,  .7,  "Ward",                        lar,  "plain"
+    ~x,    ~y,   ~w,   ~h,  ~rotulo,                          ~cor, ~face,
+    5.2,   3,    4.4,  .7,  "Análise de agrupamento",         ne,   "bold",
+    1.3,   1.7,  3,    .95, "Particional\n(não hierárquica)", ne,   "bold",
+    7,     1.7,  3,    .95, "Hierárquica\naglomerativa",      ne,   "bold",
+    1.3,   .2,   1.9,  .8,  "k-means",                        lar,  "plain",
+    3.9,   .2,   1.9,  .95, "Single\nlinkage",                lar,  "plain",
+    5.95,  .2,   1.9,  .95, "Complete\nlinkage",              lar,  "plain",
+    8,     .2,   1.9,  .8,  "UPGMA",                          lar,  "plain",
+    10.05, .2,   1.9,  .8,  "Ward",                           lar,  "plain"
   )
   s <- function(i, j) tibble(x = cx$x[i], y = cx$y[i] - cx$h[i] / 2,
                              xend = cx$x[j], yend = cx$y[j] + cx$h[j] / 2 + .05)
   diagrama(cx, bind_rows(s(1, 2), s(1, 3), s(2, 4), s(3, 5), s(3, 6), s(3, 7), s(3, 8)),
-           base = 4.6)
+           base = 4)
 }
 
-#' Do dado ao agrupamento: dois caminhos
+#' Do dado ao agrupamento: matriz, matriz de distâncias, dendrograma e
+#' k-means (redesenho do esquema do slide original)
 fig_fluxo <- function() {
   ne <- cores[["accent_dark"]]
-  cx <- tribble(
-    ~x,   ~y,    ~w,  ~h,  ~rotulo,                                       ~cor,
-    0,    1.4,   2.4, 1,   "Matriz de dados\n(locais × espécies)",        ne,
-    4.4,  1.4,   2.4, 1,   "Matriz de\ndissimilaridades",                 ne,
-    8.8,  1.4,   2.4, 1,   "Dendrograma",                                 lar,
-    4.4,  -.6,   2.4, 1,   "Grupos ao redor de\ncentroides",               lar
-  )
-  setas <- tribble(
-    ~x,   ~y,    ~xend, ~yend,
-    1.2,  1.4,   3.15,  1.4,
-    5.6,  1.4,   7.55,  1.4,
-    .6,   .9,    3.15,  -.6
-  )
-  diagrama(cx, setas, base = 4.6) +
-    annotate("text", x = 2.2, y = 1.68, label = "coeficiente", size = 4.2, colour = ne) +
-    annotate("text", x = 6.6, y = 1.68, label = "algoritmo de\nagrupamento", size = 4.2,
-             colour = ne, lineheight = .9) +
-    annotate("text", x = 1.5, y = -.25, label = "k-means", size = 4.4, colour = lar,
-             fontface = "bold")
+  vazio <- theme_void() + theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+  # matriz locais × espécies
+  m <- ggplot() +
+    annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = 1, fill = cores[["accent"]], alpha = .8) +
+    annotate("text", x = .5, y = 1.12, label = "Locais", size = 4.6) +
+    annotate("text", x = -.12, y = .5, label = "Espécies", angle = 90, size = 4.6) +
+    coord_equal(xlim = c(-.2, 1.1), ylim = c(-.05, 1.2)) + vazio
+  # triângulo de distâncias
+  tr <- ggplot() +
+    annotate("polygon", x = c(0, 0, 1), y = c(1, 0, 0), fill = cores[["accent"]], alpha = .8) +
+    annotate("text", x = .5, y = 1.12, label = "Locais", size = 4.6) +
+    annotate("text", x = -.12, y = .5, label = "Locais", angle = 90, size = 4.6) +
+    coord_equal(xlim = c(-.2, 1.1), ylim = c(-.05, 1.2)) + vazio
+  # dendrograma das lagoas
+  hc <- stats::hclust(lagoas_dist(), "average"); hc$labels <- LETTERS[1:5]
+  dn <- fig_dendro(hc, base = 11, xlab = "Distância") +
+    theme(axis.text.x = element_blank(), panel.grid = element_blank())
+  # k-means: três nuvens
+  set.seed(2)
+  km <- tibble(x = c(rnorm(12, 1, .25), rnorm(12, 2.6, .25), rnorm(12, 1.6, .25)),
+               y = c(rnorm(12, 1, .25), rnorm(12, 1.5, .25), rnorm(12, 2.6, .25)),
+               g = rep(c("a", "b", "c"), each = 12))
+  cen <- km |> group_by(g) |> summarise(x = mean(x), y = mean(y))
+  kp <- ggplot(km, aes(x, y)) +
+    geom_point(size = 1.4, colour = cores[["texto"]]) +
+    geom_point(data = cen, shape = 21, size = 15, fill = NA, colour = lar, stroke = 1) +
+    coord_equal(xlim = c(.2, 3.4), ylim = c(.2, 3.4)) +
+    labs(x = "Descritor 1", y = "Descritor 2") +
+    tema_aula(base = 11) + theme(axis.text = element_blank(), panel.grid = element_blank(),
+                                 axis.line = element_line(colour = cores[["texto"]]))
+  seta <- function(rot, ang = 0) ggplot() +
+    annotate("segment", x = 0, xend = .8 * cos(ang), y = 0, yend = .8 * sin(ang), linewidth = 3,
+             colour = cores[["verde"]], arrow = arrow(length = unit(.35, "cm"), type = "closed")) +
+    annotate("text", x = .4 * cos(ang) + ifelse(abs(cos(ang)) < .1, .15, 0),
+             y = .4 * sin(ang) + ifelse(abs(cos(ang)) < .1, 0, .3), label = rot, size = 4.4,
+             colour = ne, lineheight = .9, hjust = ifelse(abs(cos(ang)) < .1, 0, .5)) +
+    coord_cartesian(xlim = c(-.5, 1.3), ylim = c(-.9, .5)) + vazio
+  vazio_p <- ggplot() + vazio
+  (m | seta("coeficiente de\ndissimilaridade") | tr) /
+    (seta("k-means", -pi / 2) | vazio_p | seta("algoritmo de\nagrupamento", -pi / 2)) /
+    (kp | vazio_p | dn) +
+    plot_layout(heights = c(1, .45, 1.1)) &
+    theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
 }
-
 #' UPGMA e suas variações nos peixes do Doubs: os métodos de centroide podem
 #' produzir reversões
 fig_variacoes_upgma <- function() {
@@ -242,25 +266,97 @@ fig_variacoes_upgma <- function() {
   patchwork::wrap_plots(ps, nrow = 1)
 }
 
-#' Como se calcula a correlação cofenética
+#' Como se calcula a correlação cofenética: a matriz de distâncias, o
+#' dendrograma, a matriz cofenética lida no dendrograma e a correlação entre
+#' as duas (exemplo das lagoas, UPGMA)
 fig_cofenetica_esquema <- function() {
   ne <- cores[["accent_dark"]]
-  cx <- tribble(
-    ~x,   ~y,    ~w,  ~h,  ~rotulo,                                   ~cor,
-    0,    1.4,   2.6, 1,   "Matriz de distâncias\noriginal",          ne,
-    4.6,  1.4,   2.4, 1,   "Dendrograma",                             lar,
-    4.6,  -.6,   2.6, 1,   "Matriz de distâncias\ncofenéticas",       lar,
-    0,    -.6,   2.6, 1,   "Correlação de\nPearson",                  ne
-  )
-  setas <- tribble(
-    ~x,   ~y,    ~xend, ~yend,
-    1.3,  1.4,   3.35,  1.4,
-    4.6,  .9,    4.6,   -.05,
-    3.3,  -.6,   1.35,  -.6,
-    0,    .9,    0,     -.05
-  )
-  diagrama(cx, setas, base = 4.6) +
-    annotate("text", x = 2.35, y = 1.68, label = "algoritmo", size = 4.2, colour = ne) +
-    annotate("text", x = 5, y = .42, label = "nível em que cada\npar se une", size = 4,
-             colour = ne, hjust = 0, lineheight = .9)
+  vazio <- theme_void() + theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+  d <- lagoas_dist()
+  hc <- stats::hclust(d, "average")
+  co <- stats::cophenetic(hc)
+  tri <- function(m, titulo, cor) {
+    mm <- as.matrix(m); n <- nrow(mm)
+    g <- expand_grid(i = seq_len(n), j = seq_len(n)) |> filter(i > j) |>
+      mutate(v = mm[cbind(i, j)])
+    ggplot(g, aes(j, i)) +
+      geom_tile(aes(fill = v), colour = "white") +
+      geom_text(aes(label = format(round(v, 2), nsmall = 2, decimal.mark = ",")), size = 3.4,
+                colour = "white", fontface = "bold") +
+      scale_fill_gradient(low = cores[["neutro"]], high = cor, guide = "none") +
+      scale_y_reverse() + coord_equal() +
+      labs(title = titulo) + vazio +
+      theme(plot.title = element_text(hjust = .5, size = 13, colour = ne, face = "bold"))
+  }
+  seta <- function(rot) ggplot() +
+    annotate("segment", x = 0, xend = 1, y = 0, yend = 0, linewidth = 2.4, colour = cores[["verde"]],
+             arrow = arrow(length = unit(.3, "cm"), type = "closed")) +
+    annotate("text", x = .5, y = .35, label = rot, size = 3.9, colour = ne, lineheight = .9) +
+    coord_cartesian(xlim = c(-.1, 1.1), ylim = c(-.6, .8)) + vazio
+  dn <- fig_dendro(hc, base = 11, xlab = NULL) +
+    theme(axis.text.x = element_blank(), panel.grid = element_blank())
+  r <- cor(d, co)
+  sc <- ggplot(tibble(x = as.vector(d), y = as.vector(co)), aes(x, y)) +
+    geom_abline(colour = cores[["neutro"]], linetype = "22") +
+    geom_point(shape = 21, fill = lar, colour = "white", size = 3.4) +
+    labs(x = "Distância original", y = "Distância cofenética",
+         title = paste0("Correlação de Pearson: r = ", format(round(r, 3), decimal.mark = ","))) +
+    tema_aula(base = 12) + theme(plot.title = element_text(size = 13, colour = ne))
+  (tri(d, "Distâncias originais", cores[["accent"]]) | seta("algoritmo de\nagrupamento") | dn |
+     seta("distância lida\nno dendrograma") | tri(co, "Distâncias cofenéticas", lar)) /
+    (plot_spacer() | sc | plot_spacer()) +
+    plot_layout(heights = c(1, 1.1)) &
+    theme(plot.background = element_rect(fill = cores[["papel"]], colour = NA))
+}
+
+#' Bootstrap multiescala (pvclust) dos peixes do Doubs: Ward com distância
+#' de chord. A semente fixa o resultado.
+doubs_pvclust <- function(nboot = 1000) {
+  e <- new.env()
+  utils::data("doubs", package = "ade4", envir = e)
+  spe.ch <- vegan::decostand(e$doubs$fish[-8, ], "normalize")
+  set.seed(2026)
+  pvclust::pvclust(t(spe.ch), method.hclust = "ward.D2", method.dist = "euclidean",
+                   nboot = nboot, quiet = TRUE)
+}
+
+#' Dendrograma do pvclust em ggplot2, com os valores AU (vermelho) e BP
+#' (verde) em cada nó e os grupos com AU > 0,95 destacados
+fig_pvclust <- function(fit = doubs_pvclust(), alfa = .95) {
+  hc <- fit$hclust
+  d <- dendro_seg(hc)
+  n <- length(hc$order)
+  pos <- numeric(n); pos[hc$order] <- seq_len(n)
+  ym <- numeric(n - 1)
+  for (i in seq_len(n - 1)) {
+    yy <- sapply(hc$merge[i, ], \(k) if (k < 0) pos[-k] else ym[k])
+    ym[i] <- mean(yy)
+  }
+  nos <- tibble(x = hc$height, y = ym, au = round(100 * fit$edges$au),
+                bp = round(100 * fit$edges$bp))
+  # grupos com AU > alfa (os maiores, sem sobreposição), como pvrect()
+  pp <- pvclust::pvpick(fit, alpha = alfa)$clusters
+  co <- as.matrix(stats::cophenetic(hc))
+  ret <- lapply(pp, \(cl) {
+    yy <- pos[match(cl, hc$labels)]
+    tibble(ymin = min(yy) - .45, ymax = max(yy) + .45, xmax = max(co[cl, cl]) + .12)
+  }) |> bind_rows()
+  xmax <- max(hc$height) * 1.12
+  ggplot() +
+    geom_rect(data = ret, aes(xmin = -.1 * max(hc$height), xmax = xmax, ymin = ymin, ymax = ymax),
+              fill = NA, colour = "#c0392b", linewidth = .7, linetype = "22") +
+    geom_segment(data = d$seg, aes(x, y, xend = xend, yend = yend), colour = lar, linewidth = .9) +
+    geom_text(data = d$folhas, aes(0, y, label = rotulo), hjust = 1.2, size = 4.6,
+              colour = cores[["texto"]]) +
+    geom_text(data = nos, aes(x, y, label = au), hjust = 1.1, vjust = -.35, size = 4.3,
+              colour = "#c0392b", fontface = "bold") +
+    geom_text(data = nos, aes(x, y, label = bp), hjust = -.1, vjust = -.35, size = 4.3,
+              colour = cores[["verde"]], fontface = "bold") +
+    scale_x_continuous(limits = c(-.12 * xmax, xmax), labels = function(x) format(x, decimal.mark = ",")) +
+    scale_y_reverse() +
+    labs(x = "Distância (Ward, chord)", y = NULL,
+         subtitle = "AU (vermelho) e BP (verde), em %") +
+    tema_aula(base = 16) +
+    theme(axis.text.y = element_blank(), panel.grid.major.y = element_blank(),
+          panel.grid.minor = element_blank())
 }

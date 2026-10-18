@@ -22,7 +22,7 @@ prática e os walkthroughs continuam nas pastas das aulas.
 
 | Aula | Pasta | Slides hoje | Original (.pptx) | Lote |
 |-----:|-------|-------------|------------------|-----:|
-| 1 | `aula-01-intro-multivariada` | `slides/aula-01.pdf` | `Aula 1.pptx` (104 slides) | 6 |
+| 1 | `aula-01-intro-multivariada` | **`slides/a01.qmd` ✔** (45 slides; aguarda revisão do Diogo) | `Aula 1.pptx` (104 slides) | 6 |
 | 2 | `aula-02-coeficientes-associacao` | **`slides/a02.qmd` ✔** (62 slides; revisada pelo Diogo em 18/out) | `Aula 2.pptx` (84) | 2 |
 | 3 | `aula-03-agrupamento` | **`slides/a03.qmd` ✔** (44 slides; aguarda revisão do Diogo) | `Aula 3.pptx` (60) | 3 |
 | 4 | `aula-04-ordenacoes-irrestritas` | **`slides/a04.qmd` ✔** (73 slides) | `Aula 4.pptx` (97) | **1 (modelo)** |
@@ -33,8 +33,8 @@ prática e os walkthroughs continuam nas pastas das aulas.
 Lote 0 (infraestrutura e correções) e lote 1 (Aula 4, a aula-modelo) feitos
 em out/2026. O inventário de cada aula (ação por slide, erros do original)
 fica em `inventarios/aNN.md`. A Aula 2 foi convertida em out/2026 sem parar
-para aprovação, a pedido do Diogo, que revisa depois. As Aulas 3, 5 e 6 também.
-Próximo: a Aula 1.
+para aprovação, a pedido do Diogo, que revisa depois. As Aulas 1, 3, 5 e 6 também.
+Próximo: a Aula 7.
 
 **Depois de todas as aulas** (pedido do Diogo, 17/out/2026): revisar as
 páginas de cada aula para retirar links e arquivos desnecessários, revisar
@@ -66,7 +66,7 @@ incluindo desafios para os alunos. Mostrar a proposta antes de mexer.
   Classes: `.associacao`, `.classificacao`, `.irrestrita`, `.restrita`,
   `.testes`, `.modelos`. Cores em `cores_familia` (`R/tema.R`) e em
   `$familia-*` (`slides/theme.scss`): mude nos dois lugares.
-- **Pacotes**: `vegan`, `ade4` e `cluster`, além de `ggplot2`, `dplyr`,
+- **Pacotes**: `vegan`, `ade4`, `cluster` e `pvclust` (este a pedido do Diogo, na Aula 3), além de `ggplot2`, `dplyr`,
   `tidyr`, `purrr`, `tibble`, `patchwork`, `ape`, `here` e `knitr`.
   Pergunte antes de adicionar outro.
 - **Dados**: os conjuntos dos pacotes (`doubs` do `ade4`, sem CSV; `dune`,
@@ -127,7 +127,8 @@ Quase 60 slides citam Legendre. Tratamento:
   *O Pesadelo* (4), *O Grito*, Caravaggio e Wright of Derby (2), Inocêncio X
   (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3), *Sísifo*
   (Ticiano), *A lição de anatomia* (Rembrandt), *A cartomante* (La Tour) e
-  *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6).
+  *O sono da razão* (Goya) (5), *O homem com a enxada* (Millet) (6), *A parábola dos cegos* (Bruegel) e
+  *O comedor de feijão* (Carracci) (1).
 - `R/mapa.R`: `mapa_plot(destaque = NULL, perguntas = TRUE)`.
 - `R/ordena.R`: `escores(ord, ref, eixos = 1:2, scaling = 2)` devolve os
   escores do vegan como tibbles, **com o sinal dos eixos travado**: o

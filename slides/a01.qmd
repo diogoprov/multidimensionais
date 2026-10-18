@@ -1,0 +1,737 @@
+---
+title: "Introdução às análises multidimensionais"
+subtitle: "Aula 1 · Análises Multidimensionais · PPGBA/UFMS"
+author: "Diogo B. Provete"
+lang: pt
+format:
+  revealjs:
+    theme: [default, theme.scss]
+    slide-number: c/t
+    show-slide-number: all
+    auto-stretch: false
+    preview-links: auto
+    history: false
+    footer: "Análises Multidimensionais · PPGBA/UFMS"
+    code-overflow: wrap
+    fig-align: center
+    width: 1250
+    height: 750
+knitr:
+  opts_chunk:
+    dev.args:
+      bg: "#faf7f0"
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  fig-width: 10
+  fig-height: 4.4
+---
+
+```{r}
+#| label: setup
+source(here::here("R/mapa.R"))
+source(here::here("R/aula01.R"))
+source(here::here("R/aula02_distancias.R"))   # fig_modos_rq()
+
+num <- function(x, d = 1) format(round(x, d), nsmall = d, decimal.mark = ",")
+
+LL1 <- "https://doi.org/10.1016/B978-0-444-53868-0.50001-0"
+LL2 <- "https://doi.org/10.1016/B978-0-444-53868-0.50002-2"
+mx  <- matrizes_exemplo()
+```
+
+::: {.meme}
+![](../assets/memes/cegos.jpg){fig-alt="Pintura A parábola dos cegos, de Pieter Bruegel: uma fila de cegos, cada um apoiado no da frente, caminha atrás de um que já caiu numa vala. Legenda: eu na primeira aula de multivariada: não faço ideia do que estou fazendo." height="540px"}
+
+[Eu na primeira aula de multivariada]{.meme-topo} [Não faço ideia do que estou fazendo]{.meme-base}
+:::
+
+::: {.ref}
+Pieter Bruegel, o Velho, *A parábola dos cegos* (1568), domínio público, via
+Wikimedia Commons.
+:::
+
+## Hoje
+
+1. O curso: cronograma, avaliação e bibliografia
+2. Tudo começa com uma boa pergunta
+3. Estudos observacionais e experimentais
+4. Por que precisamos de métodos multidimensionais
+5. Um pouco de história
+6. Como os métodos funcionam: matrizes e o espaço euclidiano
+7. Rudimentos de álgebra de matrizes
+
+::: {.nota}
+As figuras foram geradas em R ou são imagens históricas em domínio público.
+O código está em
+[`R/aula01.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+:::
+
+## O mapa da disciplina
+
+```{r}
+#| fig-alt: "Mapa dos métodos multidimensionais, com todas as famílias destacadas: da matriz de dados saem a associação (Aula 2), que leva à classificação (Aula 3), à ordenação irrestrita (Aula 4), à ordenação restrita (Aula 5) e aos testes (Aula 6), e os métodos baseados em modelos (Aula 7)."
+#| fig-height: 5.6
+#| out-height: 590px
+mapa_plot()
+```
+
+# 1. O curso {.secao}
+
+## Cronograma {.medio}
+
+::: {.tabela-grande}
+| Dia | Manhã (teoria) | Tarde |
+|---|---|---|
+| Segunda | Introdução; correlação e covariância; espaço euclidiano; álgebra de matrizes (Aula 1) | Coeficientes de distância; transformações e padronizações; introdução ao R (Aula 2) |
+| Terça | Agrupamento hierárquico e não hierárquico (k-means); espécies indicadoras (Aula 3) | Prática |
+| Quarta | Ordenações irrestritas: PCA, PCoA, nMDS, CA (Aula 4) | Prática |
+| Quinta | Ordenações restritas: CCA, RDA, pRDA, db-RDA, LDA (Aula 5) | Prática |
+| Sexta | Mantel, MRM, Procrustes/PROTEST, PERMANOVA, betadisper (Aula 6) | Prática |
+:::
+
+## Ao final do curso e avisos
+
+:::: {.columns}
+::: {.column width="50%"}
+**Ao final do curso**
+
+1. **Avaliação**: duas questões para o aluno resolver, por escrito, numa
+   semana, com análise de dados multivariados e interpretação.
+2. Resumos e mapas mentais fornecidos ao fim da disciplina.
+3. *Feedback* sobre a disciplina.
+:::
+::: {.column width="50%"}
+**Avisos**
+
+- O curso está inteiramente no Moodle: não precisa copiar os slides, melhor
+  acompanhar a aula e **perguntar**!
+- Os scripts do R já serão fornecidos; acompanhe junto.
+:::
+::::
+
+## Bibliografia
+
+:::: {.columns}
+::: {.column width="50%"}
+**Livros principais**
+
+- Legendre & Legendre (2012) *Numerical Ecology*, 3ª ed. Elsevier.
+- Borcard, Gillet & Legendre (2018) [*Numerical Ecology with R*](https://doi.org/10.1007/978-3-319-71404-2),
+  2ª ed. Springer.
+- Thioulouse et al. (2018) *Multivariate Analysis of Ecological Data with
+  ade4*. Springer.
+:::
+::: {.column width="50%"}
+**Complementares**
+
+- McCune & Grace (2002) *Analysis of Ecological Communities*. MjM Software.
+- Gotelli & Ellison (2011) *Princípios de estatística em ecologia*. Artmed:
+  cap. 7 (desenhos amostrais) e cap. 12 (multivariada).
+:::
+::::
+
+# 2. Tudo começa com uma boa pergunta {.secao}
+
+## Da pergunta às predições
+
+:::: {.columns}
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Fluxograma: formule uma pergunta clara; formule hipóteses que respondam à pergunta; formule predições a partir das hipóteses; as predições decorrem logicamente das hipóteses? São testáveis? Cada predição é o teste mais forte possível? Se a resposta a alguma for não, volte e reformule as predições; se todas forem sim, siga para o delineamento."
+#| fig-width: 7
+#| fig-height: 5.8
+#| out-height: 530px
+fig_pergunta_fluxo()
+```
+:::
+::: {.column width="42%"}
+- Mas o que é uma "boa pergunta"?
+- Hipótese científica × hipótese estatística.
+- Predições.
+:::
+::::
+
+::: {.ref}
+Inspirado no fluxograma do cap. 2 de Ruxton & Colegrave (2016)
+*Experimental Design for the Life Sciences*, 4ª ed. Oxford University Press.
+:::
+
+## Dicas para fazer uma boa pergunta
+
+- Uma pergunta científica deve ser **testável** por meio de observações e/ou
+  experimentos.
+- Para algo ser testável, tem de ser **mensurável**.
+- Uma boa pergunta deve conter as variáveis **resposta** (ou dependente) e
+  **preditora(s)** (ou independente).
+- Atente para o **verbo** usado: ele vai guiar o tipo de teste.
+  - Qual a **relação** entre X e Y?
+  - Qual o **efeito** do fator X em Y?
+  - Como X **influencia** Y? Como a mudança em X **afeta** Y?
+- Evite perguntas cuja resposta é sim ou não.
+
+## Como podemos melhorar nossas perguntas?
+
+1. Existe **diferença** entre as áreas?
+
+::: {.fragment}
+2. Qual a **influência** do tipo de solo no crescimento de *Pinus*?
+:::
+
+::: {.fragment}
+3. Qual o **efeito** da quantidade de nitrogênio do solo na taxa de crescimento
+   *per capita* de árvores adultas do gênero *Pinus*?
+:::
+
+::: {.fragment}
+4. A quantidade de nitrogênio no solo **aumenta** a taxa de crescimento *per
+   capita* de *Pinus*?
+:::
+
+::: {.fragment .definicao}
+A 3 é a melhor: diz qual é a resposta, qual é a preditora e o que se mede.
+A 1 é vaga, e a 4 se responde com sim ou não.
+:::
+
+## Fluxograma com perguntas e predições {.medio}
+
+```{r}
+#| fig-alt: "Diagrama: a quantidade de nitrogênio no solo, a preditora X, tem efeito positivo sobre a taxa de crescimento per capita de Pinus, a resposta Y."
+#| fig-height: 3
+#| out-height: 230px
+fig_hipotese_pinus()
+```
+
+::: {.definicao}
+**Hipótese**: o nitrogênio está presente em várias moléculas orgânicas
+envolvidas no crescimento das plantas. Logo, espero que, **quanto maior** a
+quantidade de nitrogênio disponível no solo, **maior** seja a taxa de crescimento
+*per capita* de uma população de *Pinus*.
+:::
+
+Taxa de crescimento e nitrogênio são variáveis quantitativas: qual análise?
+Uma regressão linear simples.
+
+::: {.ref}
+Ruxton & Colegrave (2016), cap. 2.
+:::
+
+## Conceitos importantes
+
+- **Unidade amostral**: um *plot* de floresta (uma população de árvores).
+- **Réplica**: vários *plots* distribuídos na floresta.
+  - Melhor replicar *plots* ou florestas? Depende da pergunta e de onde está a
+    maior variabilidade dos dados (Ruxton & Colegrave, seção 11.2.1).
+- **Tamanho do efeito**: diferença na média entre grupos ou tratamentos.
+- **Poder do teste**: quantos *plots*? Quantas florestas?
+  - "Regra dos 10": 10 unidades amostrais para cada variável preditora
+    (Gotelli & Ellison, cap. 6).
+  - A variabilidade natural dos dados se estima com estudos piloto (Ruxton &
+    Colegrave, seção 2.4).
+
+# 3. Estudos observacionais e experimentais {.secao}
+
+## Da observação ao modelo causal
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Fluxograma: das observações saem a análise exploratória de dados, que leva a um modelo descritivo, e a informação sobre causas; os dois levam a um modelo causal, que pode ser testado por um estudo observacional (quase experimental) ou por um experimento controlado de laboratório ou campo. A análise exploratória está destacada."
+#| fig-width: 6.6
+#| fig-height: 5.4
+#| out-height: 560px
+fig_observacao_experimento()
+```
+:::
+::: {.column width="45%"}
+Boa parte das análises multivariadas em ecologia está na **análise
+exploratória**: descreve padrões e gera hipóteses, que depois precisam ser
+testadas.
+
+::: {.definicao}
+Experimental ou correlativo? Não existe resposta única, e nem sempre é
+possível fazer um experimento (Ruxton & Colegrave 2016, cap. 3).
+:::
+:::
+::::
+
+::: {.ref}
+Inspirado em [James & McCulloch (1990)](https://doi.org/10.1146/annurev.es.21.110190.001021)
+*Annu. Rev. Ecol. Syst.* 21: 129–166.
+:::
+
+## Diferença entre os dois tipos de estudo {.medio}
+
+- **Estudos observacionais** não permitem inferir **causalidade**: não isolam
+  as variáveis de confusão, e as réplicas podem não ser independentes.
+  - Análise de caminhos (*path analysis*, modelos de equações estruturais).
+  - Incluir covariáveis no modelo? Análise exploratória? Partição dos dados?
+- **Estudos experimentais** permitem inferir causalidade, pois a
+  **atribuição** das unidades amostrais aos tratamentos é **aleatória**.
+  - A aleatorização é a chave: os efeitos de confusão ficam em todos os
+    tratamentos, mas de forma não enviesada.
+  - Desvantagens: escala espacial restrita (colaborações ajudam); inviável com
+    organismos grandes; custo; número limitado de tratamentos.
+
+::: {.ref}
+Para causalidade em estudos observacionais: Shipley (2016) *Cause and
+Correlation in Biology*, 2ª ed.; Pearl (2009) *Causality*, 2ª ed.
+:::
+
+# 4. Dois exemplos de estudos observacionais {.secao}
+
+## Comunidades: girinos e poças {.medio}
+
+![](../assets/terceiros/provete2011-poca.jpg){fig-align="center" height="350px" fig-alt="Ilustração de uma poça com 18 espécies de anuros numeradas, cada uma num micro-hábitat: árvores, arbustos, capim na margem, plantas emergentes, folhas flutuantes e água aberta."}
+
+- **Pergunta**: as variáveis ambientais influenciam a composição de espécies?
+  **Teoria**: nicho ecológico, *species sorting*, metacomunidades.
+- **Unidade amostral**: poças. **X**: densidade e tipos de vegetação,
+  superfície da poça exposta. **Y**: as espécies.
+
+::: {.ref}
+Ilustração de [Provete et al. (2011)](https://doi.org/10.1590/S1676-06032011000200036)
+*Biota Neotrop.* 11(2): 377–391.
+:::
+
+## Morfologia: cladogênese e forma {.medio}
+
+:::: {.columns}
+::: {.column width="45%"}
+- **Pergunta**: a cladogênese promoveu divergência morfológica em grupos de
+  espécies?
+- **Teoria**: evolução por seleção natural; modos de especiação.
+- **Unidade amostral**: indivíduos de uma espécie ou grupo de espécies.
+- Morfometria tradicional (distâncias lineares) ou geométrica (marcos
+  anatômicos): em ambos os casos, um conjunto de dados **multivariado**.
+:::
+::: {.column width="55%"}
+::: {.tabela-grande}
+| Medida | Machos (média ± DP) | Fêmeas (média ± DP) |
+|---|---|---|
+| Comprimento rostro-cloacal | 53,8 ± 7,5 | 54,3 ± 8,8 |
+| Largura da cabeça | 18,1 ± 2,2 | 17,9 ± 2,7 |
+| Comprimento da cabeça | 15,7 ± 1,4 | 15,4 ± 1,7 |
+| ... | | |
+:::
+:::
+::::
+
+::: {.ref}
+Medidas de *Rhinella major* em [Narvaes & Rodrigues (2009)](https://doi.org/10.11606/issn.2176-7793.v40i1p1-73)
+*Arq. Zool.* 40: 1–73, Tabela 4 (valores das três primeiras linhas, conforme
+o slide original).
+:::
+
+<!-- TODO: referência. Os valores da tabela vêm do slide original e não foram conferidos no artigo. -->
+
+# 5. Por que métodos multidimensionais? {.secao}
+
+## Objetivos principais
+
+:::: {.columns}
+::: {.column width="42%"}
+- **Medir a (dis)similaridade** entre objetos e descritores (Aula 2).
+- **Encontrar grupos** (Aula 3).
+- **Reduzir a dimensionalidade** para encontrar as principais estruturas
+  (Aula 4).
+- **Modelar uma matriz** em função de variáveis explanatórias (Aula 5).
+- **Testar hipóteses**, além de explorar (Aula 6).
+:::
+::: {.column width="58%"}
+```{r}
+#| fig-alt: "Mapa dos métodos multidimensionais, com cada objetivo associado a uma família de métodos e a uma aula."
+#| fig-width: 7
+#| fig-height: 4.6
+#| out-height: 470px
+mapa_plot(perguntas = FALSE)
+```
+:::
+::::
+
+## Objetos e atributos em ecologia
+
+::: {.tabela-grande}
+| Estudo | Objetos | Atributos |
+|---|---|---|
+| Comunidades | parcelas, locais | espécies, fatores ambientais |
+| Nicho | indivíduos, espécies | recursos, ótimos ambientais |
+| Comportamento | indivíduos | atividades, respostas a estímulos |
+| Taxonomia | espécimes, espécies | caracteres morfológicos, moleculares |
+| Grupos funcionais | espécies | atributos de história de vida |
+:::
+
+::: {.ref}
+Adaptado de McCune & Grace (2002), Tabela 2.1.
+:::
+
+## Que análise para cada estrutura de dados?
+
+```{r}
+#| fig-alt: "Cinco tipos de análise com esquemas das matrizes. Univariadas: um vetor y em função de um vetor x (regressão, ANOVA). Multivariadas exploratórias: uma matriz Y (ordenação e classificação). Testes multivariados com matrizes de distâncias: DY em função de DX (teste de Mantel). Testes multivariados com uma preditora: Y em função de x (MANOVA, PERMANOVA). Ordenações restritas: Y em função de uma matriz X (RDA, CCA, db-RDA)."
+#| fig-height: 5.4
+#| out-height: 540px
+fig_tipos_analise()
+```
+
+::: {.ref}
+Inspirado num slide de Adriano S. Melo.
+:::
+
+# 6. Um pouco de história {.secao}
+
+## Origens: psicometria e um passado incômodo {.medio}
+
+- Os métodos multivariados foram concebidos para análises **psicométricas e
+  sociológicas**, na virada do século XIX para o XX.
+- Parte desse desenvolvimento esteve ligada ao **movimento eugenista**, que
+  buscou uma "justificativa científica" para a dominação da África e da Ásia
+  pelos europeus, mediu crânios e corpos para hierarquizar "raças" e
+  alimentou políticas de exclusão e violência, como o genocídio dos Herero e
+  Nama na Namíbia (1904–1908) e o mito da "raça ariana" na Segunda Guerra.
+
+::: {.definicao}
+Conhecer essa história é parte da formação: os mesmos métodos que usamos
+foram criados num contexto que hoje reconhecemos como racista.
+:::
+
+::: {.ref}
+[Goldstein (2012)](https://doi.org/10.1080/0969594X.2011.614220) *Assess. Educ.* 19: 147–158;
+para ler mais: S. J. Gould, *A falsa medida do homem*.
+:::
+
+## Francis Galton e a "regressão"
+
+:::: {.columns}
+::: {.column width="25%"}
+![](../assets/historia/galton.jpg){height="330px" fig-alt="Retrato de Francis Galton, idoso, de barba e bigode brancos."}
+:::
+::: {.column width="35%"}
+![](../assets/historia/galton-1886-prancha.png){height="420px" fig-alt="Prancha de Galton de 1886 sobre a taxa de regressão na estatura hereditária, com as estaturas dos filhos e dos pais."}
+:::
+::: {.column width="40%"}
+- Francis Galton (1822–1911), antropólogo inglês, primo de Charles Darwin,
+  defensor da **eugenia**.
+- Cunhou o termo "regressão" (1886), estudando a herdabilidade da estatura de
+  pais e filhos.
+:::
+::::
+
+::: {.ref}
+[Galton (1886)](https://doi.org/10.2307/2841583) *J. Anthropol. Inst.* 15: 246–263. Imagens em
+domínio público.
+:::
+
+## Karl Pearson e a PCA (1901)
+
+:::: {.columns}
+::: {.column width="25%"}
+![](../assets/historia/karl-pearson.jpg){height="330px" fig-alt="Retrato de Karl Pearson."}
+:::
+::: {.column width="45%"}
+![](../assets/historia/pearson-1901-figura.png){height="470px" fig-alt="Figura do artigo de Pearson de 1901: uma nuvem de pontos com uma elipse, as duas retas de regressão (y em x e x em y) e a reta de melhor ajuste, que passa pelo eixo maior da elipse, além da reta de pior ajuste, perpendicular a ela."}
+:::
+::: {.column width="30%"}
+- Karl Pearson (1857–1936) definiu o coeficiente de regressão (1896) e, em
+  1901, a reta de **melhor ajuste**: o eixo maior da elipse, origem da PCA.
+:::
+::::
+
+::: {.ref}
+[Pearson (1896)](https://doi.org/10.1098/rspl.1895.0058); [Pearson (1901)](https://doi.org/10.1080/14786440109462720)
+*Phil. Mag.* 2: 559–572. Imagens em domínio público.
+:::
+
+## Na ecologia
+
+Os métodos chegaram à ecologia pela **classificação de comunidades vegetais**:
+
+- Goodall (1953): métodos objetivos de classificação da vegetação.
+- Bray & Curtis (1957): a **ordenação polar**, o primeiro método de ordenação
+  para dados de contagem, nas florestas de Wisconsin.
+- Williams & Lambert (1959): análise de associação em comunidades vegetais.
+- Whittaker (1956, 1967): análise de gradientes da vegetação, como nas Great
+  Smoky Mountains.
+
+::: {.ref}
+[Goodall (1953)](https://doi.org/10.1071/BT9530434); [Bray & Curtis (1957)](https://doi.org/10.2307/1942268);
+[Williams & Lambert (1959)](https://doi.org/10.2307/2257249); [Whittaker (1956)](https://doi.org/10.2307/1943577);
+[Whittaker (1967)](https://doi.org/10.1111/j.1469-185X.1967.tb01419.x).
+:::
+
+## Uma linha do tempo
+
+```{r}
+#| fig-alt: "Linha do tempo de 1901 a 2001 com a publicação dos métodos: PCA (Pearson 1901, Hotelling 1933), CA (Hirschfeld 1935), ordenação polar (Bray e Curtis 1957), análise de associação (Williams e Lambert 1959), nMDS (Kruskal 1964), PCoA (Gower 1966), DCA (Hill 1979), CCA (ter Braak 1986) e PERMANOVA (Anderson 2001)."
+#| fig-width: 11
+#| fig-height: 4.8
+#| out-height: 500px
+fig_linha_tempo()
+```
+
+::: {.ref}
+Datas das publicações originais. Inspirado na figura de McCune & Grace (2002).
+:::
+
+## Chega de história!
+
+::: {.meme}
+![](../assets/memes/feijao.jpg){fig-alt="Pintura O comedor de feijão, de Annibale Carracci: um homem come uma tigela de feijão à mesa, olhando assustado para quem o observa. Legenda: deu por hoje de história; agora, matrizes." height="520px"}
+
+[Deu por hoje de história!]{.meme-topo} [Agora, matrizes]{.meme-base}
+:::
+
+::: {.ref}
+Annibale Carracci, *O comedor de feijão* (c. 1580–1590), domínio público, via
+Wikimedia Commons.
+:::
+
+# 7. Como os métodos funcionam {.secao}
+
+## Modos R e Q
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| fig-alt: "Diagrama de matrizes. A matriz de dados, de objetos por descritores, dá origem a duas matrizes quadradas: Q, de objetos por objetos, e R, de descritores por descritores."
+#| fig-width: 6
+#| fig-height: 5.4
+#| out-height: 540px
+fig_modos_rq()
+```
+:::
+::: {.column width="45%"}
+- **Modo Q**: associação entre **objetos** (por exemplo, locais).
+- **Modo R**: associação entre **descritores** (por exemplo, espécies ou
+  variáveis ambientais).
+
+Na Aula 2 veremos os coeficientes para cada modo.
+:::
+::::
+
+## As duas matrizes típicas {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+**Espécies**
+
+::: {.tabela-grande}
+```{r}
+knitr::kable(mx$sp, align = "r")
+```
+:::
+:::
+::: {.column width="45%"}
+**Variáveis ambientais**
+
+::: {.tabela-grande}
+```{r}
+knitr::kable(mx$amb, align = "r", col.names = c("Temp", "pH", "O₂", "CO₂"))
+```
+:::
+:::
+::::
+
+::: {.ref}
+Dados ilustrativos do slide original.
+:::
+
+## Representação no espaço euclidiano
+
+:::: {.columns}
+::: {.column width="50%"}
+```{r}
+#| fig-alt: "As oito áreas como pontos num plano cujos eixos são as abundâncias das espécies 1 e 2. A distância euclidiana entre as áreas 1 e 2, igual a 14,42, é a hipotenusa de um triângulo retângulo desenhado com linhas tracejadas."
+#| fig-width: 6
+#| fig-height: 5.6
+#| out-height: 560px
+fig_espaco()
+```
+:::
+::: {.column width="50%"}
+- Cada **objeto** (área) é um ponto num espaço cujos eixos são os
+  **descritores** (espécies).
+- Com 2 espécies, um plano; com 3, o espaço tridimensional; com $p$
+  espécies, um espaço de $p$ dimensões, que não conseguimos desenhar.
+- A distância entre dois pontos é dada pelo teorema de Pitágoras, generalizado
+  para $p$ dimensões:
+
+$$D(x_1, x_2) = \sqrt{\textstyle\sum_{j=1}^{p}(y_{1j} - y_{2j})^2}$$
+:::
+::::
+
+::: {.ref}
+[Legendre & Legendre (2012), cap. 2](`r LL2`).
+:::
+
+## Um pequeno parêntese: o espaço pode ser curvo
+
+- Em morfometria geométrica, as formas vivem num espaço **curvo** (o espaço de
+  formas de Kendall).
+- Para usar métodos euclidianos, as formas são projetadas num **espaço
+  tangente**, plano, que aproxima o curvo perto da forma média.
+
+::: {.definicao}
+Os métodos desta disciplina supõem, em geral, um espaço euclidiano; quando os
+dados não estão nele, é preciso transformá-los ou projetá-los.
+:::
+
+::: {.ref}
+Baseado em slides de Antigoni Kaliantzoupolous (grafia do slide original).
+:::
+
+# 8. Rudimentos de álgebra de matrizes {.secao}
+
+## Combinações lineares
+
+- Combinação de várias variáveis (vetores) multiplicadas por constantes e
+  somadas:
+
+$$a\,x + b\,y + c\,z$$
+
+::: {.fragment}
+**Por que isso é importante?**
+
+- Os métodos de ordenação basicamente encontram **combinações lineares**,
+  escolhendo as constantes que maximizam algum critério.
+- Nas ordenações restritas (duas ou mais matrizes), restringem uma combinação
+  linear por outra.
+- Métodos diferentes maximizam critérios diferentes: a PCA, por exemplo, a
+  variância, a partir da **correlação linear** entre as variáveis.
+:::
+
+::: {.ref}
+[Legendre & Legendre (2012), cap. 2](`r LL2`).
+:::
+
+## Correlação de Pearson {.medio}
+
+:::: {.columns}
+::: {.column width="55%"}
+$$r_{y_1y_2} = \frac{\sum_{i=1}^{n} (y_{i1} - \bar{y}_1)(y_{i2} - \bar{y}_2)}{\sqrt{\sum_{i=1}^{n} (y_{i1} - \bar{y}_1)^2 \sum_{i=1}^{n} (y_{i2} - \bar{y}_2)^2}}$$
+:::
+::: {.column width="45%"}
+- Relação **linear** entre duas variáveis, sem supor dependência funcional
+  entre elas.
+- Numerador: a soma dos produtos cruzados (proporcional à covariância); pode
+  ser positiva ou negativa, e dá o sinal de $r$.
+- Denominador: sempre positivo; padroniza pela variação das duas variáveis,
+  porque a soma dos produtos cruzados depende da escala.
+- $-1 \leq r \leq 1$.
+:::
+::::
+
+## Teste de hipótese do r de Pearson {.medio}
+
+Um teste *t* para a hipótese nula $\rho = 0$:
+$\;t = r / s_r$, com $s_r = \sqrt{(1 - r^2)/(n - 2)}$.
+
+::: {.definicao}
+Correlação não implica causalidade (veja a tirinha [xkcd 552](https://xkcd.com/552/)).
+:::
+
+```{r}
+#| fig-alt: "Quatro diagramas de dispersão simulados: correlação positiva (r = 0,82), negativa (r = −0,76), nenhuma (r = 0,08) e uma relação não linear em forma de arco, com r = 0,06 apesar da relação forte."
+#| fig-width: 11
+#| fig-height: 3
+#| out-height: 250px
+fig_correlacoes()
+```
+
+::: {.ref}
+Dados simulados, inspirados na Fig. 5.2 de Quinn & Keough (2002).
+:::
+
+
+## Matrizes de correlação e de covariância
+
+:::: {.columns}
+::: {.column width="50%"}
+**Correlação**
+
+$$\mathbf{P} = \begin{bmatrix} 1 & \rho_{12} & \cdots & \rho_{1p}\\ \rho_{21} & 1 & \cdots & \rho_{2p}\\ \vdots & & \ddots & \vdots\\ \rho_{p1} & \rho_{p2} & \cdots & 1 \end{bmatrix}$$
+:::
+::: {.column width="50%"}
+**Covariância**
+
+$$\boldsymbol\Sigma = \begin{bmatrix} \text{Var}(X) & \text{Cov}(X,Y) & \text{Cov}(X,Z)\\ \text{Cov}(X,Y) & \text{Var}(Y) & \text{Cov}(Y,Z)\\ \text{Cov}(X,Z) & \text{Cov}(Y,Z) & \text{Var}(Z) \end{bmatrix}$$
+:::
+::::
+
+Ambas são **simétricas**, com as variâncias (ou 1) na diagonal. A matriz de
+correlação é a de covariância das variáveis padronizadas.
+
+## Mais alguns conceitos {.medio}
+
+- **Escalar**: um número (real) usado nas operações com matrizes, como a
+  multiplicação. Multiplicar um vetor por um escalar aumenta ou diminui o seu
+  tamanho.
+- **Vetor**: uma coluna (ou linha) de uma matriz.
+- **Autovetor** de uma matriz **A**: um vetor não nulo cuja direção não muda
+  quando ele é multiplicado por **A**; só o seu tamanho muda.
+- **Autovalor**: o escalar $\lambda$ que dá esse fator de mudança de tamanho.
+
+```{r}
+#| fig-alt: "Dois gráficos de vetores. À esquerda, um vetor v e o vetor 2v, na mesma direção e com o dobro do tamanho. À direita, a soma de dois vetores, u e v, pela regra do paralelogramo."
+#| fig-width: 9
+#| fig-height: 3.6
+#| out-height: 300px
+fig_vetores()
+```
+
+::: {.ref}
+[Legendre & Legendre (2012), cap. 2](`r LL2`).
+:::
+
+## Autovetores e autovalores
+
+Os autovetores $\mathbf{u}_i$ e os autovalores $\lambda_i$ da matriz **A** satisfazem
+
+$$\mathbf{A}\,\mathbf{u}_i = \lambda_i\,\mathbf{u}_i$$
+
+- Para uma matriz **simétrica** (como as de correlação ou covariância), os
+  autovetores são **ortogonais** entre si: variam em direções independentes.
+- Para mais detalhes, veja [Legendre & Legendre (2012), p. 92–4](`r LL2`), e a
+  [visualização interativa do Setosa](http://setosa.io/ev/eigenvectors-and-eigenvalues/).
+
+## Um exemplo ajuda? {.medio}
+
+$$\mathbf{A} = \begin{bmatrix} 1 & 4\\ 2 & 3 \end{bmatrix} \qquad \mathbf{v} = \begin{pmatrix} 2\\ 2 \end{pmatrix}$$
+
+::: {.fragment}
+$$\mathbf{A}\mathbf{v} = \begin{bmatrix} 1 \times 2 + 4 \times 2\\ 2 \times 2 + 3 \times 2 \end{bmatrix} = \begin{pmatrix} 10\\ 10 \end{pmatrix} = 5 \begin{pmatrix} 2\\ 2 \end{pmatrix}$$
+:::
+
+::: {.fragment}
+```{r}
+#| fig-alt: "Dois gráficos. À esquerda, o vetor v = (2; 2) e A·v = (10; 10), na mesma direção, cinco vezes maior: v é um autovetor, com autovalor 5. À direita, o vetor (2; −1) e A·v = (−2; 1), que aponta em outra direção: não é autovetor."
+#| fig-width: 10
+#| fig-height: 3.6
+#| out-height: 300px
+fig_autovetor()
+```
+:::
+
+::: {.fragment .definicao}
+O vetor (2; 2) é um **autovetor** de **A**, e 5 é o seu **autovalor**.
+:::
+
+## Autoanálise e SVD
+
+- Calcular os autovetores e autovalores de uma matriz é fazer a sua
+  **autoanálise** (*eigen-decomposition*).
+- Outra forma de decompor uma matriz retangular é a **decomposição em valores
+  singulares** (SVD):
+
+$$\mathbf{Y}_{(n \times p)} = \mathbf{V}_{(n \times k)}\;\mathbf{W}_{(\text{diagonal},\,k \times k)}\;\mathbf{U}'_{(k \times p)}$$
+
+- Na diagonal de **W** estão os **valores singulares** de **Y**; o posto (*rank*)
+  da matriz é o número de valores singulares maiores que zero.
+- Vários métodos de ordenação usam a SVD, como a análise de correspondência; a
+  PCA também pode ser calculada assim (no R, `prcomp()` usa a SVD).
+
+::: {.ref}
+[Legendre & Legendre (2012), seção 2.11](`r LL2`).
+:::

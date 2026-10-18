@@ -33,3 +33,5 @@ Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commo
 
 Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commons.
 | `enxada.jpg` | [File:Millet, Jean-François - Man with a Hoe - Google Art Project.jpg](https://commons.wikimedia.org/wiki/File:Millet,_Jean-Fran%C3%A7ois_-_Man_with_a_Hoe_-_Google_Art_Project.jpg) | Jean-François Millet (1860–1862) | Public domain | 6 |
+| `cegos.jpg` | [File:Pieter Bruegel the Elder - The Parable of the Blind Leading the Blind - WGA3511.jpg](https://commons.wikimedia.org/wiki/File:Pieter_Bruegel_the_Elder_-_The_Parable_of_the_Blind_Leading_the_Blind_-_WGA3511.jpg) | Pieter Bruegel, o Velho (1568) | Public domain | 1 |
+| `feijao.jpg` | [File:Annibale Carracci - The Beaneater - WGA04408.jpg](https://commons.wikimedia.org/wiki/File:Annibale_Carracci_-_The_Beaneater_-_WGA04408.jpg) | Annibale Carracci (c. 1580–1590) | Public domain | 1 |
