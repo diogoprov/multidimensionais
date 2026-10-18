@@ -1,0 +1,74 @@
+---
+title: "Comece aqui"
+subtitle: "Como usar este site e aproveitar a disciplina"
+toc: true
+---
+
+::: {.callout-tip appearance="minimal"}
+**Para alunos matriculados:** este site tem os materiais públicos do curso.
+Avisos, prazos e a avaliação da turma ficam no
+[Moodle UFMS](https://ava.ufms.br).
+:::
+
+## Antes da primeira aula
+
+1. **Instale o R e o RStudio** (ou o Positron) e os pacotes da disciplina:
+   `vegan`, `ade4`, `cluster` e o `ecodados`, com os dados do livro
+   *Análises ecológicas no R* (veja [Como são as aulas práticas](index.qmd#como-são-as-aulas-práticas)).
+2. **Dê uma olhada no [programa](programa.qmd)**: ementa, objetivos,
+   avaliação e bibliografia.
+3. Se a álgebra de matrizes estiver enferrujada, comece pelo
+   [roteiro da Aula 1](aula-01-intro-multivariada/index.qmd): ele refaz,
+   no R, as contas dos slides.
+
+## O fio condutor: o mapa dos métodos
+
+A disciplina segue um mapa. Da matriz de dados saem a
+[Associação]{.familia .associacao} (Aula 2) e, dela,
+[Classificação]{.familia .classificacao} (Aula 3),
+[Ordenação irrestrita]{.familia .irrestrita} (Aula 4),
+[Ordenação restrita]{.familia .restrita} (Aula 5) e
+[Testes]{.familia .testes} (Aula 6). Sem passar por uma medida de distância,
+saem os [Modelos]{.familia .modelos} (Aula 7). Cada aula mostra, com esses
+selos, em que família ela está. Quando ficar perdido, pergunte-se: *que
+pergunta eu quero responder, e de que família é o método que responde a
+ela?*
+
+## Como usar os slides
+
+Os slides abrem pelo botão **Abrir slides** da página de cada aula. Algumas
+teclas úteis:
+
+| Tecla | O que faz |
+|:---:|---|
+| → ou espaço | avança para o próximo slide |
+| **F** | tela cheia |
+| **O** ou **Esc** | mostra todos os slides de uma vez, para achar um assunto |
+| **M** | abre o menu, com o sumário da aula |
+| **E** | modo de impressão; depois use *Imprimir → Salvar como PDF* |
+| **?** | lista todos os atalhos |
+
+: {tbl-colwidths="[25,75]"}
+
+No celular, deslize para os lados para trocar de slide.
+
+## Como são as aulas
+
+- **De manhã, a teoria**: os slides, com as contas feitas passo a passo e
+  as figuras geradas em R a partir de dados reais.
+- **À tarde, a prática**: um [roteiro](praticas.qmd) por aula, com o código
+  comentado, para rodar junto, e **desafios** para resolver depois.
+- Pergunte durante a aula: não é preciso copiar os slides, que ficam
+  todos aqui.
+
+## Para estudar fora da aula
+
+- **Em 3 minutos**: cada página de aula começa com um resumo de três ideias
+  e um erro comum.
+- **[Roteiros práticos](praticas.qmd)**: todos os walkthroughs e scripts,
+  com os desafios de cada aula.
+- **[Glossário](glossario.qmd)**: os termos do curso, cada um com a aula
+  onde aparece.
+- **Leituras**: Legendre & Legendre (2012) *Numerical Ecology* e Borcard,
+  Gillet & Legendre (2018) *Numerical Ecology with R*. Cada aula indica os
+  capítulos.

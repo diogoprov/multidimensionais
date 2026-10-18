@@ -1,0 +1,32 @@
+---
+title: "Roteiros práticos"
+subtitle: "Os walkthroughs, os scripts e os desafios de cada aula"
+toc: true
+---
+
+Cada aula prática tem um **walkthrough** (o roteiro comentado, para ler no
+navegador), o **script** correspondente, para rodar no R, e **desafios**
+para fazer depois. Os dados vêm dos pacotes `vegan` e `ade4`, do `ecodados`
+(livro *Análises ecológicas no R*) ou de arquivos na página da aula.
+
+| Aula | Tema | Walkthrough | Script | Desafios |
+|:---:|---|---|---|---|
+| 1 | Álgebra de matrizes | [ver](aula-01-intro-multivariada/walkthrough-algebra.qmd) | [`algebra.R`](aula-01-intro-multivariada/algebra.R) | [na página](aula-01-intro-multivariada/index.qmd#desafios) |
+| 2 | Coeficientes de associação | [ver](aula-02-coeficientes-associacao/walkthrough-associacao.qmd) | [`associacao.R`](aula-02-coeficientes-associacao/associacao.R) | [na página](aula-02-coeficientes-associacao/index.qmd#desafios) |
+| 3 | Agrupamento | [ver](aula-03-agrupamento/walkthrough-agrupamento.qmd) | [`agrupamento.R`](aula-03-agrupamento/agrupamento.R) | [na página](aula-03-agrupamento/index.qmd#desafios) |
+| 4 | Ordenações irrestritas | [ver](aula-04-ordenacoes-irrestritas/walkthrough-ordenacoes.qmd) | [`ordenacoes.R`](aula-04-ordenacoes-irrestritas/ordenacoes.R) | [na página](aula-04-ordenacoes-irrestritas/index.qmd#desafios) |
+| 5 | Ordenações restritas | [ver](aula-05-ordenacoes-restritas/walkthrough-quinta.qmd) | [`quinta.R`](aula-05-ordenacoes-restritas/quinta.R) | [na página](aula-05-ordenacoes-restritas/index.qmd#desafios) |
+| 6 | Testes entre matrizes e grupos | [ver](aula-06-matrizes-mantel-manova/walkthrough-matrizes.qmd) | [`matrizes.R`](aula-06-matrizes-mantel-manova/matrizes.R) | [na página](aula-06-matrizes-mantel-manova/index.qmd#desafios) |
+
+: {tbl-colwidths="[8,30,16,22,24]"}
+
+A Aula 7 (métodos baseados em modelos) é teórica. Os slides mostram o código
+dos pacotes `mvabund`, `gllvm` e `ecoCopula`, que servem de ponto de partida
+para estudar por conta própria.
+
+## Antes de começar
+
+```r
+install.packages(c("vegan", "ade4", "cluster", "remotes"))
+remotes::install_github("paternogbc/ecodados")
+```

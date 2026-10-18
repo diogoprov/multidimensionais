@@ -30,8 +30,16 @@ website:
     left:
       - href: index.qmd
         text: Início
+      - href: comece-aqui.qmd
+        text: Comece aqui
       - href: programa.qmd
         text: Programa
+      - text: Estudar
+        menu:
+          - href: praticas.qmd
+            text: Roteiros práticos
+          - href: glossario.qmd
+            text: Glossário
     right:
       - icon: github
         href: "https://github.com/diogoprov/multidimensionais"
