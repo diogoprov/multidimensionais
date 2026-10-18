@@ -72,3 +72,6 @@ No celular, deslize para os lados para trocar de slide.
 - **Leituras**: Legendre & Legendre (2012) *Numerical Ecology* e Borcard,
   Gillet & Legendre (2018) *Numerical Ecology with R*. Cada aula indica os
   capítulos.
+- **Depois desta disciplina**: o [mapa mental](https://coggle.it/diagram/WhbkkxE2BAAB0R0m)
+  da disciplina de [Métodos filogenéticos comparativos](https://provetelab.org/teaching/mfc/),
+  que estende várias destas análises para espécies aparentadas.
