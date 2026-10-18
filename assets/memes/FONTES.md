@@ -15,3 +15,11 @@ maior. Licença conferida no campo `LicenseShortName` da API do Commons.
 
 As três últimas vieram de `~/GitHub/bioestatistica/assets/memes/`, onde a
 licença já tinha sido conferida em 2026-10-15.
+
+| Arquivo | Original no Commons | Autor | Licença | Aula |
+|---|---|---|---|---|
+| `inocencio.jpg` | [File:Diego Velázquez - Portrait of Innocent X - WGA24443.jpg](https://commons.wikimedia.org/wiki/File:Diego_Vel%C3%A1zquez_-_Portrait_of_Innocent_X_-_WGA24443.jpg) | Diego Velázquez (1649–1650) | Public domain | 3 |
+| `desesperado.jpg` | [File:Gustave Courbet - Le Désespéré (1843).jpg](https://commons.wikimedia.org/wiki/File:Gustave_Courbet_-_Le_D%C3%A9sesp%C3%A9r%C3%A9_(1843).jpg) | Gustave Courbet (1843–1845) | Public domain | 3 |
+| `absinto.jpg` | [File:Edgar Degas - In a Café - Google Art Project 2.jpg](https://commons.wikimedia.org/wiki/File:Edgar_Degas_-_In_a_Caf%C3%A9_-_Google_Art_Project_2.jpg) | Edgar Degas (1875–1876) | Public domain | 3 |
+
+Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commons.

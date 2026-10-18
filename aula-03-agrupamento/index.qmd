@@ -10,9 +10,28 @@ description: "Métodos hierárquicos (UPGMA, single-linkage, complete-linkage, W
 
 Métodos hierárquicos (UPGMA, single-linkage, complete-linkage, Ward) versus não-hierárquicos (k-means). Análise de espécies indicadoras (IndVal). Estabilidade de cluster via bootstrap (pvclust).
 
+No mapa dos métodos da disciplina, esta aula cobre a **classificação**:
+procurar descontinuidades nos dados e formar grupos de objetos a partir de
+uma matriz de dissimilaridades.
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-03.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a03.html){.btn .btn-outline-primary}
+
+As figuras dos slides foram geradas em R; o código está em
+[`R/aula03_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Conteúdo
+
+1. Análise de agrupamento: descontinuidade × gradiente
+2. Single linkage, passo a passo (o exemplo das lagoas de Legendre &
+   Legendre)
+3. UPGMA, Ward, agrupamento flexível e o modelo de Lance & Williams
+4. Quantos grupos? Nível de corte, bootstrap multiescala (`pvclust`) e
+   níveis de fusão
+5. Correlação cofenética
+6. K-means
+7. Espécies indicadoras: IndVal
 
 ## Código R (aula prática)
 
