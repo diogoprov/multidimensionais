@@ -28,13 +28,13 @@ prática e os walkthroughs continuam nas pastas das aulas.
 | 4 | `aula-04-ordenacoes-irrestritas` | **`slides/a04.qmd` ✔** (73 slides) | `Aula 4.pptx` (97) | **1 (modelo)** |
 | 5 | `aula-05-ordenacoes-restritas` | **`slides/a05.qmd` ✔** (57 slides; aguarda revisão do Diogo) | `Aula 5.pptx` (138) | 4 |
 | 6 | `aula-06-matrizes-mantel-manova` | **`slides/a06.qmd` ✔** (29 slides; aguarda revisão do Diogo) | `Aula 6.pptx` (63) | 5 |
-| 7 | `aula-07-metodos-baseados-modelos` | `slides/aula-07.pdf` | `Aula 7.pptx` (62) | 7 |
+| 7 | `aula-07-metodos-baseados-modelos` | **`slides/a07.qmd` ✔** (45 slides; com a atualização da literatura até 2024; aguarda revisão do Diogo) | `Aula 7.pptx` (62) | 7 |
 
 Lote 0 (infraestrutura e correções) e lote 1 (Aula 4, a aula-modelo) feitos
 em out/2026. O inventário de cada aula (ação por slide, erros do original)
 fica em `inventarios/aNN.md`. A Aula 2 foi convertida em out/2026 sem parar
 para aprovação, a pedido do Diogo, que revisa depois. As Aulas 1, 3, 5 e 6 também.
-Próximo: a Aula 7.
+Todas as aulas convertidas. Próximo: a revisão das páginas, dos walkthroughs e da parte prática (abaixo).
 
 **Depois de todas as aulas** (pedido do Diogo, 17/out/2026): revisar as
 páginas de cada aula para retirar links e arquivos desnecessários, revisar
@@ -68,7 +68,8 @@ incluindo desafios para os alunos. Mostrar a proposta antes de mexer.
   `$familia-*` (`slides/theme.scss`): mude nos dois lugares.
 - **Pacotes**: `vegan`, `ade4`, `cluster` e `pvclust` (este a pedido do Diogo, na Aula 3), além de `ggplot2`, `dplyr`,
   `tidyr`, `purrr`, `tibble`, `patchwork`, `ape`, `here` e `knitr`.
-  Também em uso: `ggrepel` (rótulos do triplot com variável categórica, Aula
+  Também em uso: `mvabund`, `gllvm` e `ecoCopula` (Aula 7, autorizados pelo
+  Diogo), `MASS`, `ggrepel` (rótulos do triplot com variável categórica, Aula
   5) e `spdep` (redes dos MEMs, Aula 5); `rphylopic` só para baixar as
   silhuetas, fora do render. Pergunte antes de adicionar outro.
 - **Dados**: os conjuntos dos pacotes (`doubs` do `ade4`, sem CSV; `dune`,

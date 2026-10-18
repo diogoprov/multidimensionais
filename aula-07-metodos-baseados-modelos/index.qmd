@@ -14,22 +14,33 @@ Alternativa paramétrica aos métodos baseados em distância: por que modelar ex
 Aula extra de caráter teórico, voltada a métodos mais avançados. Não possui roteiro prático em R associado — os pacotes citados nos slides servem como ponto de partida para estudo individual.
 :::
 
+No mapa dos métodos da disciplina, esta aula cobre o ramo que parte da matriz
+de dados **sem passar por uma medida de distância**: modelar a abundância de
+cada espécie diretamente.
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-07.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a07.html){.btn .btn-outline-primary}
 
-## Tópicos abordados
+As figuras dos slides foram geradas em R, com ajustes de `mvabund`, `gllvm` e
+`ecoCopula`; o código está em
+[`R/aula07.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
 
-- **Motivação:** limitações dos métodos baseados em distância (algoritmos) — relação média-variância da abundância, confusão entre posição e dispersão multivariada.
-- **O que são métodos baseados em modelos:** métodos paramétricos (GLMs e variáveis latentes) que capturam propriedades-chave de dados multivariados, com diagnose, seleção de modelos e inferência (AIC/BIC).
-- **Agrupamento:** *Species Archetype Models* (SAMs), pacote `ecoMix`.
-- **Ordenação:** `gllvm` (modelos lineares generalizados de variável latente), `boral` (ordenação Bayesiana via MCMC), *Constrained Quadratic Ordination* (CQO, pacote `reo`) e `ecoCopula`.
-- **Inferência:** `mvabund` (`manyglm`/`manyany`) com reamostragem de resíduos (PIT residuals).
-- **Modelos conjuntos de distribuição de espécies (JSDM):** `HMSC`, `s-jSDM` — partição da variância e co-distribuição derivada da covariância dos resíduos.
+## Conteúdo
+
+1. Por que métodos baseados em modelos: a relação média-variância e a
+   confusão entre posição e dispersão
+2. Agrupamento: arquétipos de espécies (SAMs) e as estratégias de
+   regionalização
+3. Ordenação: CQO, GLLVM (irrestrito, quadrático e concorrente), partição de
+   variância e cópulas
+4. Inferência: GLMs multivariados com `mvabund` e o PIT-trap
+5. Modelos conjuntos de distribuição de espécies (HMSC, sjSDM), co-ocorrência
+   × interação e espécies mediadoras
 
 ## Pacotes em R
 
-`ecoMix` · `gllvm` · `boral` · `reo` · `ecoCopula` · `mvabund` · `Hmsc` · `sjSDM`
+`ecomix` · `gllvm` · `boral` · `ecoCopula` · `mvabund` · `Hmsc` · `sjSDM`
 
 ## Leituras recomendadas
 
