@@ -2,10 +2,12 @@
 title: "Aula 07 — Métodos multidimensionais baseados em modelos"
 order: 7
 description: "Aula extra (avançada). Alternativa paramétrica aos métodos baseados em distância: por que modelar explicitamente a relação média-variância da abundância. Agrupamento (SAMs/ecoMix), ordenação (gllvm, boral, CQO, ecoCopula), inferência (mvabund) e modelos conjuntos de distribuição de espécies (JSDM/HMSC)."
+gancho: "E se, em vez de distâncias, modelássemos as abundâncias?"
+familias: [modelos]
 ---
 
 ::: {.aula-meta}
-**Aula extra (avançada)**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+**Aula extra (avançada)** · [Modelos]{.familia .modelos} · Análises Multidimensionais (PPGBA/UFMS)
 :::
 
 Alternativa paramétrica aos métodos baseados em distância: por que modelar explicitamente a relação média-variância da abundância. Agrupamento (SAMs/ecoMix), ordenação (gllvm, boral, CQO, ecoCopula), inferência (mvabund) e modelos conjuntos de distribuição de espécies (JSDM/HMSC).
@@ -25,6 +27,16 @@ cada espécie diretamente.
 As figuras dos slides foram geradas em R, com ajustes de `mvabund`, `gllvm` e
 `ecoCopula`; o código está em
 [`R/aula07.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Em 3 minutos
+
+::: {.callout-note .em-3-minutos appearance="simple" icon="false"}
+1. Em dados de contagem, a variância cresce com a média; os métodos baseados em distância não levam isso em conta.
+2. GLMs multivariados (`mvabund`) testam o efeito dos preditores na comunidade e mostram quais espécies respondem; GLLVMs (`gllvm`) fazem ordenação com a distribuição adequada.
+3. Cópulas (`ecoCopula`) e modelos conjuntos de distribuição de espécies estimam associações entre espécies descontado o ambiente.
+
+**Erro comum:** interpretar co-ocorrência como interação entre espécies.
+:::
 
 ## Conteúdo
 

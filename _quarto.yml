@@ -20,25 +20,42 @@ website:
   favicon: favicon.png
   open-graph: true
 
+  repo-url: "https://github.com/diogoprov/multidimensionais"
+
   navbar:
     background: light
     pinned: true
+    collapse-below: lg
+    title: "Análises Multidimensionais"
     left:
       - href: index.qmd
         text: Início
+      - href: comece-aqui.qmd
+        text: Comece aqui
+      - href: programa.qmd
+        text: Programa
+      - text: Estudar
+        menu:
+          - href: praticas.qmd
+            text: Roteiros práticos
+          - href: glossario.qmd
+            text: Glossário
     right:
-      - text: "Biodiversity Synthesis Lab"
-        href: "https://provetelab.org/"
       - icon: github
         href: "https://github.com/diogoprov/multidimensionais"
         aria-label: GitHub
+      - icon: house-door
+        href: "https://provetelab.org/"
+        aria-label: Biodiversity Synthesis Lab
 
   page-footer:
     background: light
     left: |
-      Diogo B. Provete · Instituto de Biociências, UFMS
+      © Diogo B. Provete · Biodiversity Synthesis Lab · Instituto de Biociências, UFMS
+    center: |
+      Conteúdo sob [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.pt-br), exceto onde indicado
     right: |
-      Voltar ao [site do laboratório](https://provetelab.org/).
+      Built with [Quarto](https://quarto.org).
 
 format:
   html:

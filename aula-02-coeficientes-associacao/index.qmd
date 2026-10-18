@@ -2,13 +2,13 @@
 title: "Aula 02 — Coeficientes de associação"
 order: 2
 description: "Distância e similaridade entre objetos. Quando usar distância euclideana, Bray-Curtis, Jaccard, Mahalanobis. Propriedades métricas das matrizes de dissimilaridade."
+gancho: "Duas comunidades sem nenhuma espécie em comum podem parecer iguais?"
+familias: [associacao]
 ---
 
 ::: {.aula-meta}
-**Aula 2**  ·  **Curso:** Análises Multidimensionais (PPG em Biologia Animal, UFMS)
+**Aula 2** · [Associação]{.familia .associacao} · Análises Multidimensionais (PPGBA/UFMS)
 :::
-
-Distância e similaridade entre objetos. Quando usar distância euclideana, Bray-Curtis, Jaccard, Mahalanobis. Propriedades métricas das matrizes de dissimilaridade.
 
 No mapa dos métodos da disciplina, esta aula cobre a **associação**: como
 medir o quanto dois objetos (ou dois descritores) se parecem, que é o
@@ -21,6 +21,16 @@ seguintes.
 
 As figuras dos slides foram geradas em R; o código está em
 [`R/aula02_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Em 3 minutos
+
+::: {.callout-note .em-3-minutos appearance="simple" icon="false"}
+1. Similaridade e distância são duas faces da mesma medida (D = 1 − S); a escolha do coeficiente define o que "parecido" quer dizer.
+2. Para composição de espécies, use coeficientes **assimétricos** (Jaccard, Sørensen, Bray-Curtis, Hellinger), que ignoram os duplos zeros.
+3. Variáveis em unidades diferentes precisam ser padronizadas; variáveis de tipos diferentes pedem o coeficiente de Gower.
+
+**Erro comum:** usar a distância euclidiana em abundâncias brutas de espécies.
+:::
 
 ## Conteúdo
 

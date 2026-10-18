@@ -1,0 +1,186 @@
+---
+title: "Glossário"
+subtitle: "Os termos do curso, cada um com a aula onde aparece"
+toc: true
+toc-depth: 2
+---
+
+Definições curtas, para consulta rápida. Para entender um termo de verdade,
+volte à aula indicada.
+
+## A
+
+**Análise de correspondência (CA)** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Ordenação para tabelas de contagem ou de presença e ausência. Preserva a distância de qui-quadrado e supõe respostas unimodais das espécies.
+
+**Análise discriminante linear (LDA)** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: Combinações lineares das variáveis que separam ao máximo grupos definidos de antemão. Preserva a distância de Mahalanobis e permite classificar objetos novos.
+
+**Arquétipos de espécies (SAMs)** · [Aula 7](aula-07-metodos-baseados-modelos/index.qmd)
+: Modelo de mistura que agrupa as espécies pela forma da sua resposta ao ambiente.
+
+**Autovalor** · [Aula 1](aula-01-intro-multivariada/index.qmd)
+: O escalar λ tal que **A**·**u** = λ**u**. Numa PCA, é a variância representada por cada eixo.
+
+**Autovetor** · [Aula 1](aula-01-intro-multivariada/index.qmd)
+: Vetor cuja direção não muda quando multiplicado pela matriz; só o comprimento muda. Numa PCA, dá a direção de cada eixo.
+
+## B
+
+**betadisper (PERMDISP)** · [Aula 6](aula-06-matrizes-mantel-manova/index.qmd)
+: Teste da homogeneidade das dispersões multivariadas entre grupos: a distância média de cada objeto ao centroide do seu grupo.
+
+**Biplot** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Gráfico de uma ordenação com objetos (pontos) e descritores (setas) ao mesmo tempo. O que se pode ler depende do *scaling*.
+
+**Bray-Curtis (diferença percentual)** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Coeficiente de dissimilaridade assimétrico para abundâncias, entre 0 e 1. Ignora os duplos zeros.
+
+## C
+
+**CCA (análise de correspondência canônica)** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: A forma restrita da CA: a composição explicada por variáveis ambientais, com respostas unimodais.
+
+**Coeficiente assimétrico** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Coeficiente que não conta os duplos zeros como semelhança, como Jaccard, Sørensen e Bray-Curtis. O adequado para dados de espécies.
+
+**Combinação linear** · [Aula 1](aula-01-intro-multivariada/index.qmd)
+: Soma de variáveis multiplicadas por constantes, *ax* + *by* + *cz*. Os eixos de ordenação são combinações lineares.
+
+**Correlação cofenética** · [Aula 3](aula-03-agrupamento/index.qmd)
+: Correlação entre as distâncias originais e as distâncias lidas no dendrograma. Mede quanto o agrupamento distorce os dados.
+
+**Correlação residual** · [Aula 7](aula-07-metodos-baseados-modelos/index.qmd)
+: Correlação entre espécies que sobra depois de considerar o ambiente medido. Não é prova de interação biológica.
+
+## D
+
+**db-RDA** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: RDA feita sobre as coordenadas de uma PCoA: permite usar qualquer coeficiente de distância numa ordenação restrita.
+
+**dbMEM e MEM** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: Autovetores de uma matriz de vizinhança entre os locais, usados como variáveis espaciais, cada um em uma escala.
+
+**Dendrograma** · [Aula 3](aula-03-agrupamento/index.qmd)
+: Árvore que mostra a ordem e a altura das fusões num agrupamento hierárquico.
+
+**Distância euclidiana** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: A distância "em linha reta" entre dois objetos no espaço dos descritores. Simétrica: conta os duplos zeros, o que a torna ruim para abundâncias brutas.
+
+**Duplo zero** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Espécie ausente nos dois objetos comparados. Não indica semelhança ecológica entre eles.
+
+## E
+
+**Escores** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: As coordenadas dos objetos (ou dos descritores) nos eixos de uma ordenação.
+
+**Espécies indicadoras (IndVal)** · [Aula 3](aula-03-agrupamento/index.qmd)
+: Índice que combina especificidade e fidelidade de uma espécie a um grupo de locais.
+
+## G
+
+**GLLVM** · [Aula 7](aula-07-metodos-baseados-modelos/index.qmd)
+: Modelo linear generalizado com variáveis latentes: uma ordenação baseada em modelos, que também estima a correlação residual entre espécies.
+
+## H
+
+**Hellinger (transformação)** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Raiz quadrada das abundâncias relativas de cada local. Torna os dados de espécies adequados para PCA e RDA.
+
+## J
+
+**Jaccard** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Coeficiente de similaridade para presença e ausência: espécies em comum sobre o total de espécies dos dois locais.
+
+**JSDM (modelo conjunto de distribuição de espécies)** · [Aula 7](aula-07-metodos-baseados-modelos/index.qmd)
+: Um modelo para cada espécie, ajustados juntos, com efeitos do ambiente, dos atributos, da filogenia e do espaço, e as associações residuais.
+
+## K
+
+**k-means** · [Aula 3](aula-03-agrupamento/index.qmd)
+: Agrupamento não hierárquico que divide os objetos em *k* grupos, minimizando a variação dentro dos grupos.
+
+## M
+
+**Mahalanobis (distância de)** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Distância que desconta a escala e a correlação entre as variáveis, pela matriz de covariância. É a que a LDA preserva.
+
+**Mantel (teste de)** · [Aula 6](aula-06-matrizes-mantel-manova/index.qmd)
+: Correlação entre duas matrizes de distâncias, testada por permutação.
+
+**Matriz de covariância** · [Aula 1](aula-01-intro-multivariada/index.qmd)
+: Matriz simétrica com as variâncias na diagonal e as covariâncias fora dela. A de correlação é a de covariância das variáveis padronizadas.
+
+**Modo Q e modo R** · [Aula 1](aula-01-intro-multivariada/index.qmd)
+: Associação entre objetos (modo Q) ou entre descritores (modo R).
+
+**MRM** · [Aula 6](aula-06-matrizes-mantel-manova/index.qmd)
+: Regressão múltipla de matrizes de distâncias: uma matriz de distâncias em função de várias outras.
+
+## N
+
+**nMDS** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Escalonamento multidimensional não métrico: ordenação que preserva a ordem das distâncias, com o número de dimensões escolhido de antemão.
+
+## P
+
+**Partição de variância** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: Divide a variação explicada entre dois conjuntos de preditoras (como ambiente e espaço) e a parte que eles explicam juntos.
+
+**PCA** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Análise de componentes principais: rotação dos dados que concentra a variância nos primeiros eixos. Preserva a distância euclidiana.
+
+**PCoA** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Análise de coordenadas principais: ordenação que representa qualquer matriz de distâncias num espaço euclidiano.
+
+**PERMANOVA** · [Aula 6](aula-06-matrizes-mantel-manova/index.qmd)
+: Análise de variância sobre uma matriz de distâncias, testada por permutação. Testa se os centroides dos grupos diferem.
+
+**Procrustes e PROTEST** · [Aula 6](aula-06-matrizes-mantel-manova/index.qmd)
+: Superposição de duas configurações de pontos (translação, escalonamento e rotação) e o teste por permutação da sua concordância.
+
+## R
+
+**R² ajustado** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: Proporção da variação explicada, corrigida pelo número de preditoras e de observações. O que se usa para comparar modelos e para a partição de variância.
+
+**RDA (análise de redundância)** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: Regressão múltipla de cada variável resposta seguida de uma PCA dos valores ajustados: a forma restrita da PCA.
+
+**RDA parcial** · [Aula 5](aula-05-ordenacoes-restritas/index.qmd)
+: RDA que remove antes o efeito de covariáveis (como o espaço) e testa o efeito das preditoras de interesse.
+
+**Relação média-variância** · [Aula 7](aula-07-metodos-baseados-modelos/index.qmd)
+: Nas abundâncias de espécies, a variância cresce com a média. Os métodos baseados em modelos a incorporam; os baseados em distância, não.
+
+## S
+
+**Scaling 1 e scaling 2** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Formas de escalonar um biplot. No scaling 1, as distâncias entre objetos aproximam as originais; no scaling 2, os ângulos entre as setas refletem as correlações.
+
+**Stress** · [Aula 4](aula-04-ordenacoes-irrestritas/index.qmd)
+: Medida do desajuste entre as distâncias originais e as da configuração do nMDS. Quanto menor, melhor.
+
+**SVD (decomposição em valores singulares)** · [Aula 1](aula-01-intro-multivariada/index.qmd)
+: Decomposição de uma matriz retangular em **Y** = **VWU**′. Base da CA e de uma forma de calcular a PCA.
+
+## T
+
+**Transformação chord** · [Aula 2](aula-02-coeficientes-associacao/index.qmd)
+: Divide cada local pela norma do seu vetor de abundâncias. A distância euclidiana dos dados transformados é a distância de corda.
+
+## U
+
+**UPGMA** · [Aula 3](aula-03-agrupamento/index.qmd)
+: Agrupamento hierárquico em que a distância entre grupos é a média das distâncias entre os seus membros.
+
+## V
+
+**Variável latente** · [Aula 7](aula-07-metodos-baseados-modelos/index.qmd)
+: Gradiente não medido, estimado pelo modelo a partir da covariação entre as espécies.
+
+## W
+
+**Ward** · [Aula 3](aula-03-agrupamento/index.qmd)
+: Agrupamento hierárquico que funde, a cada passo, os grupos que menos aumentam a soma de quadrados dentro dos grupos.
