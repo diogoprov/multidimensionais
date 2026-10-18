@@ -1,0 +1,288 @@
+---
+title: "Walkthrough: coeficientes de associação no R"
+subtitle: "Aula 2 · Distâncias quantitativas, duplo zero, coeficientes binários e assimétricos, Gower, transformações e modo R, com os peixes do Doubs e os girinos do livro Análises ecológicas no R"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Roteiro da aula prática. Os comandos **não são executados** nesta página:
+rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está em
+[`associacao.R`](associacao.R). As seções seguem os blocos dos
+[slides da Aula 2](../slides/a02.html).
+:::
+
+## 0. Pacotes e dados
+
+Usamos os peixes e as variáveis ambientais do rio Doubs, do pacote `ade4`,
+os mesmos dos slides. O local 8 não tem peixes e sai.
+
+```{r}
+library(vegan)
+library(ade4)
+library(adespatial)   # dist.ldc()
+library(cluster)      # daisy()
+library(ecodados)     # dados do livro Análises ecológicas no R
+
+data(doubs, package = "ade4")
+spe <- doubs$fish[-8, ]
+env <- doubs$env[-8, ]
+```
+
+Nas seções de Gower e de modo R, usamos também os girinos de 13 corpos
+d'água (Provete et al. 2014) do pacote `ecodados`, que acompanha o livro
+*Análises ecológicas no R* (da Silva et al. 2022). Ele se instala uma vez a
+partir do GitHub: `remotes::install_github("paternogbc/ecodados")`.
+
+## 1. Um primeiro olhar nos dados de espécies
+
+Antes de escolher um coeficiente, veja como são os dados: quantas espécies
+ocorrem em cada local, em quantos locais cada espécie ocorre e quanto da
+tabela é zero.
+
+```{r}
+dim(spe)
+range(spe)
+table(unlist(spe))           # as abundâncias vão de 0 a 5 (classes)
+sum(spe == 0) / prod(dim(spe))   # proporção de zeros
+sort(colSums(spe > 0))           # em quantos locais cada espécie ocorre
+rowSums(spe > 0)                 # riqueza de cada local
+```
+
+Mais da metade da tabela (52 %) é zero. É por isso que a escolha do coeficiente
+importa tanto: um coeficiente que trate um zero compartilhado como
+semelhança vai aproximar locais que só têm em comum a ausência de espécies.
+
+## 2. Coeficientes métricos para dados quantitativos
+
+As variáveis ambientais estão em unidades diferentes (metros, mg/L...).
+Para a distância euclidiana, padronize antes: senão, a variável de maior
+amplitude domina a distância.
+
+```{r}
+env.z <- decostand(env, "standardize")   # escore z: média 0, desvio-padrão 1
+round(apply(env.z, 2, mean), 2)
+apply(env.z, 2, sd)
+
+env.de  <- dist(env.z)                        # euclidiana
+env.man <- dist(env.z, method = "manhattan")  # Manhattan
+```
+
+A **distância de chord** é a euclidiana depois de normalizar cada objeto
+(vetor de comprimento 1). Ela varia de 0 a √2:
+
+```{r}
+spe.ch <- dist(decostand(spe, "normalize"))
+range(spe.ch)
+```
+
+A **distância de Mahalanobis** leva em conta as correlações entre as
+variáveis. O R calcula a distância de cada objeto ao centroide:
+
+```{r}
+env3 <- env[, c("alt", "oxy", "bdo")]
+d2 <- mahalanobis(env3, center = colMeans(env3), cov = cov(env3))
+round(sqrt(d2), 2)   # distância de Mahalanobis de cada local ao centroide
+```
+
+## 3. O problema do duplo zero
+
+A distância euclidiana sobre abundâncias de espécies trata a ausência
+compartilhada como semelhança. Compare dois pares de locais:
+
+```{r}
+spe.de <- dist(spe)        # euclidiana nas abundâncias brutas
+spe.bc <- vegdist(spe)     # Bray-Curtis (o padrão do vegdist)
+
+# quantas espécies cada par compartilha?
+compart <- function(i, j) sum(spe[i, ] > 0 & spe[j, ] > 0)
+compart("1", "23")
+compart("16", "30")
+
+as.matrix(spe.de)["1", "23"]; as.matrix(spe.de)["16", "30"]
+as.matrix(spe.bc)["1", "23"]; as.matrix(spe.bc)["16", "30"]
+```
+
+Os locais 1 e 23 não têm **nenhuma** espécie em comum, mas são pobres
+(poucas espécies, abundâncias baixas): na euclidiana, ficam muito perto um
+do outro. Os locais 16 e 30 compartilham 12 espécies, mas como têm
+abundâncias altas, ficam longe. O Bray-Curtis põe as coisas no lugar: o par
+1–23 tem a dissimilaridade máxima (1), e o par 16–30, uma bem menor.
+
+## 4. Coeficientes binários
+
+Para presença e ausência, os coeficientes assimétricos (Jaccard, Sørensen,
+Ochiai) ignoram os duplos zeros; o simétrico de Sokal & Michener (*simple
+matching*) os conta como semelhança.
+
+```{r}
+spe.pa <- decostand(spe, "pa")
+
+spe.jac <- vegdist(spe.pa, method = "jaccard", binary = TRUE)   # D = 1 - S
+spe.sor <- vegdist(spe.pa, method = "bray", binary = TRUE)      # Sørensen
+spe.sm  <- dist.binary(spe.pa, method = 2)   # Sokal & Michener: sqrt(1 - S)
+```
+
+**Atenção às escalas.** O `vegdist()` devolve D = 1 − S. O `dist.binary()`
+do `ade4` devolve D = √(1 − S). Os dois "Jaccard" abaixo dão números
+diferentes, mas um é a raiz do outro:
+
+```{r}
+spe.jac2 <- dist.binary(spe.pa, method = 1)   # Jaccard do ade4: sqrt(1 - S)
+all.equal(as.vector(sqrt(spe.jac)), as.vector(spe.jac2))
+```
+
+A raiz não é um detalhe: a distância de Jaccard não é euclidiana, e a sua
+raiz é. Isso importa para a PCoA (Aula 4):
+
+```{r}
+is.euclid(spe.jac)
+is.euclid(sqrt(spe.jac))
+```
+
+O aviso `Zero distance(s)` não é erro: alguns pares de locais têm
+exatamente as mesmas espécies e, portanto, distância zero.
+
+O *simple matching* aplicado a espécies é o contraexemplo do duplo zero:
+dois locais pobres ficam muito parecidos porque compartilham muitas
+ausências.
+
+```{r}
+1 - as.matrix(spe.sm)["1", "23"]^2    # S de Sokal & Michener
+1 - as.matrix(spe.jac)["1", "23"]     # S de Jaccard
+```
+
+Os locais 1 e 23 não têm nenhuma espécie em comum: Jaccard dá similaridade
+zero, mas o *simple matching* dá mais de 0,8, só por causa das espécies que
+faltam nos dois.
+
+## 5. Coeficientes quantitativos assimétricos
+
+```{r}
+spe.bc  <- vegdist(spe, method = "bray")                # Bray-Curtis (diferença percentual)
+spe.hel <- dist(decostand(spe, "hellinger"))            # Hellinger
+spe.chi <- dist.ldc(spe, method = "chisquare", silent = TRUE)   # qui-quadrado
+spe.lch <- dist.ldc(spe, method = "log.chord", silent = TRUE)   # log-chord
+```
+
+Hellinger, chord e log-chord são euclidianas depois da transformação, e por
+isso servem para a PCA e a RDA. Bray-Curtis não é euclidiana:
+
+```{r}
+is.euclid(spe.bc)
+is.euclid(sqrt(spe.bc))
+is.euclid(spe.hel)
+```
+
+### Gower: variáveis de tipos diferentes
+
+O coeficiente de Gower combina variáveis quantitativas, ordinais e
+nominais. As variáveis dos corpos d'água dos girinos são um bom exemplo:
+pH, turbidez, oxigênio, profundidade, área e outras são quantitativas, e o
+hidroperíodo (`hydro`: permanente ou temporário) é nominal.
+
+```{r}
+amb <- bocaina.env
+amb$hydro <- factor(amb$hydro, labels = c("permanente", "temporário"))
+str(amb)
+
+amb.gow <- daisy(amb, metric = "gower")
+summary(amb.gow)
+```
+
+Na distância euclidiana, seria preciso padronizar as variáveis
+quantitativas e não haveria como incluir o hidroperíodo. No Gower, cada
+variável contribui com uma parcela entre 0 e 1: as quantitativas, pela
+diferença dividida pela amplitude; a nominal, com 0 se os dois locais têm o
+mesmo hidroperíodo e 1 se não têm. Variáveis ordinais (fatores ordenados)
+entram pelos postos.
+
+## 6. Padronizações e transformações
+
+Para os dados de espécies, as transformações mais usadas estão no
+`decostand()`:
+
+```{r}
+spe.tot <- decostand(spe, "total")       # perfil: proporção de cada espécie no local
+spe.nrm <- decostand(spe, "normalize")   # chord
+spe.hl  <- decostand(spe, "hellinger")   # raiz quadrada do perfil
+spe.log <- log1p(spe)                    # log(x + 1)
+
+rowSums(spe.tot)[1:5]          # cada local soma 1
+rowSums(spe.nrm^2)[1:5]        # cada local tem comprimento 1
+```
+
+A distância euclidiana sobre os dados transformados por `normalize` é a
+distância de chord; sobre os transformados por `hellinger`, a de Hellinger.
+É assim que a PCA e a RDA passam a funcionar com abundâncias de espécies
+(Aulas 4 e 5).
+
+## 7. Ver uma matriz de distâncias
+
+Um mapa de calor com os objetos reordenados por agrupamento mostra blocos
+de objetos parecidos:
+
+```{r}
+heatmap(as.matrix(spe.hel), symm = TRUE, scale = "none",
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Hellinger")
+heatmap(as.matrix(spe.de), symm = TRUE, scale = "none",
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Euclidiana (bruta)")
+```
+
+Compare os dois: na euclidiana bruta, os locais pobres em espécies
+aparecem como um bloco de locais "parecidos".
+
+O coeficiente escolhido muda as conclusões. A correlação de Spearman entre
+os vetores de distâncias mostra o quanto duas matrizes concordam:
+
+```{r}
+dists <- list(euclidiana = spe.de, chord = spe.ch, hellinger = spe.hel,
+              bray = spe.bc, jaccard = spe.jac)
+round(cor(sapply(dists, as.vector), method = "spearman"), 2)
+```
+
+## 8. Modo R: associação entre descritores
+
+Entre variáveis ambientais, a correlação de Pearson (ou a de Spearman, para
+relações monotônicas não lineares):
+
+```{r}
+round(cor(env), 2)
+pairs(env[, c("dfs", "alt", "flo", "oxy", "bdo")])
+```
+
+Cuidado com testes de significância par a par: com 11 variáveis são 55
+correlações, e alguns *p* pequenos aparecem por acaso. Além disso, os locais
+de um rio não são independentes (autocorrelação espacial), o que deixa os
+*p* otimistas.
+
+Entre espécies, use um coeficiente que ignore os duplos zeros, como o
+qui-quadrado. No Doubs, as espécies estão nas colunas, então transpomos a
+matriz:
+
+```{r}
+spe.t.chi <- dist.ldc(t(spe), method = "chisquare", silent = TRUE)
+heatmap(as.matrix(spe.t.chi), symm = TRUE, scale = "none",
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Peixes (qui-quadrado)")
+```
+
+Nos girinos, as espécies já estão nas linhas (`bocaina`). Com dados de
+presença e ausência, o Jaccard entre espécies mede o quanto elas
+co-ocorrem nos mesmos corpos d'água:
+
+```{r}
+gir.pa <- decostand(bocaina, "pa")
+gir.jac <- vegdist(gir.pa, method = "jaccard", binary = TRUE)
+round(1 - as.matrix(gir.jac), 2)[1:6, 1:6]   # similaridade entre as seis primeiras espécies
+heatmap(as.matrix(gir.jac), symm = TRUE, scale = "none",
+        col = hcl.colors(20, "YlGnBu", rev = TRUE), main = "Girinos (Jaccard)")
+```
+
+Co-ocorrer não é o mesmo que interagir: duas espécies podem aparecer juntas
+porque respondem ao mesmo ambiente.
