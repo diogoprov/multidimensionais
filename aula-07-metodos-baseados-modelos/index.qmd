@@ -12,10 +12,6 @@ familias: [modelos]
 
 Alternativa paramétrica aos métodos baseados em distância: por que modelar explicitamente a relação média-variância da abundância. Agrupamento (SAMs/ecoMix), ordenação (gllvm, boral, CQO, ecoCopula), inferência (mvabund) e modelos conjuntos de distribuição de espécies (JSDM/HMSC).
 
-::: {.callout-note appearance="minimal"}
-Aula extra de caráter teórico, voltada a métodos mais avançados. Não possui roteiro prático em R associado — os pacotes citados nos slides servem como ponto de partida para estudo individual.
-:::
-
 No mapa dos métodos da disciplina, esta aula cobre o ramo que parte da matriz
 de dados **sem passar por uma medida de distância**: modelar a abundância de
 cada espécie diretamente.
@@ -50,17 +46,56 @@ As figuras dos slides foram geradas em R, com ajustes de `mvabund`, `gllvm` e
 5. Modelos conjuntos de distribuição de espécies (HMSC, sjSDM), co-ocorrência
    × interação e espécies mediadoras
 
-## Pacotes em R
+## Código R (aula prática)
 
-`ecomix` · `gllvm` · `boral` · `ecoCopula` · `mvabund` · `Hmsc` · `sjSDM`
+- {{< fa solid eye >}} **[Ver walkthrough HTML](walkthrough-modelos.html)**  
+  *A relação média-variância, GLMs multivariados com `mvabund` (anuros em
+  campo × coleção, como no livro Análises ecológicas no R, e as aranhas dos
+  slides), ordenação com `gllvm` e cópulas com `ecoCopula`.*  
+  [{{< fa solid file-code >}} baixar `modelos.R`](modelos.R)
+
+Pacotes: `mvabund`, `gllvm`, `ecoCopula`, `vegan` e `ecodados`. Os slides
+citam outros (`ecomix`, `boral`, `Hmsc`, `sjSDM`) como ponto de partida para
+estudo individual.
+
+## Dados utilizados
+
+- `anuros_permanova`, do pacote `ecodados`, que acompanha o livro *Análises
+  ecológicas no R* (da Silva et al. 2022). Instale-o uma vez:
+  `remotes::install_github("paternogbc/ecodados")`.
+- `spider` (aranhas caçadoras em dunas), do pacote `mvabund`.
+
+## Desafios
+
+Entregue um script `.R` que rode do zero numa sessão limpa (com sementes
+declaradas), as figuras pedidas e até uma página de interpretação.
+Critério: o script roda (30 %); a escolha da distribuição está justificada
+pelos resíduos (30 %); a interpretação está correta (40 %).
+
+1. **Que distribuição, e o que responde?** Com os ácaros de `mite` e
+   `mite.env` (`vegan`): use o `meanvar.plot()`, compare Poisson e binomial
+   negativa pelos resíduos e pelo AIC, e teste o efeito da densidade do
+   substrato, do conteúdo de água e da topografia com
+   `anova(..., p.uni = "adjusted")`. *Avaliação:* justifica a família pelos
+   resíduos e aponta quais espécies respondem a cada variável.
+2. **Modelo × distância.** Com os mesmos dados, faça a PERMANOVA
+   (`adonis2`, Bray-Curtis) e o `betadisper` com a topografia
+   (`Topo`). *Avaliação:* compara as conclusões das duas abordagens e
+   explica por que a PERMANOVA pode confundir posição e dispersão quando a
+   variância cresce com a média.
+3. **Ordenação baseada em modelo.** Ajuste um `gllvm` com duas variáveis
+   latentes aos ácaros e compare-o com o nMDS de Bray-Curtis (Aula 4) por
+   `protest()` (Aula 6). *Avaliação:* fixa as sementes, explica o que cada
+   ordenação representa e interpreta a concordância.
+
+As respostas comentadas serão publicadas aqui depois do prazo de entrega.
 
 ## Leituras recomendadas
 
-*Bibliografia listada nos slides.*
-
-## Recursos externos
-
-*Sem recursos externos para esta aula.*
+- da Silva, F.R., Gonçalves-Souza, T., Paterno, G.B., Provete, D.B. &
+  Vancine, M.H. (2022) *Análises ecológicas no R*. Nupeea, Recife; Canal 6,
+  São Paulo. Cap. 9, seção "Métodos multivariados baseados em modelos".
+- As demais referências estão nos slides.
 
 ---
 

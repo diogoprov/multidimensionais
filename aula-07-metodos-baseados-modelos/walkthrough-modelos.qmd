@@ -1,0 +1,229 @@
+---
+title: "Walkthrough: métodos baseados em modelos no R"
+subtitle: "Aula 7 · mvabund, gllvm e ecoCopula"
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    code-tools: true
+    code-overflow: scroll
+execute:
+  eval: false
+---
+
+::: {.callout-note appearance="minimal"}
+Roteiro da aula prática. Os comandos **não são executados** nesta página:
+rode-os no seu R, na ordem, numa sessão limpa. O mesmo código está em
+[`modelos.R`](modelos.R). As seções seguem os blocos dos
+[slides da Aula 7](../slides/a07.html). A primeira parte segue o exemplo do
+capítulo 9 de *Análises ecológicas no R* (da Silva et al. 2022); as outras
+usam as aranhas dos slides.
+:::
+
+## 0. Pacotes e dados
+
+```{r}
+library(vegan)      # para comparar com a PERMANOVA
+library(mvabund)
+library(gllvm)
+library(ecoCopula)
+library(ecodados)   # remotes::install_github("paternogbc/ecodados")
+```
+
+O `vegan` e o `gllvm` têm, cada um, uma função `ordiplot()`; vale a do
+último pacote carregado. Para não depender da ordem, chamamos a do `gllvm`
+como `gllvm::ordiplot()`.
+
+Alguns passos usam reamostragem: fixe a semente antes de cada um. Os
+ajustes do `gllvm` também dependem de valores iniciais aleatórios.
+
+## 1. Média e variância: por que modelar a abundância
+
+Anuros registrados em campo e em coleções científicas (da Silva et al.
+2017), os mesmos da PERMANOVA da Aula 6:
+
+```{r}
+anu <- mvabund(anuros_permanova[, names(anuros_permanova) != "GRUPOS"])
+fonte <- factor(anuros_permanova$GRUPOS)
+
+meanvar.plot(anu)
+```
+
+Cada ponto é uma espécie. A variância cresce com a média, e cresce mais
+rápido que ela (o eixo está em escala log). Os métodos baseados em
+distância não levam isso em conta: as espécies abundantes, que também são
+as mais variáveis, dominam a distância. Um modelo com a distribuição certa
+dá a cada espécie o peso que a sua variância justifica.
+
+## 2. GLMs multivariados com `mvabund`
+
+O `manyglm()` ajusta um GLM para cada espécie, com os mesmos preditores, e
+testa todos juntos. Com contagens superdispersas, a binomial negativa:
+
+```{r}
+plot(anu ~ fonte, cex.axis = 0.8, cex = 0.8)   # abundância de cada espécie por fonte
+m.anu <- manyglm(anu ~ fonte, family = "negative.binomial")
+plot(m.anu)                                    # resíduos de Dunn-Smyth
+```
+
+Os resíduos de Dunn-Smyth devem se espalhar sem padrão em torno de zero:
+um leque (mais espalhados à direita) indicaria que a distribuição não dá
+conta da variância.
+
+```{r}
+set.seed(1)
+anova(m.anu, nBoot = 999, p.uni = "adjusted")
+```
+
+A primeira tabela é o teste multivariado (a soma das razões de
+verossimilhança das espécies). A segunda, com `p.uni = "adjusted"`, mostra
+quais espécies respondem, com os *p* corrigidos para comparações
+múltiplas. Os *p* vêm do PIT-trap, uma reamostragem dos resíduos que
+preserva a correlação entre as espécies. Com só nove locais, há poucos
+rearranjos possíveis e o teste tem pouco poder.
+
+Compare com a PERMANOVA da Aula 6, que respondia à mesma pergunta com
+distâncias:
+
+```{r}
+set.seed(1)
+adonis2(anuros_permanova[, names(anuros_permanova) != "GRUPOS"] ~ fonte,
+        method = "bray", permutations = 999)
+```
+
+## 3. As aranhas: Poisson ou binomial negativa?
+
+Aranhas caçadoras (12 espécies) em 28 locais de dunas, com 6 variáveis
+ambientais, os dados dos slides:
+
+```{r}
+data(spider)
+Y <- mvabund(spider$abund)
+X <- as.data.frame(scale(spider$x))   # variáveis padronizadas
+
+m.po <- manyglm(Y ~ soil.dry + bare.sand + fallen.leaves + moss + herb.layer + reflection,
+                data = X, family = "poisson")
+m.nb <- manyglm(Y ~ soil.dry + bare.sand + fallen.leaves + moss + herb.layer + reflection,
+                data = X, family = "negative.binomial")
+
+par(mfrow = c(1, 2))
+plot(m.po, which = 1, caption = "Poisson")
+plot(m.nb, which = 1, caption = "Binomial negativa")
+par(mfrow = c(1, 1))
+
+sum(AIC(m.po))
+sum(AIC(m.nb))
+```
+
+Na Poisson, os resíduos formam um leque: a variância dos dados é maior do
+que a Poisson admite. A binomial negativa resolve, e o AIC (somado sobre as
+espécies) confirma.
+
+```{r}
+set.seed(1)
+an.nb <- anova(m.nb, nBoot = 999, p.uni = "adjusted")
+an.nb$table      # teste multivariado de cada variável
+an.nb$uni.p      # p de cada espécie, ajustados
+```
+
+Os testes do `anova()` são **sequenciais**: cada variável é testada depois
+das anteriores na fórmula, como no `adonis2()` (Aula 6).
+
+## 4. Ordenação com `gllvm`
+
+O GLLVM (*generalized linear latent variable model*) explica a abundância de
+cada espécie por algumas variáveis latentes, não observadas, que fazem o
+papel dos eixos de uma ordenação, com a distribuição certa para os dados.
+
+### Sem preditores: uma ordenação irrestrita
+
+```{r}
+set.seed(1)
+g0 <- gllvm(spider$abund, family = "negative.binomial", num.lv = 2, n.init = 3)
+g0
+gllvm::ordiplot(g0, biplot = TRUE, main = "GLLVM, 2 variáveis latentes")
+```
+
+`n.init = 3` ajusta o modelo três vezes, com valores iniciais diferentes, e
+fica com o melhor: ajustes de GLLVM podem parar em ótimos locais.
+
+### Com preditores: o que sobra depois do ambiente
+
+```{r}
+set.seed(1)
+g1 <- gllvm(spider$abund, X, family = "negative.binomial", num.lv = 1, n.init = 10,
+            formula = ~ soil.dry + bare.sand + fallen.leaves + moss + herb.layer + reflection)
+coefplot(g1)   # efeito de cada variável em cada espécie, com intervalos
+```
+
+Com as seis variáveis no modelo, uma variável latente basta: se você
+ajustar duas, a segunda fica com variância praticamente zero.
+
+As correlações residuais entre espécies são as que sobram depois do efeito
+do ambiente. Compare com as do modelo sem preditores:
+
+```{r}
+cr0 <- getResidualCor(g0)
+cr1 <- getResidualCor(g1)
+par(mfrow = c(1, 2))
+heatmap(cr0, symm = TRUE, Rowv = NA, main = "Sem preditores", zlim = c(-1, 1),
+        col = hcl.colors(21, "Blue-Red 3"))
+heatmap(cr1, symm = TRUE, Rowv = NA, main = "Com preditores", zlim = c(-1, 1),
+        col = hcl.colors(21, "Blue-Red 3"))
+par(mfrow = c(1, 1))
+```
+
+No modelo sem preditores, as correlações misturam a resposta comum ao
+ambiente com o que não se explica por ele; no modelo com preditores, sobra
+só a segunda parte. Com uma só variável latente, cada correlação residual
+depende do produto das cargas das duas espécies: espécies com cargas do
+mesmo lado se correlacionam positivamente, e de lados opostos,
+negativamente. Por isso, olhe os blocos de espécies e os sinais, mais do que
+a força de cada par.
+
+### Ordenação concorrente: eixos restritos pelo ambiente
+
+```{r}
+set.seed(1)
+gc <- gllvm(spider$abund, X, family = "negative.binomial", num.lv.c = 2, n.init = 3,
+            lv.formula = ~ soil.dry + bare.sand + fallen.leaves + moss + herb.layer + reflection)
+gllvm::ordiplot(gc, biplot = TRUE, main = "Ordenação concorrente")
+```
+
+É o equivalente, baseado em modelo, de uma ordenação restrita (Aula 5): os
+eixos são combinações das variáveis ambientais, mas com um termo aleatório
+que absorve o que elas não explicam.
+
+## 5. Cópulas com `ecoCopula`
+
+As cópulas separam o modelo de cada espécie (a distribuição marginal) da
+correlação entre elas. A partir de um `manyglm`, o `ecoCopula` faz uma
+ordenação rápida e um grafo de associações.
+
+```{r}
+m0 <- manyglm(Y ~ 1, family = "negative.binomial")
+set.seed(1)
+co <- cord(m0)
+plot(co, biplot = TRUE)
+```
+
+O grafo mostra as **associações diretas** entre as espécies: duas espécies
+ligadas continuam associadas mesmo depois de descontadas as outras espécies
+(correlações parciais), e, se o modelo tiver preditores, o ambiente.
+
+```{r}
+set.seed(1)
+gr <- cgr(m.nb)
+plot(gr, pad = 1)
+```
+
+Co-ocorrência não é interação: uma associação direta pode vir de uma
+variável ambiental que ficou de fora do modelo, de uma espécie não
+amostrada ou de um processo espacial.
+
+## Referências dos dados
+
+- da Silva, F.R., Gonçalves-Souza, T., Paterno, G.B., Provete, D.B. &
+  Vancine, M.H. (2022) *Análises ecológicas no R*. Nupeea, Recife; Canal 6,
+  São Paulo. Os anuros vêm do pacote `ecodados` (da Silva et al. 2017).
+- As aranhas vêm do pacote `mvabund` (`?spider`).
