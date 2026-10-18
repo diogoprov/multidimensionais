@@ -26,15 +26,15 @@ prática e os walkthroughs continuam nas pastas das aulas.
 | 2 | `aula-02-coeficientes-associacao` | **`slides/a02.qmd` ✔** (62 slides; revisada pelo Diogo em 18/out) | `Aula 2.pptx` (84) | 2 |
 | 3 | `aula-03-agrupamento` | **`slides/a03.qmd` ✔** (44 slides; aguarda revisão do Diogo) | `Aula 3.pptx` (60) | 3 |
 | 4 | `aula-04-ordenacoes-irrestritas` | **`slides/a04.qmd` ✔** (73 slides) | `Aula 4.pptx` (97) | **1 (modelo)** |
-| 5 | `aula-05-ordenacoes-restritas` | `slides/aula-05.pdf` | `Aula 5.pptx` (138) | 4 |
+| 5 | `aula-05-ordenacoes-restritas` | **`slides/a05.qmd` ✔** (57 slides; aguarda revisão do Diogo) | `Aula 5.pptx` (138) | 4 |
 | 6 | `aula-06-matrizes-mantel-manova` | `slides/aula-06.pdf` | `Aula 6.pptx` (63) | 5 |
 | 7 | `aula-07-metodos-baseados-modelos` | `slides/aula-07.pdf` | `Aula 7.pptx` (62) | 7 |
 
 Lote 0 (infraestrutura e correções) e lote 1 (Aula 4, a aula-modelo) feitos
 em out/2026. O inventário de cada aula (ação por slide, erros do original)
 fica em `inventarios/aNN.md`. A Aula 2 foi convertida em out/2026 sem parar
-para aprovação, a pedido do Diogo, que revisa depois. A Aula 3 também.
-Próximo: a Aula 5.
+para aprovação, a pedido do Diogo, que revisa depois. As Aulas 3 e 5 também.
+Próximo: a Aula 6.
 
 **Depois de todas as aulas** (pedido do Diogo, 17/out/2026): revisar as
 páginas de cada aula para retirar links e arquivos desnecessários, revisar
@@ -116,11 +116,18 @@ Quase 60 slides citam Legendre. Tratamento:
 - `R/dendro.R`: `fig_dendro(hc, ate, corte, grupos)`, dendrograma horizontal
   em ggplot2 (como em L&L), com fusões até `ate` destacadas (para mostrar o
   agrupamento passo a passo).
+- `lda_manual()` (em `R/aula05_lda.R`): LDA sem `MASS`, conferida com
+  `MASS::lda`. `mite_varpart()` (em `R/aula05_parcial.R`): partição de
+  variância dos ácaros com PCNMs selecionados.
+- `ordiR2step()` e `ordistep()` reavaliam a chamada `rda()`: o arquivo que
+  as usa precisa de `library(vegan)`, não basta `vegan::`.
 - `indval()` (em `R/aula03_kmeans.R`): IndVal de Dufrêne & Legendre com teste
   de permutação, sem pacote extra.
 - Memes já usados (não repetir sem motivo): *Melencolia I* (Aulas 2 e 4),
   *O Pesadelo* (4), *O Grito*, Caravaggio e Wright of Derby (2), Inocêncio X
-  (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3).
+  (Velázquez), *O desesperado* (Courbet) e *No café* (Degas) (3), *Sísifo*
+  (Ticiano), *A lição de anatomia* (Rembrandt), *A cartomante* (La Tour) e
+  *O sono da razão* (Goya) (5).
 - `R/mapa.R`: `mapa_plot(destaque = NULL, perguntas = TRUE)`.
 - `R/ordena.R`: `escores(ord, ref, eixos = 1:2, scaling = 2)` devolve os
   escores do vegan como tibbles, **com o sinal dos eixos travado**: o

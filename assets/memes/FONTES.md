@@ -23,3 +23,12 @@ licença já tinha sido conferida em 2026-10-15.
 | `absinto.jpg` | [File:Edgar Degas - In a Café - Google Art Project 2.jpg](https://commons.wikimedia.org/wiki/File:Edgar_Degas_-_In_a_Caf%C3%A9_-_Google_Art_Project_2.jpg) | Edgar Degas (1875–1876) | Public domain | 3 |
 
 Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commons.
+
+| Arquivo | Original no Commons | Autor | Licença | Aula |
+|---|---|---|---|---|
+| `sisifo.jpg` | [File:Titian - Sisyphus - Madrid - Prado.jpg](https://commons.wikimedia.org/wiki/File:Titian_-_Sisyphus_-_Madrid_-_Prado.jpg) | Ticiano (1548–1549) | Public domain | 5 |
+| `anatomia.jpg` | [File:Rembrandt - The Anatomy Lesson of Dr Nicolaes Tulp.jpg](https://commons.wikimedia.org/wiki/File:Rembrandt_-_The_Anatomy_Lesson_of_Dr_Nicolaes_Tulp.jpg) | Rembrandt (1632) | Public domain | 5 |
+| `cartomante.jpg` | [File:Georges de La Tour, The Fortune Teller.jpg](https://commons.wikimedia.org/wiki/File:Georges_de_La_Tour,_The_Fortune_Teller.jpg) | Georges de La Tour (c. 1630) | Public domain | 5 |
+| `goya-sono.jpg` | [File:Goya-Capricho-43.jpg](https://commons.wikimedia.org/wiki/File:Goya-Capricho-43.jpg) | Francisco de Goya (1799) | Public domain | 5 |
+
+Baixadas em 2026-10-18; licença conferida no `LicenseShortName` da API do Commons.

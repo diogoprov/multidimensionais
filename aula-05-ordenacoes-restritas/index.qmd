@@ -10,9 +10,31 @@ description: "Ordenação canônica: explica composição em função de variáv
 
 Ordenação canônica: explica composição em função de variáveis ambientais. CCA, RDA, RDA parcial, db-RDA (RDA baseada em distância), e Análise Discriminante Linear (LDA).
 
+No mapa dos métodos da disciplina, esta aula cobre a **ordenação
+restrita**: explicar a composição de espécies (Y) com variáveis ambientais
+ou espaciais (X), combinando regressão e ordenação.
+
 ## Slides
 
-[{{< fa solid file-pdf >}} Baixar slides em PDF](../slides/aula-05.pdf){.btn .btn-outline-primary}
+[{{< fa solid display >}} Abrir slides](../slides/a05.html){.btn .btn-outline-primary}
+
+As figuras dos slides foram geradas em R; o código está em
+[`R/aula05_*.R`](https://github.com/diogoprov/multidimensionais/tree/main/R).
+
+## Conteúdo
+
+1. Análises canônicas: diretas × indiretas, assimétricas × simétricas
+2. RDA passo a passo; diferença entre RDA e CCA
+3. R² ajustado e testes de significância
+4. Como interpretar um triplot (scalings 1 e 2)
+5. RDA ou CCA? Comprimento do gradiente e tb-RDA
+6. Seleção progressiva de variáveis
+7. db-RDA
+8. Análises parciais, autocorrelação espacial e mapas de autovetores
+   (PCNM, dbMEM, MEM)
+9. Partição de variância
+10. Análise discriminante linear (LDA)
+11. Métodos alternativos: co-inércia, RLQ, OMI, RDA de consenso
 
 ## Código R (aula prática)
 
