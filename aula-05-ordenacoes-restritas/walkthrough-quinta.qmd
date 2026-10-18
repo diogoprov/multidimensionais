@@ -322,12 +322,12 @@ showvarparts(3)
 ## 9. Análise discriminante linear (LDA)
 
 A LDA responde: as variáveis ambientais separam grupos de locais definidos
-de antemão? Os grupos aqui são os quatro do agrupamento de Ward dos peixes
-(Aula 3). As variáveis são a altitude, o oxigênio e a DBO, como em Borcard
+de antemão? Os grupos aqui são os quatro do agrupamento de Ward dos peixes,
+com a distância de corda, como na Aula 3. As variáveis são a altitude, o oxigênio e a DBO, como em Borcard
 et al. (2018), cap. 6. Para a LDA, voltamos às unidades originais.
 
 ```{r}
-gr <- cutree(hclust(dist(spe.hel), "ward.D2"), k = 4)
+gr <- cutree(hclust(dist(decostand(spe, "normalize")), "ward.D2"), k = 4)   # corda
 table(gr)
 
 env0 <- doubs$env[-8, ]
@@ -344,8 +344,10 @@ set.seed(1)
 permutest(betadisper(dist(env.lda), gr), permutations = 999)
 ```
 
-Com as variáveis brutas, a dispersão difere entre os grupos. O log da
-altitude e da DBO resolve:
+Com as variáveis brutas, a distância é dominada pela altitude (em metros),
+e a dispersão dos grupos fica no limite de diferir. O log da altitude e da
+DBO põe as variáveis em escalas comparáveis e deixa as dispersões
+parecidas:
 
 ```{r}
 env.ln <- data.frame(ln_alt = log(env.lda$alt), oxy = env.lda$oxy,

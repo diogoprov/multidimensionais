@@ -106,7 +106,7 @@ anova(rda(spe.hel, mem.x, env.x), permutations = 999)   # [c]
 showvarparts(2)
 showvarparts(3)
 
-gr <- cutree(hclust(dist(spe.hel), "ward.D2"), k = 4)
+gr <- cutree(hclust(dist(decostand(spe, "normalize")), "ward.D2"), k = 4)   # corda
 table(gr)
 
 env0 <- doubs$env[-8, ]
