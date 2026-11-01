@@ -74,29 +74,29 @@ remotes::install_github("paternogbc/ecodados")
 
 ## Desafios
 
-Entregue um script `.R` que rode do zero numa sessão limpa (com sementes e
-número de permutações declarados), as figuras pedidas e até uma página de
-interpretação. Critério: o script roda (30 %); as escolhas (distância,
-transformação, teste) estão justificadas (30 %); a interpretação está
-correta e separa significância de tamanho de efeito (40 %).
+Os desafios **não valem nota**: são treino para o [trabalho final](../programa.qmd#avaliação), com as mesmas exigências.
+Resolva cada um num script `.R` que rode do zero numa sessão limpa (com
+sementes e número de permutações declarados), com as figuras pedidas e um
+parágrafo de interpretação. O item *Confira* diz o que uma boa resposta
+precisa ter.
 
 1. **Posição ou dispersão?** Com `dune` e `dune.env` (`vegan`): faça a
    PERMANOVA da composição em função do manejo (`Management`) e teste a
    dispersão com `betadisper()` e `permutest(..., pairwise = TRUE)`.
-   *Avaliação:* só conclui que os grupos diferem em posição se a dispersão
+   *Confira:* só conclui que os grupos diferem em posição se a dispersão
    for homogênea; senão, discute a ambiguidade.
 2. **Mantel ou partição?** Com `mite`, `mite.env` e `mite.xy` (`vegan`):
    faça o Mantel entre a composição e o ambiente, o Mantel parcial
    controlando a geografia e o `mantel.correlog()`. Compare com a partição
-   de variância da Aula 5. *Avaliação:* explica por que o *r* de Mantel é
+   de variância da Aula 5. *Confira:* explica por que o *r* de Mantel é
    muito menor que o R² da partição e o que cada um mede.
 3. **Quantas permutações existem?** Com `repteis_permanova.csv`: repita a
    PERMANOVA e o `betadisper` do walkthrough. Calcule o número de
-   rearranjos distintos dos rótulos e o menor *p* possível. *Avaliação:*
+   rearranjos distintos dos rótulos e o menor *p* possível. *Confira:*
    reconhece o limite inferior do *p* e o efeito dos grupos de tamanhos
    diferentes.
 
-As respostas comentadas serão publicadas aqui depois do prazo de entrega.
+As respostas comentadas serão publicadas aqui ao fim da disciplina.
 
 ## Leituras recomendadas
 

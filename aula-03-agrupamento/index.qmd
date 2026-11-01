@@ -62,30 +62,30 @@ Pacotes: `vegan`, `ade4`, `pvclust` e `labdsv`.
 
 ## Desafios
 
-Entregue um script `.R` que rode do zero numa sessão limpa (com sementes
-declaradas), as figuras pedidas e até uma página de interpretação.
-Critério: o script roda (30 %); as escolhas (transformação, distância,
-método de ligação, número de grupos) estão justificadas (30 %); a
-interpretação está correta (40 %).
+Os desafios **não valem nota**: são treino para o [trabalho final](../programa.qmd#avaliação), com as mesmas exigências.
+Resolva cada um num script `.R` que rode do zero numa sessão limpa (com
+sementes e número de permutações declarados), com as figuras pedidas e um
+parágrafo de interpretação. O item *Confira* diz o que uma boa resposta
+precisa ter.
 
 1. **Qual método de ligação?** Com `dune` (`vegan`): agrupe as parcelas com
    a distância de Hellinger e com Bray-Curtis, pelos quatro métodos da
    aula. Monte a tabela de correlações cofenéticas e faça o diagrama de
-   Shepard do método escolhido. *Avaliação:* usa o Ward só com a distância
+   Shepard do método escolhido. *Confira:* usa o Ward só com a distância
    euclidiana (de Hellinger) e explica por que a correlação cofenética
    favorece o UPGMA.
 2. **Quantos grupos, e onde estão?** Com `mite` e `mite.xy` (`vegan`):
    rode o `cascadeKM()` de 2 a 8 grupos com os critérios de Calinski e
    SSI, escolha uma partição e faça o mapa dos grupos com as coordenadas.
-   *Avaliação:* compara os dois critérios, não escolhe pela soma de
+   *Confira:* compara os dois critérios, não escolhe pela soma de
    quadrados e discute se os grupos são contíguos no espaço.
 3. **Indicadoras de quê?** Com `doubs` (`ade4`): calcule o IndVal com os
    quatro trechos do rio definidos pela distância da nascente (como no
    walkthrough) e com os quatro grupos do Ward das próprias espécies.
-   *Avaliação:* compara as duas listas e explica por que o teste é viciado
+   *Confira:* compara as duas listas e explica por que o teste é viciado
    quando os grupos vêm das próprias espécies.
 
-As respostas comentadas serão publicadas aqui depois do prazo de entrega.
+As respostas comentadas serão publicadas aqui ao fim da disciplina.
 
 ## Leituras recomendadas
 

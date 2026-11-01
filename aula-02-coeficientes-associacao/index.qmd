@@ -68,21 +68,22 @@ Não é preciso baixar nenhum arquivo.
 
 ## Desafios
 
-Entregue um script `.R` que rode do zero numa sessão limpa, as tabelas e
-figuras pedidas e até uma página de interpretação. Critério: o script roda
-(30 %); as escolhas de coeficiente e transformação estão justificadas
-(30 %); a interpretação está correta (40 %).
+Os desafios **não valem nota**: são treino para o [trabalho final](../programa.qmd#avaliação), com as mesmas exigências.
+Resolva cada um num script `.R` que rode do zero numa sessão limpa (com
+sementes e número de permutações declarados), com as figuras pedidas e um
+parágrafo de interpretação. O item *Confira* diz o que uma boa resposta
+precisa ter.
 
 1. **Quais coeficientes são euclidianos?** Com `dune` (`vegan`): calcule
    Bray-Curtis, √Bray-Curtis, Jaccard, √Jaccard, Hellinger e qui-quadrado,
-   e teste cada um com `is.euclid()`. *Avaliação:* a tabela está correta e
+   e teste cada um com `is.euclid()`. *Confira:* a tabela está correta e
    o texto explica o que acontece numa PCoA (Aula 4) com uma distância que
    não é euclidiana.
 2. **Gower com variáveis de tipos diferentes.** Com `dune.env` (`vegan`:
    `A1` é quantitativa, `Moisture`, `Use` e `Manure` são ordinais e
    `Management` é nominal): calcule o Gower com `daisy()` tratando as
    ordinais como ordinais e, depois, como nominais (`factor(...,
-   ordered = FALSE)`). Compare as duas matrizes. *Avaliação:* identifica os
+   ordered = FALSE)`). Compare as duas matrizes. *Confira:* identifica os
    pares que mais mudam e explica a diferença entre a contribuição de uma
    variável ordinal e a de uma nominal.
 3. **A transformação muda a história?** Com as aves do livro
@@ -90,12 +91,12 @@ figuras pedidas e até uma página de interpretação. Critério: o script roda
    Bray-Curtis nos dados brutos e em `log1p()`, Hellinger e chord, pela
    correlação de Spearman entre os vetores de distâncias e por mapas de
    calor. Repita com as coberturas de liquens e plantas de `varespec`
-   (`vegan`). *Avaliação:* explica por que as transformações mudam pouco
+   (`vegan`). *Confira:* explica por que as transformações mudam pouco
    nas aves (abundâncias em classes de 0 a 3) e bem mais em `varespec`
    (coberturas contínuas, com espécies dominantes), e recomenda um
    coeficiente para cada caso com argumentos da seção 7 dos slides.
 
-As respostas comentadas serão publicadas aqui depois do prazo de entrega.
+As respostas comentadas serão publicadas aqui ao fim da disciplina.
 
 ## Leituras recomendadas
 

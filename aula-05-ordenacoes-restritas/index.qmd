@@ -63,29 +63,29 @@ preciso baixar nenhum arquivo.
 
 ## Desafios
 
-Entregue um script `.R` que rode do zero numa sessão limpa (com sementes e
-número de permutações declarados), as figuras pedidas e até uma página de
-interpretação. Critério: o script roda (30 %); as escolhas (transformação,
-distância, *scaling*) estão justificadas (30 %); a interpretação está
-correta e usa o R² ajustado (40 %).
+Os desafios **não valem nota**: são treino para o [trabalho final](../programa.qmd#avaliação), com as mesmas exigências.
+Resolva cada um num script `.R` que rode do zero numa sessão limpa (com
+sementes e número de permutações declarados), com as figuras pedidas e um
+parágrafo de interpretação. O item *Confira* diz o que uma boa resposta
+precisa ter.
 
 1. **Quais variáveis do solo explicam a vegetação?** Com `varespec` e
    `varechem` (`vegan`): meça o comprimento do gradiente com `decorana()` e
    escolha entre RDA (com Hellinger) e CCA. Selecione as variáveis com
    `ordiR2step()` e faça os testes global, por eixo e por variável. Mostre o
-   triplot em *scaling* 2. *Avaliação:* aplica o duplo critério de parada e
+   triplot em *scaling* 2. *Confira:* aplica o duplo critério de parada e
    relata o R² ajustado do modelo final, não o bruto.
 2. **Ambiente ou espaço?** Com `mite`, `mite.env` e `mite.xy` (`vegan`):
    gere os dbMEMs, selecione-os e selecione as variáveis ambientais (as
    categóricas entram como fatores). Faça a partição de variância e teste
-   as frações testáveis. *Avaliação:* explica por que a fração compartilhada
+   as frações testáveis. *Confira:* explica por que a fração compartilhada
    não tem teste e o que significaria uma fração negativa.
 3. **O manejo importa, descontada a umidade?** Com `dune` e `dune.env`
    (`vegan`): db-RDA com Bray-Curtis e `Management + A1`; depois, a versão
-   parcial com `Condition(Moisture)`. *Avaliação:* distingue o efeito do
+   parcial com `Condition(Moisture)`. *Confira:* distingue o efeito do
    manejo com e sem a covariável e explica por que ele muda.
 
-As respostas comentadas serão publicadas aqui depois do prazo de entrega.
+As respostas comentadas serão publicadas aqui ao fim da disciplina.
 
 ## Leituras recomendadas
 

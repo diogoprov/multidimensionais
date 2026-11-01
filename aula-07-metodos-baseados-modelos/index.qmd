@@ -67,28 +67,29 @@ estudo individual.
 
 ## Desafios
 
-Entregue um script `.R` que rode do zero numa sessão limpa (com sementes
-declaradas), as figuras pedidas e até uma página de interpretação.
-Critério: o script roda (30 %); a escolha da distribuição está justificada
-pelos resíduos (30 %); a interpretação está correta (40 %).
+Os desafios **não valem nota**: são treino para o [trabalho final](../programa.qmd#avaliação), com as mesmas exigências.
+Resolva cada um num script `.R` que rode do zero numa sessão limpa (com
+sementes e número de permutações declarados), com as figuras pedidas e um
+parágrafo de interpretação. O item *Confira* diz o que uma boa resposta
+precisa ter.
 
 1. **Que distribuição, e o que responde?** Com os ácaros de `mite` e
    `mite.env` (`vegan`): use o `meanvar.plot()`, compare Poisson e binomial
    negativa pelos resíduos e pelo AIC, e teste o efeito da densidade do
    substrato, do conteúdo de água e da topografia com
-   `anova(..., p.uni = "adjusted")`. *Avaliação:* justifica a família pelos
+   `anova(..., p.uni = "adjusted")`. *Confira:* justifica a família pelos
    resíduos e aponta quais espécies respondem a cada variável.
 2. **Modelo × distância.** Com os mesmos dados, faça a PERMANOVA
    (`adonis2`, Bray-Curtis) e o `betadisper` com a topografia
-   (`Topo`). *Avaliação:* compara as conclusões das duas abordagens e
+   (`Topo`). *Confira:* compara as conclusões das duas abordagens e
    explica por que a PERMANOVA pode confundir posição e dispersão quando a
    variância cresce com a média.
 3. **Ordenação baseada em modelo.** Ajuste um `gllvm` com duas variáveis
    latentes aos ácaros e compare-o com o nMDS de Bray-Curtis (Aula 4) por
-   `protest()` (Aula 6). *Avaliação:* fixa as sementes, explica o que cada
+   `protest()` (Aula 6). *Confira:* fixa as sementes, explica o que cada
    ordenação representa e interpreta a concordância.
 
-As respostas comentadas serão publicadas aqui depois do prazo de entrega.
+As respostas comentadas serão publicadas aqui ao fim da disciplina.
 
 ## Leituras recomendadas
 

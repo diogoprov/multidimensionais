@@ -153,9 +153,10 @@ clássicos do `vegan` (`dune`, `varespec`, `mite`) e os dados brasileiros do
 livro [*Análises ecológicas no R*](https://analises-ecologicas.com) (da
 Silva et al. 2022), no pacote `ecodados`. Cada roteiro roda do começo ao
 fim numa sessão limpa do R, com sementes fixas, para que todos obtenham os
-mesmos resultados. Os **desafios** de cada aula pedem um script
-reprodutível, as figuras e uma interpretação curta; as respostas
-comentadas são publicadas depois do prazo de entrega.
+mesmos resultados. Os **desafios** de cada aula não valem nota: são
+treino para o [trabalho final](programa.qmd#avaliação), com um script
+reprodutível, as figuras e uma interpretação curta. As respostas
+comentadas são publicadas ao fim da disciplina.
 
 Para instalar o `ecodados`, uma vez:
 

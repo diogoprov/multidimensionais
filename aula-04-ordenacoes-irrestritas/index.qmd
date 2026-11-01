@@ -62,29 +62,29 @@ baixar nenhum arquivo.
 
 ## Desafios
 
-Entregue um script `.R` que rode do zero numa sessão limpa (com sementes
-declaradas), as figuras pedidas e até uma página de interpretação.
-Critério: o script roda (30 %); as escolhas (transformação, distância,
-*scaling*, número de eixos) estão justificadas (30 %); a interpretação está
-correta (40 %).
+Os desafios **não valem nota**: são treino para o [trabalho final](../programa.qmd#avaliação), com as mesmas exigências.
+Resolva cada um num script `.R` que rode do zero numa sessão limpa (com
+sementes e número de permutações declarados), com as figuras pedidas e um
+parágrafo de interpretação. O item *Confira* diz o que uma boa resposta
+precisa ter.
 
 1. **Covariância ou correlação?** Com `varechem` (`vegan`): faça a PCA
    sem padronizar (`rda(varechem)`) e padronizando (`scale = TRUE`). Use
    Kaiser-Guttman e *broken stick* e faça os biplots nos *scalings* 1 e 2.
-   *Avaliação:* explica por que a PCA sem padronização é dominada por uma
+   *Confira:* explica por que a PCA sem padronização é dominada por uma
    ou duas variáveis, e cada figura diz o seu *scaling*.
 2. **O efeito ferradura.** Com os peixes do `doubs`: compare a PCA das
    abundâncias brutas, a tb-PCA com Hellinger, a CA e a DCA, com os locais
-   coloridos pela distância da nascente (`dfs`). *Avaliação:* identifica o
+   coloridos pela distância da nascente (`dfs`). *Confira:* identifica o
    arco ou a ferradura e diz qual método recupera melhor o gradiente.
 3. **Autovalores negativos.** Com `dune` (`vegan`): faça a PCoA de
    Bray-Curtis sem correção, com Lingoes, com Cailliez e com a raiz de
    Bray-Curtis. Monte uma tabela com o número de autovalores negativos e a
-   % de variação dos eixos 1 e 2 em cada caso. *Avaliação:* explica de
+   % de variação dos eixos 1 e 2 em cada caso. *Confira:* explica de
    onde vêm os autovalores negativos e calcula o *broken stick* só com os
    autovalores positivos.
 
-As respostas comentadas serão publicadas aqui depois do prazo de entrega.
+As respostas comentadas serão publicadas aqui ao fim da disciplina.
 
 ## Leituras recomendadas
 

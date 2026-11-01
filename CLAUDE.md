@@ -55,8 +55,10 @@ aula, na ordem 5 → 3 → 2 → 4 → 6 → 7 → 1, commit só com aprovação
 - Sementes e `permutations = 999` em todo teste; `ward.D2`; nada de
   `install.packages`, `?ajuda`, `dev.new()` nos scripts.
 - **Desafios**: seção no fim de cada página de aula, três por aula, com
-  dados de pacotes. As respostas comentadas serão publicadas no site
-  **depois do prazo de entrega**; até lá, ficam fora do repositório.
+  dados de pacotes. **Não valem nota** (a avaliação é só o trabalho final):
+  são treino, com um item *Confira* em cada um. As respostas comentadas
+  serão publicadas no site **ao fim da disciplina**; até lá, ficam fora do
+  repositório.
 - `bocaina.txt` (Aula 3): os prefixos dos locais são os tipos de ambiente:
   BP = brejo permanente, AP = açude permanente, PP = poça permanente,
   PT = poça temporária.
@@ -78,7 +80,8 @@ aula, na ordem 5 → 3 → 2 → 4 → 6 → 7 → 1, commit só com aprovação
   só na nuvem: baixe com `cat "Aula N.pptx" > /dev/null` em segundo plano (o
   macOS não tem `timeout`). Extraia num diretório próprio do scratchpad.
 - **Avaliação**: um trabalho final (relatório Quarto reproduzível), como na
-  disciplina de univariada; não há prova.
+  disciplina de univariada; não há prova. Cronograma em `programa.qmd`: dez
+  encontros de 4,5 h (formato concentrado), o último é a clínica do trabalho.
 - **Fio condutor**: o mapa dos métodos (`mapa_plot(destaque = ...)`, em
   `R/mapa.R`), no lugar do ciclo PPDAC. Da matriz de dados saem a
   associação (Aula 2), e dela classificação (3), ordenação irrestrita (4),

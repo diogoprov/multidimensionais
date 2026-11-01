@@ -36,6 +36,24 @@ analisar dados multivariados comumente encontrados em estudos
 avançados de ecologia e evolução, bem como interpretar criticamente
 os resultados em linguagem ecológica.
 
+## Cronograma
+
+Dez encontros de 4,5 h (45 h), no formato concentrado da disciplina de
+Análise de Dados Univariados; as datas são combinadas com a turma. Cada
+encontro junta a teoria (os slides) e a prática (o walkthrough da aula,
+nos [roteiros práticos](praticas.qmd)).
+
+| Dia | Manhã (4,5 h) | Tarde (4,5 h) |
+|:--|:--|:--|
+| 1 | **Aula 1**: a pergunta, o delineamento e a álgebra de matrizes | **Aula 2**: coeficientes de associação e transformações |
+| 2 | **Aula 3**: agrupamento, *k-means* e IndVal | **Aula 4** (I): PCA |
+| 3 | **Aula 4** (II): CA, PCoA e nMDS | **Aula 5** (I): RDA, triplot, CCA, seleção de variáveis e db-RDA |
+| 4 | **Aula 5** (II): análises parciais, MEMs, partição de variância e LDA | **Aula 6**: Mantel, GDM, Procrustes, PERMANOVA e dispersão |
+| 5 | **Aula 7**: métodos baseados em modelos (`mvabund`, `gllvm`, HMSC) | **Clínica do trabalho final**: a pergunta, os dados e o método de cada um |
+
+O trabalho final é entregue depois do último encontro, no prazo combinado
+com a turma.
+
 ## Pré-requisitos
 
 - Familiaridade básica com R (leitura de dados, funções, objetos).
